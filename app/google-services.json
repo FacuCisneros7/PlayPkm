@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "759299284944",
+    "project_id": "playpkm-2396d",
+    "storage_bucket": "playpkm-2396d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759299284944:android:9d5181d7a05ecfb4c5e3d5",
+        "android_client_info": {
+          "package_name": "com.electrofire.playpkm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOCCJMH71YnBaWeHZjGcM7EjaGmcWFEsg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
