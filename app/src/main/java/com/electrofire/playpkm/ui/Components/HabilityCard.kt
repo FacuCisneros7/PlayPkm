@@ -50,7 +50,7 @@ fun HabilityCard(modifier: Modifier = Modifier, viewModel: HabilityViewModel = v
                 Card(
                     modifier.wrapContentSize().padding(8.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.onPrimary
+                        containerColor = MaterialTheme.colorScheme.secondary
                     ),
                     shape = MaterialTheme.shapes.large,
                 ) {

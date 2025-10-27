@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
 
@@ -60,30 +61,30 @@ fun UserItem(modifier: Modifier = Modifier, user: UserData, position : Int){
             horizontalArrangement = Arrangement.Center
         ){
 
-            Column(modifier.width(64.dp),horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier.width(32.dp),horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "$position", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.titleLarge )
             }
 
-            /*
-              Column(modifier.width(64.dp),horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier.width(65.dp),horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
-                    painter = rememberAsyncImagePainter(user.imagen.toUri()),
+                    painter = rememberAsyncImagePainter(user.imagen),
                     contentDescription = "Foto perfil",
-                    modifier = Modifier.size(40.dp).clip(CircleShape),
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
             }
-             */
 
-            Column(modifier.width(128.dp),horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = user.userName.toString().uppercase(), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge )
+            Column(modifier.width(110.dp),horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = user.userName.toString().uppercase(), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontSize = 12.sp) )
             }
 
-            Column(modifier.width(64.dp),horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier.width(50.dp),horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "W: ${user.victorias} ", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge )
             }
 
-            Column(modifier.width(64.dp),horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier.width(50.dp),horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "L: ${user.derrotas} ", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge )
 
             }

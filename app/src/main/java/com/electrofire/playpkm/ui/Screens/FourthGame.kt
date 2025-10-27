@@ -34,6 +34,7 @@ import com.electrofire.playpkm.ui.Components.PotenciaCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.MovimientoViewModel
@@ -54,12 +55,9 @@ fun FourthGame(navController: NavController, viewModel: MovimientoViewModel = hi
     }
 
     Box(Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.matchParentSize()
-        )
+
+        GradientBackground()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

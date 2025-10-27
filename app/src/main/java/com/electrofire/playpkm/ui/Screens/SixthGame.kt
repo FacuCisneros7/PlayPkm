@@ -32,6 +32,7 @@ import com.electrofire.playpkm.ui.Components.PokemonesFusionCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.UserInputPokemonDos
 import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModel
 import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModelDos
@@ -50,12 +51,9 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
     var respondido by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.matchParentSize()
-        )
+
+        GradientBackground()
+
         Column(
             modifier = Modifier
                 .fillMaxSize(),

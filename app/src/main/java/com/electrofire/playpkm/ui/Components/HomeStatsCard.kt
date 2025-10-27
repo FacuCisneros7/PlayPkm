@@ -46,17 +46,17 @@ fun HomeStatsCard(modifier: Modifier = Modifier,statsViewModel: HomeStatsViewMod
                 Card(
                     modifier.wrapContentSize().padding(8.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.onPrimary
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
                     Row {
                         Text(
-                            "Victorias: ${stats.victorias}  /",
+                            " Victorias: ${stats.victorias}  /",
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
                         )
                         Text(
-                            "  Derrotas: ${stats.derrotas}",
+                            "  Derrotas: ${stats.derrotas} ",
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
                         )

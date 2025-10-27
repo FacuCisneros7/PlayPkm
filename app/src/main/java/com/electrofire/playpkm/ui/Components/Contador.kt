@@ -52,7 +52,7 @@ fun Contador(modifier: Modifier = Modifier, contadorViewModel : ContadorViewMode
             Card(
                 modifier.wrapContentSize(),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.secondary
                 )
             ) {
                     Text(

@@ -35,12 +35,6 @@ fun HabilityPokemonCard(modifier: Modifier = Modifier,viewModel: HabilityViewMod
                 Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.pokeball),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
-                )
                 Loading()
             }
         }
@@ -56,7 +50,7 @@ fun HabilityPokemonCard(modifier: Modifier = Modifier,viewModel: HabilityViewMod
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.pokeball),
+                    painter = painterResource(id = R.drawable.circulo),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()

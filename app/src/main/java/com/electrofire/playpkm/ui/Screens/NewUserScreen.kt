@@ -1,12 +1,16 @@
 package com.electrofire.playpkm.ui.Screens
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +37,7 @@ import androidx.navigation.NavController
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.ChoiseImage
 import com.electrofire.playpkm.ui.Components.ConfirmButton
+import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 
@@ -39,35 +45,38 @@ import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewModel) {
     var userName by remember { mutableStateOf("") }
     var respondido by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     if (!respondido) {
-        Box(Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(id = R.drawable.background_register),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize()
-            )
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+
+            GradientBackground()
+
             Column(
-                modifier = Modifier.padding(32.dp).fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
+                Spacer(modifier = Modifier.height(80.dp))
+
                 Text(
                     text = "PlayPkm",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.headlineLarge.copy(fontSize = 40.sp)
                 )
 
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
                 Text(
-                    text = "Bienvenido!",
-                    color = Color.Black,
+                    text = "Busca y selecciona un Pokemon!",
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp)
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 ChoiseImage(statsViewModel)
 
@@ -75,7 +84,12 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
 
                 TextField(
                     value = userName,
-                    onValueChange = { userName = it },
+                    onValueChange = {
+                        userName = it
+                        if (userName.length < 10) {
+                            errorMessage = null
+                        }
+                                    },
                     placeholder = {
                         Text(
                             text = "Nombre de usuario",
@@ -84,23 +98,43 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
                         )
                     },
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedContainerColor = MaterialTheme.colorScheme.secondary,
                         unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
                         focusedTextColor = MaterialTheme.colorScheme.primary,
                         focusedPlaceholderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary,
                         cursorColor = MaterialTheme.colorScheme.onSurface,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    modifier = Modifier.wrapContentSize(),
+                    modifier = Modifier.width(250.dp).wrapContentHeight(),
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if(errorMessage != null){
+                    Text(
+                        text = errorMessage!!,
+                        color = Color.Red,
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
+                        textAlign = TextAlign.Center
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                ConfirmButton(onConfirm = { statsViewModel.registrarUserName(userName)
-                    respondido = true })
+                ConfirmButton(onConfirm = {
+                    if (userName.isBlank()) {
+                        errorMessage = "El nombre no puede estar vacío"
+                    } else if (userName.length >= 10) {
+                        errorMessage = "El nombre debe tener menos de 10 caracteres"
+                    } else {
+                        statsViewModel.registrarUserName(userName)
+                        respondido = true
+                    }
+                }
+                )
             }
         }
     }

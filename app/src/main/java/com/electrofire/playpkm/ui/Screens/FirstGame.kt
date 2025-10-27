@@ -1,5 +1,6 @@
 package com.electrofire.playpkm.ui.Screens
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,12 +29,14 @@ import com.electrofire.playpkm.ui.ViewModels.PokemonViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.CardItems.PokemonCard
 import com.electrofire.playpkm.ui.CardItems.SilhouettePokemonCard
 import com.electrofire.playpkm.ui.Components.Contador
+import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
@@ -54,12 +57,9 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
     }
 
     Box(Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.matchParentSize()
-        )
+
+        GradientBackground()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

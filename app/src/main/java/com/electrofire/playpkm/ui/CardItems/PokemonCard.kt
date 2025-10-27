@@ -37,12 +37,6 @@ fun PokemonCard(modifier: Modifier = Modifier,
                 Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.pokeball),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
-                )
                 Loading()
             }
         }
@@ -58,7 +52,7 @@ fun PokemonCard(modifier: Modifier = Modifier,
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.pokeball),
+                    painter = painterResource(id = R.drawable.circulo),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()

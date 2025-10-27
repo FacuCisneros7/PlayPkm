@@ -1,5 +1,6 @@
 package com.electrofire.playpkm.ui.Components
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,20 +17,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.electrofire.playpkm.R
 
 @Composable
 fun WinCard(
     modifier: Modifier = Modifier,
     onButtonClick: () -> Unit,
 ){
+    val context = LocalContext.current
+
     Card(
         modifier = modifier.width(220.dp).height(155.dp),
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onSecondary))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary))
     {
 
         Column (
@@ -45,11 +50,17 @@ fun WinCard(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = onButtonClick,
+                onClick = {
+                    val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                    mediaPlayer.start()
+                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                    onButtonClick()
+                },
                 modifier = Modifier.width(125.dp).height(40.dp).fillMaxSize(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onPrimary,       // Fondo del botón
-                    contentColor = MaterialTheme.colorScheme.primary        // Color del texto/icono
+                    contentColor = MaterialTheme.colorScheme.secondary        // Color del texto/icono
                 )
             ) {
                 Text(text = "Inicio",

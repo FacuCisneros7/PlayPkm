@@ -58,7 +58,7 @@ fun SilhouettePokemonCard(modifier: Modifier = Modifier,
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.pokeball),
+                    painter = painterResource(id = R.drawable.circulo),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()

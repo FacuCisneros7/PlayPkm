@@ -36,12 +36,6 @@ fun FusionCard(modifier: Modifier = Modifier,viewModel: FusionViewModel = hiltVi
                 Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.pokeball),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
-                )
                 Loading()
             }
         }
@@ -57,7 +51,7 @@ fun FusionCard(modifier: Modifier = Modifier,viewModel: FusionViewModel = hiltVi
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.pokeball),
+                    painter = painterResource(id = R.drawable.circulo),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()

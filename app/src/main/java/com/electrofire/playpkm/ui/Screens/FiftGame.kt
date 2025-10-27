@@ -33,6 +33,7 @@ import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.PokemonViewModel
 import com.electrofire.playpkm.ui.ViewModels.StatsViewModel
@@ -47,12 +48,9 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
     var intentosRestantes by remember { mutableStateOf(3) } // 👈 contador de vidas
 
     Box(Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.matchParentSize()
-        )
+
+        GradientBackground()
+
         Column(
             modifier = Modifier
                 .fillMaxSize(),

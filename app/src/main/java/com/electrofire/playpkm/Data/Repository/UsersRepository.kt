@@ -11,6 +11,7 @@ class UsersRepository {
     fun getUsersOrderedByVictories(onResult: (List<UserData>) -> Unit) {
         db.collection("Users")
             .orderBy("victorias", Query.Direction.DESCENDING)
+            .orderBy("derrotas", Query.Direction.ASCENDING)
             .get()
             .addOnSuccessListener { snapshot ->
                 val users = snapshot.documents.mapNotNull { it.toObject(UserData::class.java) }

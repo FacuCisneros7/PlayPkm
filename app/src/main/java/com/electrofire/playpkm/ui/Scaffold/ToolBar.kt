@@ -23,6 +23,7 @@ import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
 @Composable
 fun ToolBar() {
     val context = LocalContext.current
+
     CenterAlignedTopAppBar(
         title = {
             Text(

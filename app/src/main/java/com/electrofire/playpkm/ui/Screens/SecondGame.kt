@@ -1,5 +1,6 @@
 package com.electrofire.playpkm.ui.Screens
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,6 +36,7 @@ import com.electrofire.playpkm.ui.Components.Contador
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.ViewModels.CartaViewModel
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
@@ -57,12 +60,9 @@ fun SecondGame(navController: NavController, viewModel: CartaViewModel = hiltVie
     }
 
     Box(Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.matchParentSize()
-        )
+
+        GradientBackground()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -88,7 +88,7 @@ fun SecondGame(navController: NavController, viewModel: CartaViewModel = hiltVie
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            ConfirmButton( onConfirm = {respondido = true})
+            ConfirmButton( onConfirm = { respondido = true })
 
             Spacer(modifier = Modifier.height(90.dp))
 

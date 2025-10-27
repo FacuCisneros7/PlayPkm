@@ -51,7 +51,7 @@ fun PotenciaCard(modifier: Modifier = Modifier,viewModel: MovimientoViewModel = 
                 Card(
                     modifier.width(125.dp).height(50.dp).padding(8.dp).fillMaxSize(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.onPrimary
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
                     Box(

@@ -93,11 +93,11 @@ fun UserInputPokemon(title: String,
                         )
                     },
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.outline,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-                        focusedTextColor = MaterialTheme.colorScheme.primary,
-                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface,
+                        focusedContainerColor = MaterialTheme.colorScheme.primary,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedTextColor = MaterialTheme.colorScheme.secondary,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary,
                         cursorColor = MaterialTheme.colorScheme.onSurface,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
@@ -123,7 +123,7 @@ fun UserInputPokemon(title: String,
                     },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.primary,    // Fondo cuando está enfocado
-                        unfocusedContainerColor = MaterialTheme.colorScheme.outline,  // Fondo cuando NO está enfocado
+                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,  // Fondo cuando NO está enfocado
                         focusedTextColor = MaterialTheme.colorScheme.secondary,       // Texto ingresado
                         focusedPlaceholderColor = MaterialTheme.colorScheme.secondary, // Placeholder enfocado
                         unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary, // Placeholder desenfocado
@@ -132,7 +132,7 @@ fun UserInputPokemon(title: String,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
                     ),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
@@ -164,7 +164,7 @@ fun UserInputPokemon(title: String,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        onTextChange(pokemonEntity.nombre)
+                                        onTextChange(pokemonEntity.nombre.uppercase())
                                         viewModel.onQueryChanged("") // limpia las sugerencias
                                     }
                                     .padding(4.dp),

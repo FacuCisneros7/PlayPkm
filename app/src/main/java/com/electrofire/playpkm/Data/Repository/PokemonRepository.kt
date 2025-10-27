@@ -1,20 +1,19 @@
 package com.electrofire.playpkm.Data.Repository
 
-import androidx.room.Dao
-import androidx.room.Room
 import com.electrofire.playpkm.Data.LocalData.PokemonDao
-import com.electrofire.playpkm.Data.LocalData.PokemonDatabase
 import com.electrofire.playpkm.Data.LocalData.PokemonEntity
 import com.electrofire.playpkm.Data.Pokemon
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
-import java.time.LocalDate
+import java.util.Calendar
+import java.util.TimeZone
 import kotlin.random.Random
 
 class PokemonRepository @Inject constructor(
-    private val dao: PokemonDao
+    private val dao: PokemonDao,
 ){
+    private val timeRepository= TimeRepository()
 
     private val db = FirebaseFirestore.getInstance()
     private val collection = db.collection("Pokemon")
@@ -26,17 +25,27 @@ class PokemonRepository @Inject constructor(
 
     suspend fun obtenerPokemonDelDia(): Pokemon ?{
         val lista = obtenerTodosLosPokemon()
-        val diaDelAnio = LocalDate.now().dayOfYear
+
+        val horaServidor = timeRepository.obtenerHoraServidor()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
+        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
+
         val random = Random(diaDelAnio.toLong())
-        val indice = random.nextInt(lista.size)
-        return lista[indice]
+        return lista[random.nextInt(lista.size)]
+
     }
 
     suspend fun obtenerHabilidadPokemonDelDia(): Pokemon ?{
         val pokemonDia = obtenerPokemonDelDia()
         val lista = obtenerTodosLosPokemon()
         val listaFiltrada = lista.filter { it != pokemonDia }
-        val diaDelAnio = LocalDate.now().dayOfYear
+
+        val horaServidor = timeRepository.obtenerHoraServidor()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
+        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
+
         val random = Random(diaDelAnio.toLong() + 1000)
         val indice = random.nextInt(listaFiltrada.size)
         return listaFiltrada[indice]
@@ -47,36 +56,16 @@ class PokemonRepository @Inject constructor(
         val habilidadDia = obtenerHabilidadPokemonDelDia()
         val lista = obtenerTodosLosPokemon()
         val listaFiltrada = lista.filter { it != pokemonDia && it != habilidadDia}
-        val diaDelAnio = LocalDate.now().dayOfYear
+
+        val horaServidor = timeRepository.obtenerHoraServidor()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
+        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
+
         val random = Random(diaDelAnio.toLong() + 2000)
         val indice = random.nextInt(listaFiltrada.size)
         return listaFiltrada[indice]
     }
-
-    suspend fun obtenerPokemonSiluetaUnoDia(): Pokemon ?{
-        val pokemonDia = obtenerPokemonDelDia()
-        val habilidadDia = obtenerHabilidadPokemonDelDia()
-        val statsDia = obtenerStatsPokemonDelDia()
-        val lista = obtenerTodosLosPokemon()
-        val listaFiltrada = lista.filter { it != pokemonDia && it != habilidadDia && it != statsDia}
-        val diaDelAnio = LocalDate.now().dayOfYear
-        val random = Random(diaDelAnio.toLong() + 3000)
-        val indice = random.nextInt(listaFiltrada.size)
-        return listaFiltrada[indice]
-    }
-
-    suspend fun obtenerPokemonSiluetaDosDia(): Pokemon ?{
-        val pokemonDia = obtenerPokemonDelDia()
-        val habilidadDia = obtenerHabilidadPokemonDelDia()
-        val statsDia = obtenerStatsPokemonDelDia()
-        val lista = obtenerTodosLosPokemon()
-        val listaFiltrada = lista.filter { it != pokemonDia && it != habilidadDia && it != statsDia}
-        val diaDelAnio = LocalDate.now().dayOfYear
-        val random = Random(diaDelAnio.toLong() + 4000)
-        val indice = random.nextInt(listaFiltrada.size)
-        return listaFiltrada[indice]
-    }
-
 
     suspend fun syncPokemon() {
         val snapshot = collection.get().await()
