@@ -1,6 +1,7 @@
 package com.electrofire.playpkm.ui.Components
 
 import android.media.MediaPlayer
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,7 +36,8 @@ fun LoserCard(
         modifier = modifier.width(220.dp).height(155.dp),
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onSurface),
+        border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondary)
     ) {
 
         Column (
@@ -42,7 +45,7 @@ fun LoserCard(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(text = "DERROTA",
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -58,14 +61,16 @@ fun LoserCard(
                           },
                 modifier = Modifier.width(125.dp).height(40.dp).fillMaxSize(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onPrimary,       // Fondo del botón
-                    contentColor = MaterialTheme.colorScheme.secondary        // Color del texto/icono
+                    containerColor = MaterialTheme.colorScheme.secondary,       // Fondo del botón
+                    contentColor = MaterialTheme.colorScheme.onSurface        // Color del texto/icono
                 )
             ) {
-                Text(text = "Inicio",
+                Text(
+                    text = "Inicio",
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth())
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
 

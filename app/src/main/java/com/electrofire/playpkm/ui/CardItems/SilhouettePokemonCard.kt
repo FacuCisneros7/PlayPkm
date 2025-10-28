@@ -37,12 +37,6 @@ fun SilhouettePokemonCard(modifier: Modifier = Modifier,
                 Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.pokeball),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
-                )
                 Loading()
             }
         }

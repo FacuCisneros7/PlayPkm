@@ -37,7 +37,7 @@ fun ConfirmButton(
         modifier.width(125.dp).height(40.dp).fillMaxSize(),
         elevation = ButtonDefaults.buttonElevation(10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.secondary,       // Fondo del botón
+            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),       // Fondo del botón
             contentColor = MaterialTheme.colorScheme.primary        // Color del texto/icono
         )
     ) {

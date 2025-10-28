@@ -218,21 +218,27 @@ fun HomeScreen(navController: NavController,
 
                 item {
                     MyCardButton(
-                        title = "Futuro juego",
+                        title = "El mejor de nosotros",
                         imageRes = R.drawable.adasdad,
                         onClick = {
                             val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
-                            repo.canPlayTodayDos("seventh_game") { canPlay ->
+                            navController.navigate("seventh_game")
+
+                            /*
+                             repo.canPlayTodayDos("seventh_game") { canPlay ->
                                 if(canPlay){
                                     navController.navigate("seventh_game")
                                 }
                                 else{
                                     Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
                                 }
-                            }                        }
+                            }
+                             */
+
+                        }
                     )
                 }
 

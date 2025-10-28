@@ -1,8 +1,6 @@
 package com.electrofire.playpkm
 
 
-import android.content.Intent
-import android.content.IntentFilter
 import androidx.compose.runtime.getValue
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,11 +20,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +33,7 @@ import com.electrofire.playpkm.ui.Screens.FiftGame
 import com.electrofire.playpkm.ui.Screens.FourthGame
 import com.electrofire.playpkm.ui.Screens.NewUserScreen
 import com.electrofire.playpkm.ui.Screens.RankingScreen
+import com.electrofire.playpkm.ui.Screens.SeventhGame
 import com.electrofire.playpkm.ui.Screens.SixthGame
 import com.electrofire.playpkm.ui.Screens.ThirdGame
 import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
@@ -112,7 +107,7 @@ fun AppNavigation(navController: NavHostController, statsViewModel: HomeStatsVie
             composable(Screen.FourthGame.route){FourthGame(navController, statsViewModel = statsViewModel)}
             composable(Screen.FiftGame.route){FiftGame(navController, statsViewModel = statsViewModel)}
             composable(Screen.SixthGame.route){SixthGame(navController, statsViewModel = statsViewModel)}
-            //composable(Screen.SeventhGame.route){ SeventhGame(navController, statsViewModel = statsViewModel) }
+            composable(Screen.SeventhGame.route){ SeventhGame(navController, statsViewModel = statsViewModel) }
             composable(Screen.RankingScreen.route){ RankingScreen() }
             composable("new_user"){ NewUserScreen(navController, statsViewModel) }
         }

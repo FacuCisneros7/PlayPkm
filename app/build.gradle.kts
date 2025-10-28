@@ -44,9 +44,11 @@ android {
 
 dependencies {
 
+    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
+
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
     // Room runtime
     implementation ("androidx.room:room-runtime:2.6.0")
     // Kotlin extensions y coroutines support
