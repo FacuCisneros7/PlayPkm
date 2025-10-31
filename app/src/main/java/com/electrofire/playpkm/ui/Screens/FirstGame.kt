@@ -2,13 +2,19 @@ package com.electrofire.playpkm.ui.Screens
 
 import android.media.MediaPlayer
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +35,6 @@ import com.electrofire.playpkm.ui.ViewModels.PokemonViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.LoserCard
@@ -67,13 +72,13 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (!respondido) {
-                Text(
-                    text = "¿Quién es este pokemon?",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+
+                Image(
+                    painter = painterResource(id = R.drawable.primerjuego),
+                    contentDescription = null,
+                    modifier = Modifier.height(90.dp).wrapContentWidth()
                 )
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 SilhouettePokemonCard()

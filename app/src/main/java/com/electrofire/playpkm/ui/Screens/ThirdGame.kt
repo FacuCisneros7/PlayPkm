@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,13 +69,13 @@ fun ThirdGame(navController: NavController, viewModel: HabilityViewModel = hiltV
         ) {
 
             if (!respondido){
-                Text(
-                    text = "Responde con una habilidad del pokemon",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+
+                Image(
+                    painter = painterResource(id = R.drawable.tercerjuego),
+                    contentDescription = null,
+                    modifier = Modifier.height(80.dp).wrapContentWidth()
                 )
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 HabilityPokemonCard()

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,21 +58,19 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
 
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (!respondido) {
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "¿Quienes están fusionados?",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                Image(
+                    painter = painterResource(id = R.drawable.sextojuego),
+                    contentDescription = null,
+                    modifier = Modifier.height(80.dp).wrapContentWidth()
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+
+                Spacer(modifier = Modifier.height(32.dp))
 
                 FusionCard()
 
@@ -83,7 +83,7 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
                     viewModel = viewModel1
                     )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 UserInputPokemonDos(
                     title = "Pokemon 2",
@@ -91,7 +91,7 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
                     onTextChange = { respuestaDos = it },
                     viewModel = viewModel2)
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
                 ConfirmButton(onConfirm = { respondido = true })
             } else{

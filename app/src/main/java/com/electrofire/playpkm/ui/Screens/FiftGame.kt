@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,18 +55,18 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
 
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (!respondido) {
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(
-                    text = "¿Quién es este pokemon?",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+
+                Image(
+                    painter = painterResource(id = R.drawable.segundojuego),
+                    contentDescription = null,
+                    modifier = Modifier.height(80.dp).wrapContentWidth()
                 )
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 StatPokemonCard()
@@ -91,7 +93,7 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
                     }
                 })
 
-                Spacer(modifier = Modifier.height(190.dp))
+                Spacer(modifier = Modifier.height(100.dp))
 
                 Hearts(actuales = intentosRestantes)
             } else{

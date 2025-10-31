@@ -41,7 +41,7 @@ fun ToolBar() {
                 context.startActivity(intent)
             }) {
                 Image(
-                    painter = painterResource(id = R.drawable.instagram),
+                    painter = painterResource(id = R.drawable.instagramdos),
                     contentDescription = "Logo",
                     modifier = Modifier.size(25.dp)
                 )

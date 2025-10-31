@@ -57,8 +57,7 @@ fun ChoiseImage(statsViewModel: HomeStatsViewModel) {
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
-                .padding(14.dp),
+                .height(120.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

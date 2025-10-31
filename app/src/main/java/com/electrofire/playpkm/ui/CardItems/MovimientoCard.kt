@@ -1,5 +1,7 @@
 package com.electrofire.playpkm.ui.CardItems
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +46,15 @@ fun MovimientoCard(modifier: Modifier = Modifier,viewModel: MovimientoViewModel 
             AsyncImage(
                 model = movimiento.Imagen,
                 contentDescription = null,
-                modifier = Modifier.height(190.dp).width(270.dp).clip(RoundedCornerShape(16.dp)),
+                modifier = Modifier.
+                height(190.dp).
+                width(270.dp).
+                clip(RoundedCornerShape(16.dp))
+                    .border( // el borde también redondeado 👇
+                        width = 4.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                        shape = RoundedCornerShape(16.dp)
+                    ),
                 contentScale = ContentScale.Crop // o Fit si quieres que se vea completa
             )
         }

@@ -1,6 +1,8 @@
 package com.electrofire.playpkm.ui.Components
 
 import android.media.SoundPool
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +22,9 @@ import com.electrofire.playpkm.R
 @Composable
 fun ConfirmButton(
     onConfirm: () -> Unit,
-    modifier: Modifier = Modifier)
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+)
 {
     val context = LocalContext.current
     val soundPool = remember {
@@ -29,17 +33,24 @@ fun ConfirmButton(
     val soundId = remember {
         soundPool.load(context, R.raw.buttonuisoundeffect, 1)
     }
+
     Button(
         onClick = {
             soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
             onConfirm()
                   },
-        modifier.width(125.dp).height(40.dp).fillMaxSize(),
-        elevation = ButtonDefaults.buttonElevation(10.dp),
+        modifier.
+        width(125.dp).
+        height(40.dp).
+        fillMaxSize(),
+        elevation = ButtonDefaults.buttonElevation(5.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),       // Fondo del botón
-            contentColor = MaterialTheme.colorScheme.primary        // Color del texto/icono
-        )
+            containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),       // Fondo del botón
+            contentColor = MaterialTheme.colorScheme.primary, // Color del texto/icono
+            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            disabledContentColor = MaterialTheme.colorScheme.primary
+        ),
+        enabled = enabled
     ) {
         Text(
             text = "Confirmar",

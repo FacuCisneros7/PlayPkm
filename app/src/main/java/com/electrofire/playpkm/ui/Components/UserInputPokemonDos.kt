@@ -25,6 +25,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModelDos
 
@@ -68,14 +70,15 @@ fun UserInputPokemonDos(title: String,
         if (sugerencias.isEmpty()) 0f else visibleItems.toFloat() / sugerencias.size
     }
 
-    Column(modifier = Modifier.width(120.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.width(200.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
         Card(
-            modifier = modifier.width(120.dp).height(55.dp).fillMaxSize(),
+            modifier = modifier.width(200.dp).height(55.dp).fillMaxSize(),
             elevation = CardDefaults.cardElevation(10.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primary
-            )
+            ),
+            border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
         ) {
             if (title == "Potencia") {
                 TextField(
@@ -109,7 +112,8 @@ fun UserInputPokemonDos(title: String,
 
             } else {
                 TextField(
-                    value = text,
+                    value = text.uppercase(),
+                    textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                     onValueChange = {
                         onTextChange(it)
                         viewModel.onQueryChanged(it)
@@ -122,12 +126,13 @@ fun UserInputPokemonDos(title: String,
                         )
                     },
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.primary,    // Fondo cuando está enfocado
-                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,  // Fondo cuando NO está enfocado
-                        focusedTextColor = MaterialTheme.colorScheme.secondary,       // Texto ingresado
-                        focusedPlaceholderColor = MaterialTheme.colorScheme.secondary, // Placeholder enfocado
-                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary, // Placeholder desenfocado
-                        cursorColor = MaterialTheme.colorScheme.onSurface,
+                        focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,    // Fondo cuando está enfocado
+                        unfocusedContainerColor = MaterialTheme.colorScheme.inversePrimary,  // Fondo cuando NO está enfocado
+                        focusedTextColor = Color.Black,       // Texto ingresado
+                        unfocusedTextColor = Color.Black,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder enfocado
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
+                        cursorColor = Color.Black,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
@@ -138,7 +143,7 @@ fun UserInputPokemonDos(title: String,
 
         }
 
-        Spacer(Modifier.width(24.dp))
+        Spacer(Modifier.height(4.dp))
 
         AnimatedVisibility(
             visible = sugerencias.isNotEmpty(),
@@ -146,11 +151,13 @@ fun UserInputPokemonDos(title: String,
             exit = fadeOut() + shrinkVertically()
         ) {
             Card(
-                modifier = modifier.width(120.dp).wrapContentHeight().heightIn(max = 100.dp),
+                modifier = modifier.width(200.dp).wrapContentHeight().heightIn(max = 100.dp),
                 elevation = CardDefaults.cardElevation(10.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                    containerColor = MaterialTheme.colorScheme.inverseSurface
+                ),
+                border = BorderStroke(3.dp, Color.Black)
+
             ){
                 Box(modifier = Modifier.wrapContentHeight()) {
                     LazyColumn(
@@ -168,8 +175,8 @@ fun UserInputPokemonDos(title: String,
                                         viewModel.onQueryChanged("") // limpia las sugerencias
                                     }
                                     .padding(4.dp),
-                                color = MaterialTheme.colorScheme.secondary,
-                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 12.sp),
                                 textAlign = TextAlign.Center,
                             )
                         }
@@ -180,14 +187,14 @@ fun UserInputPokemonDos(title: String,
                             modifier = Modifier
                                 .width(4.dp)
                                 .fillMaxHeight()
-                                .background(MaterialTheme.colorScheme.outline)
+                                .background(Color.Transparent)
                                 .align(Alignment.CenterEnd)
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .fillMaxHeight(maxOf(scrollFraction, initialFraction).coerceIn(0f, 1f))
-                                    .background(MaterialTheme.colorScheme.secondary)
+                                    .background(Color.White)
                             )
                         }
                     }

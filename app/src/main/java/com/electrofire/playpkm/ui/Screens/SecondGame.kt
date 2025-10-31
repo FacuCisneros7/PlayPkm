@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,31 +69,31 @@ fun SecondGame(navController: NavController, viewModel: CartaViewModel = hiltVie
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             if (!respondido){
-            Text(
-                text = "¿Que pokemon está en la carta?",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.segundojuego),
+                    contentDescription = null,
+                    modifier = Modifier.height(80.dp).wrapContentWidth()
+                )
+
+            Spacer(modifier = Modifier.height(32.dp))
 
             BlurredCard()
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(48.dp))
 
             UserInputPokemon(title = "Pokemon",text = respuesta, onTextChange = { respuesta = it })
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             ConfirmButton( onConfirm = { respondido = true })
 
-            Spacer(modifier = Modifier.height(90.dp))
+            Spacer(modifier = Modifier.height(38.dp))
 
             Contador(contadorViewModel = contadorViewModel)
             }

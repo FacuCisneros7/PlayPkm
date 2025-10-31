@@ -1,11 +1,13 @@
 package com.electrofire.playpkm.ui.Screens
 
 import android.media.MediaPlayer
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -60,20 +64,20 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                Text(
-                    text = "PlayPkm",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 40.sp)
+                Image(
+                    painter = painterResource(id = R.drawable.logohomecopia),
+                    contentDescription = null,
+                    modifier = Modifier.height(210.dp).width(210.dp)
                 )
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Busca y selecciona un Pokemon!",
+                    text = "Elige tu Pokemon insignia!",
                     color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp)
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 22.sp)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -82,36 +86,45 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                TextField(
-                    value = userName,
-                    onValueChange = {
-                        userName = it
-                        if (userName.length < 10) {
-                            errorMessage = null
-                        }
-                                    },
-                    placeholder = {
-                        Text(
-                            text = "Nombre de usuario",
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedTextColor = MaterialTheme.colorScheme.primary,
-                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary,
-                        cursorColor = MaterialTheme.colorScheme.onSurface,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
+                Card(
+                    modifier = Modifier.width(200.dp).height(55.dp).fillMaxSize(),
+                    elevation = CardDefaults.cardElevation(10.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.Transparent
                     ),
-                    modifier = Modifier.width(250.dp).wrapContentHeight(),
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
+                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+                ) {
+                    TextField(
+                        value = userName,
+                        textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                        onValueChange = {
+                            userName = it
+                            if (userName.length < 10) {
+                                errorMessage = null
+                            }
+                        },
+                        placeholder = {
+                            Text(
+                                text = "Nombre de usuario",
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.onPrimary,    // Fondo cuando está enfocado
+                            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,  // Fondo cuando NO está enfocado
+                            focusedTextColor = Color.Black,       // Texto ingresado
+                            unfocusedTextColor = Color.Black,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder enfocado
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
+                            cursorColor = Color.Black,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
                 if(errorMessage != null){
                     Text(
@@ -122,7 +135,7 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(64.dp))
 
                 ConfirmButton(onConfirm = {
                     if (userName.isBlank()) {

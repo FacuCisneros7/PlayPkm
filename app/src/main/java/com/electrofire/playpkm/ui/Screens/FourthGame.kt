@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,13 +67,13 @@ fun FourthGame(navController: NavController, viewModel: MovimientoViewModel = hi
         ) {
 
             if (!respondido){
-                Text(
-                    text = "¿Que potencia tiene el movimiento?",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+
+                Image(
+                    painter = painterResource(id = R.drawable.cuartojuego),
+                    contentDescription = null,
+                    modifier = Modifier.height(80.dp).wrapContentWidth()
                 )
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 MovimientoCard()

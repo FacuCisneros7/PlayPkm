@@ -30,8 +30,8 @@ fun GradientBackground(
     val infiniteTransition= rememberInfiniteTransition()
 
     val offset = infiniteTransition.animateFloat(
-        initialValue = 100f,
-        targetValue = 1000f,
+        initialValue = -200f,
+        targetValue = 500f,
         animationSpec = infiniteRepeatable(
             animation = tween(
                 durationMillis = durationMillis,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.LazyColumn
@@ -58,35 +59,29 @@ fun HomeScreen(navController: NavController,
     }
 
     Box(Modifier.fillMaxSize()){
-        /*
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.matchParentSize()
-        )
 
-         */
         GradientBackground()
 
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            //Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "PLAYPKM",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 50.sp))
+            Image(
+                painter = painterResource(id = R.drawable.logohomecopia),
+                contentDescription = null,
+                modifier = Modifier.height(150.dp).width(150.dp)
+            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            //Spacer(modifier = Modifier.height(16.dp))
 
             HomeStatsCard(statsViewModel= statsViewModel)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(
-                modifier = Modifier.height(423.dp).padding(top = 16.dp),
+                modifier = Modifier.height(400.dp).padding(top = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -99,7 +94,9 @@ fun HomeScreen(navController: NavController,
                             val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
+                            navController.navigate("first_game")
 
+                            /*
                             repo.canPlayTodayDos("first_game") { canPlay ->
                                 if(canPlay){
                                     navController.navigate("first_game")
@@ -108,6 +105,9 @@ fun HomeScreen(navController: NavController,
                                     Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
                                 }
                             }
+                             */
+
+
                         }
                     )
                 }
@@ -121,6 +121,9 @@ fun HomeScreen(navController: NavController,
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
+                            navController.navigate("second_game")
+
+                            /*
                             repo.canPlayTodayDos("second_game") { canPlay ->
                                 if(canPlay){
                                     navController.navigate("second_game")
@@ -129,6 +132,8 @@ fun HomeScreen(navController: NavController,
                                     Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
                                 }
                             }
+                             */
+
                         }
                     )
                 }
@@ -142,6 +147,9 @@ fun HomeScreen(navController: NavController,
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
+                            navController.navigate("third_game")
+
+                            /*
                             repo.canPlayTodayDos("third_game") { canPlay ->
                                 if(canPlay){
                                     navController.navigate("third_game")
@@ -150,6 +158,8 @@ fun HomeScreen(navController: NavController,
                                     Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
                                 }
                             }
+                             */
+
                         }
                     )
                 }
@@ -163,6 +173,9 @@ fun HomeScreen(navController: NavController,
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
+                            navController.navigate("fourth_game")
+
+                            /*
                             repo.canPlayTodayDos("fourth_game") { canPlay ->
                                 if(canPlay){
                                     navController.navigate("fourth_game")
@@ -170,7 +183,9 @@ fun HomeScreen(navController: NavController,
                                 else{
                                     Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
                                 }
-                            }                        }
+                            }
+                             */
+                        }
                     )
                 }
 
@@ -183,6 +198,9 @@ fun HomeScreen(navController: NavController,
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
+                            navController.navigate("fift_game")
+
+                            /*
                             repo.canPlayTodayDos("fift_game") { canPlay ->
                                 if(canPlay){
                                     navController.navigate("fift_game")
@@ -191,6 +209,7 @@ fun HomeScreen(navController: NavController,
                                     Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
                                 }
                             }
+                             */
                         }
                     )
                 }
@@ -204,6 +223,9 @@ fun HomeScreen(navController: NavController,
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
+                            navController.navigate("sixth_game")
+
+                           /*
                             repo.canPlayTodayDos("sixth_game") { canPlay ->
                                 if(canPlay){
                                     navController.navigate("sixth_game")
@@ -212,6 +234,7 @@ fun HomeScreen(navController: NavController,
                                     Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
                                 }
                             }
+                            */
                         }
                     )
                 }
@@ -228,7 +251,7 @@ fun HomeScreen(navController: NavController,
                             navController.navigate("seventh_game")
 
                             /*
-                             repo.canPlayTodayDos("seventh_game") { canPlay ->
+                            repo.canPlayTodayDos("seventh_game") { canPlay ->
                                 if(canPlay){
                                     navController.navigate("seventh_game")
                                 }
@@ -244,12 +267,12 @@ fun HomeScreen(navController: NavController,
 
             }
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(13.dp))
 
             Text(
                 text = timeLeft,
-                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 22.sp),
-                color = MaterialTheme.colorScheme.secondary
+                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
+                color = MaterialTheme.colorScheme.inversePrimary
             )
 
         }

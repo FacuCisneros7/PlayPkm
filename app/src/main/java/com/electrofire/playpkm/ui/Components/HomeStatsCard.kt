@@ -44,7 +44,7 @@ fun HomeStatsCard(modifier: Modifier = Modifier,statsViewModel: HomeStatsViewMod
                     .padding(2.dp), // grosor del "trazo"
             ) {
                 Card(
-                    modifier.wrapContentSize().padding(8.dp),
+                    modifier.wrapContentSize().padding(4.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondary
                     )
@@ -53,12 +53,12 @@ fun HomeStatsCard(modifier: Modifier = Modifier,statsViewModel: HomeStatsViewMod
                         Text(
                             " Victorias: ${stats.victorias}  /",
                             color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp)
                         )
                         Text(
                             "  Derrotas: ${stats.derrotas} ",
                             color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp)
                         )
                         }
                     }
