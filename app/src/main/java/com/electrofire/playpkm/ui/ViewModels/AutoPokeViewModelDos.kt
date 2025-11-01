@@ -3,6 +3,8 @@ package com.electrofire.playpkm.ui.ViewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.LocalData.PokemonEntity
+import com.electrofire.playpkm.Data.PokemonApi
+import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
 import com.electrofire.playpkm.Data.Repository.PokemonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AutoPokeViewModelDos @Inject constructor(
-    private val repository: PokemonRepository
+    private val repository: PokemonApiRepository
 ) : ViewModel() {
 
     private val _suggestions = MutableStateFlow<List<PokemonEntity>>(emptyList())
@@ -29,6 +31,8 @@ class AutoPokeViewModelDos @Inject constructor(
 
     fun onQueryChanged(query: String) {
         viewModelScope.launch {
+            repository.searchPokemon(query)
+
             _suggestions.value =
                 if (query.isEmpty()) emptyList()
                 else repository.searchPokemon(query)

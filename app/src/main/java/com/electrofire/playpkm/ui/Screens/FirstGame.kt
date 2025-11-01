@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -61,7 +62,9 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
         }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    Box(
+        Modifier.fillMaxSize()
+    ) {
 
         GradientBackground()
 
@@ -71,6 +74,7 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
                 .padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             if (!respondido) {
 
                 Image(
@@ -97,19 +101,13 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
                 Spacer(modifier = Modifier.height(64.dp))
 
                 Contador(contadorViewModel = contadorViewModel)
-            } else{
-                Text(
-                    text = "El pokemon es...",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(32.dp))
+            } else {
+
+                Spacer(modifier = Modifier.height(90.dp))
 
                 PokemonCard()
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(64.dp))
 
                 if (verificarRespuestaPokemon(pokemonActual, respuesta)) {
                     WinCard(onButtonClick = { navController.navigate("home") })
@@ -124,9 +122,7 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
                         statsViewModel.registrarDerrota()
                     }
                 }
-
             }
         }
-
     }
 }

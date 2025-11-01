@@ -29,6 +29,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Scaffold.BottomBar
 import com.electrofire.playpkm.ui.Scaffold.ToolBar
+import com.electrofire.playpkm.ui.Screens.EightGame
 import com.electrofire.playpkm.ui.Screens.FiftGame
 import com.electrofire.playpkm.ui.Screens.FourthGame
 import com.electrofire.playpkm.ui.Screens.NewUserScreen
@@ -108,6 +109,7 @@ fun AppNavigation(navController: NavHostController, statsViewModel: HomeStatsVie
             composable(Screen.FiftGame.route){FiftGame(navController, statsViewModel = statsViewModel)}
             composable(Screen.SixthGame.route){SixthGame(navController, statsViewModel = statsViewModel)}
             composable(Screen.SeventhGame.route){ SeventhGame(navController, statsViewModel = statsViewModel) }
+            composable(Screen.EightGame.route){ EightGame(navController, statsViewModel = statsViewModel) }
             composable(Screen.RankingScreen.route){ RankingScreen() }
             composable("new_user"){ NewUserScreen(navController, statsViewModel) }
         }

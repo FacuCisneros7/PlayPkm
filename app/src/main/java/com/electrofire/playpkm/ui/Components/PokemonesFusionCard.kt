@@ -48,9 +48,9 @@ fun PokemonesFusionCard(modifier: Modifier = Modifier, viewModel: FusionViewMode
                     .padding(2.dp), // grosor del "trazo"
             ) {
                 Card(
-                    modifier.wrapContentSize().padding(8.dp),
+                    modifier.wrapContentSize().padding(3.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.onPrimary
+                        containerColor = MaterialTheme.colorScheme.secondary
                     ),
                     shape = MaterialTheme.shapes.large
                 ) {

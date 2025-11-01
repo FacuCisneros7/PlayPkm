@@ -9,7 +9,10 @@ sealed class Screen(val route: String) {
     object FiftGame : Screen("fift_game")
     object SixthGame : Screen("sixth_game")
     object SeventhGame : Screen("seventh_game")
+
+    object EightGame : Screen("eight_game")
     object RankingScreen : Screen("ranking")
+
     object NewUserScreen : Screen("new_user")
 }
 

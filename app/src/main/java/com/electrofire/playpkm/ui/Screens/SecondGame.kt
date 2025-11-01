@@ -62,7 +62,9 @@ fun SecondGame(navController: NavController, viewModel: CartaViewModel = hiltVie
         }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    Box(
+        Modifier.fillMaxSize()
+    ) {
 
         GradientBackground()
 
@@ -98,18 +100,12 @@ fun SecondGame(navController: NavController, viewModel: CartaViewModel = hiltVie
             Contador(contadorViewModel = contadorViewModel)
             }
             else{
-                Text(
-                    text = "La respuesta correcta es...",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(32.dp))
+
+                Spacer(modifier = Modifier.height(50.dp))
 
                 RealCard()
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(64.dp))
 
                 if (verificarRespuestaCartaBorrosa(cartaActual, respuesta)) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
                     WinCard(onButtonClick = { navController.navigate("home") })

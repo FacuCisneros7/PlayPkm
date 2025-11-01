@@ -9,5 +9,6 @@ data class GameAttempts(
     var fourth_game: Timestamp? = null,
     var sixth_game: Timestamp? = null,
     var seventh_game: Timestamp? = null,
-    var fift_game: Timestamp? = null
+    var fift_game: Timestamp? = null,
+    var eight_game: Timestamp? = null
 )

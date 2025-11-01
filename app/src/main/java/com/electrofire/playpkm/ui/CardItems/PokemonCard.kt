@@ -58,7 +58,7 @@ fun PokemonCard(modifier: Modifier = Modifier,
                     modifier = Modifier.matchParentSize()
                 )
                 AsyncImage(
-                    model = pokemon.Imagen,
+                    model = pokemon.imageUrl,
                     contentDescription = null,
                     modifier = modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit

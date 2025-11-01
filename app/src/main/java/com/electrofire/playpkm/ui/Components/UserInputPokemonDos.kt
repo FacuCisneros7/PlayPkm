@@ -1,4 +1,5 @@
 package com.electrofire.playpkm.ui.Components
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -121,7 +122,7 @@ fun UserInputPokemonDos(title: String,
                     placeholder = {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                             textAlign = TextAlign.Center
                         )
                     },

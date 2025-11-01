@@ -91,22 +91,15 @@ fun FourthGame(navController: NavController, viewModel: MovimientoViewModel = hi
                 Contador(contadorViewModel = contadorViewModel)
             }
             else{
-                Text(
-                    text = "La potencia es...",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(80.dp))
 
                 MovimientoCard()
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 PotenciaCard()
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
                 if (verificarRespuestaPotenciaMovimiento(respuesta, movimientoActual)) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
                     WinCard(onButtonClick = { navController.navigate("home") })

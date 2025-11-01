@@ -56,7 +56,7 @@ fun HabilityPokemonCard(modifier: Modifier = Modifier,viewModel: HabilityViewMod
                     modifier = Modifier.matchParentSize()
                 )
                 AsyncImage(
-                    model = pokemon.Imagen,
+                    model = pokemon.imageUrl,
                     contentDescription = null,
                     modifier = modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit

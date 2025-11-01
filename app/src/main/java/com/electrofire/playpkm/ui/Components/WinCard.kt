@@ -2,6 +2,8 @@ package com.electrofire.playpkm.ui.Components
 
 import android.media.MediaPlayer
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,45 +38,51 @@ fun WinCard(
         modifier = modifier.width(220.dp).height(155.dp),
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.outline),
         border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondary)
     )
     {
-
-        Column (
-            modifier = Modifier.fillMaxSize().padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-
-            Text(text = "VICTORIA",
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
-                    mediaPlayer.start()
-                    mediaPlayer.setOnCompletionListener { it.release() }
-
-                    onButtonClick()
-                },
-                modifier = Modifier.width(125.dp).height(40.dp).fillMaxSize(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,       // Fondo del botón
-                    contentColor = MaterialTheme.colorScheme.outline        // Color del texto/icono
-                )
-            ) {
-                Text(
-                    text = "Inicio",
-                    style = MaterialTheme.typography.titleLarge,
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.7f))
+                .fillMaxSize()
+                .padding(20.dp)
+        ) {
+            Column (
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Text(text = "VICTORIA",
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                        mediaPlayer.start()
+                        mediaPlayer.setOnCompletionListener { it.release() }
+
+                        onButtonClick()
+                    },
+                    modifier = Modifier.width(125.dp).height(40.dp).fillMaxSize(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,       // Fondo del botón
+                        contentColor = MaterialTheme.colorScheme.primary        // Color del texto/icono
+                    )
+                ) {
+                    Text(
+                        text = "Inicio",
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
+
+
 
     }
 

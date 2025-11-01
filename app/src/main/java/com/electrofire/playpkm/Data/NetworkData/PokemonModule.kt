@@ -1,5 +1,6 @@
 package com.electrofire.playpkm.Data.NetworkData
 
+import com.electrofire.playpkm.Data.LocalData.PokemonDao
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
 import dagger.Module
 import dagger.Provides
@@ -27,7 +28,7 @@ object PokemonModule{
 
     @Provides
     @Singleton
-    fun providePokemonRepository(api: ApiPokemon):
-            PokemonApiRepository = PokemonApiRepository(api)
+    fun providePokemonRepository(api: ApiPokemon, dao: PokemonDao):
+            PokemonApiRepository = PokemonApiRepository(api,dao)
 
 }

@@ -93,22 +93,15 @@ fun ThirdGame(navController: NavController, viewModel: HabilityViewModel = hiltV
                 Contador(contadorViewModel = contadorViewModel)
             }
             else{
-                Text(
-                    text = "Las habilidades correctas son...",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 HabilityPokemonCard()
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                HabilityCard()
+                HabilityCard(pokemonActual = pokemonActual)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 if (verificarRespuestaHabilidadPokemon(pokemonActual, respuesta)) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
                     WinCard(onButtonClick = { navController.navigate("home") })

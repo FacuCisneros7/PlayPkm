@@ -1,5 +1,6 @@
 package com.electrofire.playpkm.ui.Screens
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,7 +51,9 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
 
     var intentosRestantes by remember { mutableStateOf(3) } // 👈 contador de vidas
 
-    Box(Modifier.fillMaxSize()) {
+    Box(
+        Modifier.fillMaxSize()
+    ) {
 
         GradientBackground()
 
@@ -62,7 +66,7 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
             if (!respondido) {
 
                 Image(
-                    painter = painterResource(id = R.drawable.segundojuego),
+                    painter = painterResource(id = R.drawable.quintojuego),
                     contentDescription = null,
                     modifier = Modifier.height(80.dp).wrapContentWidth()
                 )
@@ -82,13 +86,13 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
 
                 ConfirmButton(onConfirm = {
                     if (verificarRespuestaStatsPokemon(pokemonActual, respuesta)) {
-                        respondido = true // ✅ acertó, termina el juego
+                        respondido = true // acertó, termina el juego
                     } else {
                         intentosRestantes--
                         if (intentosRestantes <= 0) {
-                            respondido = true // ❌ perdió todos los intentos
+                            respondido = true // perdió todos los intentos
                         } else {
-                            respuesta = "" // 🔄 limpiar input y permitir otro intento
+                            respuesta = "" // limpiar input y permitir otro intento
                         }
                     }
                 })
@@ -97,18 +101,11 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
 
                 Hearts(actuales = intentosRestantes)
             } else{
-                Text(
-                    text = "El pokemon es...",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(90.dp))
 
                 PokemonStatsCard()
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(64.dp))
 
                 if (verificarRespuestaStatsPokemon(pokemonActual, respuesta)) {
                     WinCard(onButtonClick = { navController.navigate("home") })

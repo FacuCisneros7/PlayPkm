@@ -49,7 +49,7 @@ fun PotenciaCard(modifier: Modifier = Modifier,viewModel: MovimientoViewModel = 
                     .padding(2.dp), // grosor del "trazo"
             ) {
                 Card(
-                    modifier.width(125.dp).height(50.dp).padding(8.dp).fillMaxSize(),
+                    modifier.width(125.dp).height(50.dp).padding(3.dp).fillMaxSize(),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondary
                     )

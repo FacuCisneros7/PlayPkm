@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +57,7 @@ fun PokemonApiCard(modifier: Modifier = Modifier,
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
+
                 AsyncImage(
                     model = pokemon.imageUrl,
                     contentDescription = null,
@@ -64,6 +66,7 @@ fun PokemonApiCard(modifier: Modifier = Modifier,
                         .height(130.dp),
                     contentScale = ContentScale.Fit
                 )
+
             }
         }
 }

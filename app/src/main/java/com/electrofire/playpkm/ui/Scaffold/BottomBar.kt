@@ -47,7 +47,7 @@ fun BottomBar(navController: NavController, modifier: Modifier = Modifier){
                 label = null,
                 alwaysShowLabel = false,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedIconColor = MaterialTheme.colorScheme.tertiary,
                     unselectedIconColor = MaterialTheme.colorScheme.secondary,
                     indicatorColor = Color.Transparent
                 )

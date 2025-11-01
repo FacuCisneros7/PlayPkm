@@ -2,6 +2,8 @@ package com.electrofire.playpkm.ui.Components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Card
@@ -16,12 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.electrofire.playpkm.Data.PokemonApi
 import com.electrofire.playpkm.ui.ViewModels.HabilityViewModel
 
 
 @Composable
-fun HabilityCard(modifier: Modifier = Modifier, viewModel: HabilityViewModel = viewModel()) {
-    val pokemonActual = viewModel.pokemon
+fun HabilityCard(modifier: Modifier = Modifier, pokemonActual: PokemonApi?) {
 
     if (pokemonActual != null) {
 
@@ -48,7 +50,7 @@ fun HabilityCard(modifier: Modifier = Modifier, viewModel: HabilityViewModel = v
                     .padding(2.dp), // grosor del "trazo"
             ) {
                 Card(
-                    modifier.wrapContentSize().padding(8.dp),
+                    modifier.wrapContentSize().padding(3.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondary
                     ),
@@ -58,7 +60,7 @@ fun HabilityCard(modifier: Modifier = Modifier, viewModel: HabilityViewModel = v
                         modifier.padding(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        for (habilidad in pokemonActual.Habilidades) {
+                        for (habilidad in pokemonActual.abilities) {
                             Text(
                                 habilidad.uppercase(),
                                 color = MaterialTheme.colorScheme.primary,

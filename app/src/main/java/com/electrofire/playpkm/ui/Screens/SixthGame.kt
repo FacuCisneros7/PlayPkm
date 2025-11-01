@@ -95,13 +95,6 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
 
                 ConfirmButton(onConfirm = { respondido = true })
             } else{
-                Text(
-                    text = "Los pokemon son...",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
                 Spacer(modifier = Modifier.height(32.dp))
 
                 FusionCard()
@@ -110,7 +103,7 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
 
                 PokemonesFusionCard()
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
                 if (verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)) {
                     WinCard(onButtonClick = { navController.navigate("home") })

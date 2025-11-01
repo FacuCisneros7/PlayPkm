@@ -105,6 +105,7 @@ class GameAttemptsRepository {
                 "sixth_game" -> attempts.sixth_game
                 "seventh_game" -> attempts.seventh_game
                 "fift_game" -> attempts.fift_game
+                "eight_game" -> attempts.eight_game
                 else -> null
             }
 
@@ -124,6 +125,7 @@ class GameAttemptsRepository {
                         "sixth_game" -> mapOf("sixth_game" to FieldValue.serverTimestamp())
                         "seventh_game" -> mapOf("seventh_game" to FieldValue.serverTimestamp())
                         "fift_game" -> mapOf("fift_game" to FieldValue.serverTimestamp())
+                        "eight_game" -> mapOf("eight_game" to FieldValue.serverTimestamp())
                         else -> emptyMap()
                     }
                     if (updateMap.isNotEmpty()) docRef.set(updateMap, SetOptions.merge())
@@ -143,6 +145,8 @@ class GameAttemptsRepository {
                 "sixth_game" -> mapOf("sixth_game" to FieldValue.serverTimestamp())
                 "seventh_game" -> mapOf("seventh_game" to FieldValue.serverTimestamp())
                 "fift_game" -> mapOf("fift_game" to FieldValue.serverTimestamp())
+                "eight_game" -> mapOf("eight_game" to FieldValue.serverTimestamp())
+
                 else -> emptyMap()
             }
             docRef.set(newAttempts)

@@ -57,7 +57,7 @@ fun SilhouettePokemonCard(modifier: Modifier = Modifier,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()
                 )
-                SilhouetteImage(pokemon.Imagen)
+                SilhouetteImage(pokemon.imageUrl!!)
             }
         }
     }

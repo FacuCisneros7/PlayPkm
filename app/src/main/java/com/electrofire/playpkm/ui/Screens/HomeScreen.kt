@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +49,7 @@ fun HomeScreen(navController: NavController,
     val timeLeft by homeContadorViewModel.timeLeft.collectAsState() // escucha el StateFlow
 
     val repo = GameAttemptsRepository() //Repo inicializado
+
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -63,26 +65,26 @@ fun HomeScreen(navController: NavController,
         GradientBackground()
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(14.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            //Spacer(modifier = Modifier.height(16.dp))
-
             Image(
                 painter = painterResource(id = R.drawable.logohomecopia),
                 contentDescription = null,
-                modifier = Modifier.height(150.dp).width(150.dp)
+                modifier = Modifier.height(100.dp).wrapContentWidth()
             )
 
-            //Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(17.dp))
 
             HomeStatsCard(statsViewModel= statsViewModel)
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             LazyColumn(
-                modifier = Modifier.height(400.dp).padding(top = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.height(420.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -94,6 +96,7 @@ fun HomeScreen(navController: NavController,
                             val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
+
                             navController.navigate("first_game")
 
                             /*
@@ -149,17 +152,14 @@ fun HomeScreen(navController: NavController,
 
                             navController.navigate("third_game")
 
-                            /*
-                            repo.canPlayTodayDos("third_game") { canPlay ->
-                                if(canPlay){
-                                    navController.navigate("third_game")
-                                }
-                                else{
-                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                             */
-
+//                            repo.canPlayTodayDos("third_game") { canPlay ->
+//                                if(canPlay){
+//                                    navController.navigate("third_game")
+//                                }
+//                                else{
+//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
                         }
                     )
                 }
@@ -175,16 +175,14 @@ fun HomeScreen(navController: NavController,
 
                             navController.navigate("fourth_game")
 
-                            /*
-                            repo.canPlayTodayDos("fourth_game") { canPlay ->
-                                if(canPlay){
-                                    navController.navigate("fourth_game")
-                                }
-                                else{
-                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                             */
+//                            repo.canPlayTodayDos("fourth_game") { canPlay ->
+//                                if(canPlay){
+//                                    navController.navigate("fourth_game")
+//                                }
+//                                else{
+//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
                         }
                     )
                 }
@@ -200,16 +198,14 @@ fun HomeScreen(navController: NavController,
 
                             navController.navigate("fift_game")
 
-                            /*
-                            repo.canPlayTodayDos("fift_game") { canPlay ->
-                                if(canPlay){
-                                    navController.navigate("fift_game")
-                                }
-                                else{
-                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                             */
+//                            repo.canPlayTodayDos("fift_game") { canPlay ->
+//                                if(canPlay){
+//                                    navController.navigate("fift_game")
+//                                }
+//                                else{
+//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
                         }
                     )
                 }
@@ -225,16 +221,14 @@ fun HomeScreen(navController: NavController,
 
                             navController.navigate("sixth_game")
 
-                           /*
-                            repo.canPlayTodayDos("sixth_game") { canPlay ->
-                                if(canPlay){
-                                    navController.navigate("sixth_game")
-                                }
-                                else{
-                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                            */
+//                            repo.canPlayTodayDos("sixth_game") { canPlay ->
+//                                if(canPlay){
+//                                    navController.navigate("sixth_game")
+//                                }
+//                                else{
+//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
                         }
                     )
                 }
@@ -250,16 +244,41 @@ fun HomeScreen(navController: NavController,
 
                             navController.navigate("seventh_game")
 
+//                            repo.canPlayTodayDos("seventh_game") { canPlay ->
+//                                if(canPlay){
+//                                    navController.navigate("seventh_game")
+//                                }
+//                                else{
+//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+//                                }
+//                            }
+
+                        }
+                    )
+                }
+
+                item {
+                    MyCardButton(
+                        title = "Impostor",
+                        imageRes = R.drawable.dfsfsdf,
+                        onClick = {
+                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            mediaPlayer.start()
+                            mediaPlayer.setOnCompletionListener { it.release() }
+
+                            navController.navigate("eight_game")
+
                             /*
-                            repo.canPlayTodayDos("seventh_game") { canPlay ->
+                            repo.canPlayTodayDos("eight_game") { canPlay ->
                                 if(canPlay){
-                                    navController.navigate("seventh_game")
+                                    navController.navigate("eight_game")
                                 }
                                 else{
                                     Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
                                 }
                             }
                              */
+
 
                         }
                     )

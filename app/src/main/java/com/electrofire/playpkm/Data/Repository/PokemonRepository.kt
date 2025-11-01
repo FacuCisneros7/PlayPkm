@@ -11,10 +11,9 @@ import java.util.TimeZone
 import kotlin.random.Random
 
 class PokemonRepository @Inject constructor(
-    private val dao: PokemonDao,
+    private val dao: PokemonDao
 ){
     private val timeRepository= TimeRepository()
-
     private val db = FirebaseFirestore.getInstance()
     private val collection = db.collection("Pokemon")
 
@@ -23,7 +22,7 @@ class PokemonRepository @Inject constructor(
         return snapshot.toObjects(Pokemon::class.java)
     }
 
-    suspend fun obtenerPokemonDelDia(): Pokemon ?{
+    suspend fun obtenerStatsPokemonDelDia(): Pokemon ?{
         val lista = obtenerTodosLosPokemon()
 
         val horaServidor = timeRepository.obtenerHoraServidor()
@@ -36,37 +35,7 @@ class PokemonRepository @Inject constructor(
 
     }
 
-    suspend fun obtenerHabilidadPokemonDelDia(): Pokemon ?{
-        val pokemonDia = obtenerPokemonDelDia()
-        val lista = obtenerTodosLosPokemon()
-        val listaFiltrada = lista.filter { it != pokemonDia }
-
-        val horaServidor = timeRepository.obtenerHoraServidor()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
-        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
-
-        val random = Random(diaDelAnio.toLong() + 1000)
-        val indice = random.nextInt(listaFiltrada.size)
-        return listaFiltrada[indice]
-    }
-
-    suspend fun obtenerStatsPokemonDelDia(): Pokemon ?{
-        val pokemonDia = obtenerPokemonDelDia()
-        val habilidadDia = obtenerHabilidadPokemonDelDia()
-        val lista = obtenerTodosLosPokemon()
-        val listaFiltrada = lista.filter { it != pokemonDia && it != habilidadDia}
-
-        val horaServidor = timeRepository.obtenerHoraServidor()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
-        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
-
-        val random = Random(diaDelAnio.toLong() + 2000)
-        val indice = random.nextInt(listaFiltrada.size)
-        return listaFiltrada[indice]
-    }
-
+    /*
     suspend fun syncPokemon() {
         val snapshot = collection.get().await()
         val pokemonsFirebase = snapshot.toObjects(Pokemon::class.java)
@@ -88,4 +57,6 @@ class PokemonRepository @Inject constructor(
     suspend fun isEmpty(): Boolean {
         return dao.count() == 0
     }
+     */
+
 }
