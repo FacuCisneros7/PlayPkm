@@ -73,8 +73,8 @@ fun WinCard(
                     )
                 ) {
                     Text(
-                        text = "Inicio",
-                        style = MaterialTheme.typography.titleLarge,
+                        text = "INICIO",
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )

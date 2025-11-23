@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun GradientBackground(
     colors: List<Color> = listOf(
-        Color(0xFF47ACE5),
+        MaterialTheme.colorScheme.secondary,
         Color(0xFF5DD8EC),
-        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.secondary,
         ),
     durationMillis: Int = 8000
 ){

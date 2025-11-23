@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -35,7 +36,9 @@ import com.electrofire.playpkm.ui.Components.PotenciaCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.MovimientoViewModel
@@ -68,11 +71,34 @@ fun FourthGame(navController: NavController, viewModel: MovimientoViewModel = hi
 
             if (!respondido){
 
-                Image(
-                    painter = painterResource(id = R.drawable.cuartojuego),
-                    contentDescription = null,
-                    modifier = Modifier.height(80.dp).wrapContentWidth()
-                )
+//                Image(
+//                    painter = painterResource(id = R.drawable.cuartojuego),
+//                    contentDescription = null,
+//                    modifier = Modifier.height(80.dp).wrapContentWidth()
+//                )
+                Box {
+                    // Contorno
+                    Text(
+                        text = "POWER\nOF MOVE",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            drawStyle = Stroke(width = 6f)
+                        )
+                    )
+                    // Relleno
+                    Text(
+                        text = "POWER\nOF MOVE",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -82,11 +108,11 @@ fun FourthGame(navController: NavController, viewModel: MovimientoViewModel = hi
 
                 UserInputPokemon(title = "Potencia",text = respuesta, onTextChange = { respuesta = it })
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 ConfirmButton( onConfirm = {respondido = true})
 
-                Spacer(modifier = Modifier.height(110.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Contador(contadorViewModel = contadorViewModel)
             }
@@ -99,12 +125,22 @@ fun FourthGame(navController: NavController, viewModel: MovimientoViewModel = hi
 
                 PotenciaCard()
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 if (verificarRespuestaPotenciaMovimiento(respuesta, movimientoActual)) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
-                    WinCard(onButtonClick = { navController.navigate("home") })
+                    WinCard(onButtonClick = {
+                        navController.navigate("home"){
+                            popUpTo(Screen.FourthGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 } else {
-                    LoserCard(onButtonClick = { navController.navigate("home") })
+                    LoserCard(onButtonClick = {
+                        navController.navigate("home") {
+                            popUpTo(Screen.FourthGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 }
                 LaunchedEffect(Unit) {
                     if (verificarRespuestaPotenciaMovimiento(respuesta, movimientoActual)) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
@@ -115,6 +151,7 @@ fun FourthGame(navController: NavController, viewModel: MovimientoViewModel = hi
                 }
             }
         }
+        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 
 }

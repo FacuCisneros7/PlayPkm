@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -40,6 +41,7 @@ import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.CartaViewModel
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
@@ -77,25 +79,49 @@ fun SecondGame(navController: NavController, viewModel: CartaViewModel = hiltVie
 
             if (!respondido){
 
-                Image(
-                    painter = painterResource(id = R.drawable.segundojuego),
-                    contentDescription = null,
-                    modifier = Modifier.height(80.dp).wrapContentWidth()
-                )
+//                Image(
+//                    painter = painterResource(id = R.drawable.segundojuego),
+//                    contentDescription = null,
+//                    modifier = Modifier.height(80.dp).wrapContentWidth()
+//                )
+
+                Box {
+                    // Contorno
+                    Text(
+                        text = "BLURRED\nCARD",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            drawStyle = Stroke(width = 6f)
+                        )
+                    )
+                    // Relleno
+                    Text(
+                        text = "BLURRED\nCARD",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
+                    )
+                }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             BlurredCard()
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(36.dp))
 
             UserInputPokemon(title = "Pokemon",text = respuesta, onTextChange = { respuesta = it })
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             ConfirmButton( onConfirm = { respondido = true })
 
-            Spacer(modifier = Modifier.height(38.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Contador(contadorViewModel = contadorViewModel)
             }
@@ -108,9 +134,19 @@ fun SecondGame(navController: NavController, viewModel: CartaViewModel = hiltVie
                 Spacer(modifier = Modifier.height(64.dp))
 
                 if (verificarRespuestaCartaBorrosa(cartaActual, respuesta)) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
-                    WinCard(onButtonClick = { navController.navigate("home") })
+                    WinCard(onButtonClick = {
+                        navController.navigate("home") {
+                            popUpTo(Screen.SecondGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 } else {
-                    LoserCard(onButtonClick = { navController.navigate("home") })
+                    LoserCard(onButtonClick = {
+                        navController.navigate("home"){
+                            popUpTo(Screen.SecondGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 }
                 LaunchedEffect(Unit) {
                     if (verificarRespuestaCartaBorrosa(cartaActual, respuesta)) {  //verificarRespuesta por verificarRespuestaCartaBorrosa

@@ -45,7 +45,7 @@ fun MyCardButton(
                painter = painterResource(id = imageRes) ,
                 contentDescription = null,
             )
-            Text(text = title, color = MaterialTheme.colorScheme.onSecondary, style = MaterialTheme.typography.titleLarge )
+            Text(text = title, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge )
 
         }
 

@@ -36,14 +36,17 @@ import com.electrofire.playpkm.ui.ViewModels.PokemonViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.CardItems.PokemonCard
 import com.electrofire.playpkm.ui.CardItems.SilhouettePokemonCard
+import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.Contador
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.WinCard
+import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaPokemon
@@ -71,17 +74,33 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(32.dp),
+                .padding(top = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             if (!respondido) {
 
-                Image(
-                    painter = painterResource(id = R.drawable.primerjuego),
-                    contentDescription = null,
-                    modifier = Modifier.height(90.dp).wrapContentWidth()
-                )
+                Box {
+                    Text(
+                        text = "EASY\nGAME",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            drawStyle = Stroke(width = 6f)
+                        )
+                    )
+                    Text(
+                        text = "EASY\nGAME",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -94,11 +113,11 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
                     text = respuesta,
                     onTextChange = { respuesta = it })
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 ConfirmButton(onConfirm = { respondido = true })
 
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Contador(contadorViewModel = contadorViewModel)
             } else {
@@ -110,9 +129,19 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
                 Spacer(modifier = Modifier.height(64.dp))
 
                 if (verificarRespuestaPokemon(pokemonActual, respuesta)) {
-                    WinCard(onButtonClick = { navController.navigate("home") })
+                    WinCard(onButtonClick = {
+                        navController.navigate("home") {
+                            popUpTo(Screen.FirstGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 } else {
-                    LoserCard(onButtonClick = { navController.navigate("home") })
+                    LoserCard(onButtonClick = {
+                        navController.navigate("home"){
+                            popUpTo(Screen.FirstGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 }
 
                 LaunchedEffect(Unit) {
@@ -124,5 +153,6 @@ fun FirstGame(navController: NavController, viewModel: PokemonViewModel = hiltVi
                 }
             }
         }
+        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 }

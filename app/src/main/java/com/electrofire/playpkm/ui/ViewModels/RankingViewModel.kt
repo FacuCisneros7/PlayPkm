@@ -6,13 +6,18 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.electrofire.playpkm.Data.Repository.UsersRepository
 import com.electrofire.playpkm.Data.UserData
+import com.google.firebase.firestore.ListenerRegistration
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class RankingViewModel : ViewModel() {
     private val repo = UsersRepository()
 
-    private val _users = mutableStateOf<List<UserData>>(emptyList())
-    var users by _users  // ahora `users` es List<UserData>
-        private set
+    //Para que se actualize la lista en tiempo real.
+    private val _users = MutableStateFlow<List<UserData>>(emptyList())
+    val users = _users.asStateFlow()
+
+    private var listenerRegistration: ListenerRegistration? = null
 
     init {
         loadUsers()
@@ -20,7 +25,13 @@ class RankingViewModel : ViewModel() {
 
     private fun loadUsers() {
         repo.getUsersOrderedByVictories { userList ->
-            users = userList
+            _users.value = userList
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        listenerRegistration?.remove()
+    }
+
 }

@@ -114,6 +114,7 @@ fun UserInputPokemon(title: String,
                 )
 
             } else {
+
                 TextField(
                     value = text.uppercase(),
                     textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
@@ -146,59 +147,61 @@ fun UserInputPokemon(title: String,
 
         }
 
-        Spacer(Modifier.height(4.dp))
+        if(title != "Habilidad"){
+            Spacer(Modifier.height(4.dp))
 
-        AnimatedVisibility(
-            visible = sugerencias.isNotEmpty(),
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
-        ) {
-            Card(
-                modifier = modifier.width(200.dp).wrapContentHeight().heightIn(max = 100.dp),
-                elevation = CardDefaults.cardElevation(10.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.inverseSurface
-                ),
-                border = BorderStroke(3.dp, Color.Black)
+            AnimatedVisibility(
+                visible = sugerencias.isNotEmpty(),
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Card(
+                    modifier = modifier.width(200.dp).wrapContentHeight().heightIn(max = 100.dp),
+                    elevation = CardDefaults.cardElevation(10.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.inverseSurface
+                    ),
+                    border = BorderStroke(3.dp, Color.Black)
 
-            ){
-                Box(modifier = Modifier.wrapContentHeight()) {
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        items(sugerencias) { pokemonEntity ->
-                            Text(
-                                text = pokemonEntity.nombre.uppercase(),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        onTextChange(pokemonEntity.nombre.uppercase())
-                                        viewModel.onQueryChanged("") // limpia las sugerencias
-                                    }
-                                    .padding(4.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 12.sp),
-                                textAlign = TextAlign.Center,
-                            )
-                        }
-                    }
-
-                    if (sugerencias.size >= 4) { // solo mostrar si hay suficiente contenido
-                        Box(
+                ){
+                    Box(modifier = Modifier.wrapContentHeight()) {
+                        LazyColumn(
+                            state = listState,
                             modifier = Modifier
-                                .width(4.dp)
-                                .fillMaxHeight()
-                                .background(Color.Transparent)
-                                .align(Alignment.CenterEnd)
+                                .fillMaxWidth()
                         ) {
+                            items(sugerencias) { pokemonEntity ->
+                                Text(
+                                    text = pokemonEntity.nombre.uppercase(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            onTextChange(pokemonEntity.nombre.uppercase())
+                                            viewModel.onQueryChanged("") // limpia las sugerencias
+                                        }
+                                        .padding(4.dp),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 12.sp),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+
+                        if (sugerencias.size >= 4) { // solo mostrar si hay suficiente contenido
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(maxOf(scrollFraction, initialFraction).coerceIn(0f, 1f))
-                                    .background(Color.White)
-                            )
+                                    .width(4.dp)
+                                    .fillMaxHeight()
+                                    .background(Color.Transparent)
+                                    .align(Alignment.CenterEnd)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(maxOf(scrollFraction, initialFraction).coerceIn(0f, 1f))
+                                        .background(Color.White)
+                                )
+                            }
                         }
                     }
                 }

@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -40,12 +41,14 @@ import coil.compose.AsyncImage
 import com.electrofire.playpkm.Data.PokemonApi
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.CardItems.PokemonApiCard
+import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.HabilityCard
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.WinCard
+import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.EightGameViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.SeventhGameViewModel
@@ -70,7 +73,7 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
 
         Column(
             modifier = Modifier
-                .fillMaxSize().padding(32.dp),
+                .fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -78,13 +81,29 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
 
                 if (!respondido) {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.octavojuego),
-                        contentDescription = null,
-                        modifier = Modifier.height(30.dp).wrapContentWidth()
-                    )
+                    Box {
+                        Text(
+                            text = "IMPOSTOR",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontSize = 50.sp,
+                                lineHeight = 38.sp,
+                                color = MaterialTheme.colorScheme.primary,
+                                drawStyle = Stroke(width = 6f)
+                            )
+                        )
+                        Text(
+                            text = "IMPOSTOR",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontSize = 50.sp,
+                                lineHeight = 38.sp,
+                                color = MaterialTheme.colorScheme.onSecondary
+                            )
+                        )
+                    }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
                         text = "Habilidad: ${state.abilityName}".replaceFirstChar { it.uppercase() },
@@ -94,7 +113,7 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
                         modifier = Modifier.wrapContentSize(),
@@ -155,7 +174,7 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     ConfirmButton(
                         onConfirm = { respondido = true },
@@ -191,20 +210,30 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
                         }
                     }
 
-                    Spacer(Modifier.height(64.dp))
+                    Spacer(Modifier.height(32.dp))
 
                     HabilityCard(pokemonActual = state.impostor)
 
-                    Spacer(Modifier.height(64.dp))
+                    Spacer(Modifier.height(32.dp))
 
                     if (verificarRespuestaEightGame(
                             correctPokemon = state.impostor!!.name,
                             choisePokemon = selectedPokemon!!.name
                         )
                     ) {
-                        WinCard(onButtonClick = { navController.navigate("home") })
+                        WinCard(onButtonClick = {
+                            navController.navigate("home") {
+                                popUpTo(Screen.EightGame.route){inclusive=true}
+                            }
+                        }
+                        )
                     } else {
-                        LoserCard(onButtonClick = { navController.navigate("home") })
+                        LoserCard(onButtonClick = {
+                            navController.navigate("home"){
+                                popUpTo(Screen.EightGame.route){inclusive=true}
+                            }
+                        }
+                        )
                     }
 
                     LaunchedEffect(Unit) {
@@ -221,10 +250,11 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
 
                 }
             } else{
-                Spacer(Modifier.height(200.dp))
+                Spacer(Modifier.height(300.dp))
                 Loading()
             }
         }
+        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 }
 

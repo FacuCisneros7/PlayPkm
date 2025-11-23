@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,8 +35,10 @@ import com.electrofire.playpkm.ui.Components.PokemonesFusionCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.UserInputPokemonDos
+import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModel
 import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModelDos
 import com.electrofire.playpkm.ui.ViewModels.FusionViewModel
@@ -64,17 +67,33 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
         ) {
             if (!respondido) {
 
-                Image(
-                    painter = painterResource(id = R.drawable.sextojuego),
-                    contentDescription = null,
-                    modifier = Modifier.height(80.dp).wrapContentWidth()
-                )
+                Box {
+                    Text(
+                        text = "FUSION!",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            drawStyle = Stroke(width = 6f)
+                        )
+                    )
+                    Text(
+                        text = "FUSION!",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 FusionCard()
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 UserInputPokemon(
                     title = "Pokemon 1",
@@ -91,7 +110,7 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
                     onTextChange = { respuestaDos = it },
                     viewModel = viewModel2)
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 ConfirmButton(onConfirm = { respondido = true })
             } else{
@@ -99,16 +118,26 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
 
                 FusionCard()
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 PokemonesFusionCard()
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 if (verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)) {
-                    WinCard(onButtonClick = { navController.navigate("home") })
+                    WinCard(onButtonClick = {
+                        navController.navigate("home"){
+                            popUpTo(Screen.SixthGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 } else {
-                    LoserCard(onButtonClick = { navController.navigate("home") })
+                    LoserCard(onButtonClick = {
+                        navController.navigate("home"){
+                            popUpTo(Screen.SixthGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 }
                 LaunchedEffect(Unit) {
                     if (verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)) {
@@ -119,6 +148,6 @@ fun SixthGame(navController: NavController, viewModel1: AutoPokeViewModel = hilt
                 }
             }
         }
-
+//        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 }

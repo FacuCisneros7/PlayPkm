@@ -1,6 +1,9 @@
 package com.electrofire.playpkm
 
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.runtime.getValue
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -32,13 +35,18 @@ import com.electrofire.playpkm.ui.Scaffold.ToolBar
 import com.electrofire.playpkm.ui.Screens.EightGame
 import com.electrofire.playpkm.ui.Screens.FiftGame
 import com.electrofire.playpkm.ui.Screens.FourthGame
+import com.electrofire.playpkm.ui.Screens.LoginScreen
 import com.electrofire.playpkm.ui.Screens.NewUserScreen
+import com.electrofire.playpkm.ui.Screens.NinthGame
+import com.electrofire.playpkm.ui.Screens.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.RankingScreen
+import com.electrofire.playpkm.ui.Screens.RegisterScreen
 import com.electrofire.playpkm.ui.Screens.SeventhGame
 import com.electrofire.playpkm.ui.Screens.SixthGame
 import com.electrofire.playpkm.ui.Screens.ThirdGame
 import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
+import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -47,10 +55,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        MobileAds.initialize(this)
         setContent {
             PLAYPKMTheme {
-                ViewContainer()
+            if (isNetworkAvailable(this)) {
+                    ViewContainer()
+            } else{
+                NotInternetScreen()
             }
+        }
         }
     }
 }
@@ -68,8 +81,12 @@ fun ViewContainer(){
 
     Scaffold(
         topBar = {
-            if (!isLoading && currentRoute != "new_user" )
-                ToolBar()},
+            if (!isLoading &&
+                currentRoute != "new_user" &&
+                currentRoute != "register" &&
+                currentRoute != "login" )
+                ToolBar(navController,statsViewModel)
+                 },
         bottomBar = {
             if (currentRoute == "home" || currentRoute == "ranking") {
                 BottomBar(navController = navController)
@@ -99,7 +116,7 @@ fun AppNavigation(navController: NavHostController, statsViewModel: HomeStatsVie
     } else {
         NavHost(
             navController = navController,
-            startDestination = if (!statsViewModel.userData.userName.isNullOrEmpty()) "home" else "new_user"
+            startDestination = if (!statsViewModel.userData.userName.isNullOrEmpty()) "home" else "register"
         ){
             composable("home"){HomeScreen(navController, statsViewModel, authViewModel)}
             composable(Screen.FirstGame.route){FirstGame(navController, statsViewModel = statsViewModel)}
@@ -110,9 +127,20 @@ fun AppNavigation(navController: NavHostController, statsViewModel: HomeStatsVie
             composable(Screen.SixthGame.route){SixthGame(navController, statsViewModel = statsViewModel)}
             composable(Screen.SeventhGame.route){ SeventhGame(navController, statsViewModel = statsViewModel) }
             composable(Screen.EightGame.route){ EightGame(navController, statsViewModel = statsViewModel) }
+            composable(Screen.NinthGame.route){ NinthGame(navController, statsViewModel = statsViewModel) }
             composable(Screen.RankingScreen.route){ RankingScreen() }
             composable("new_user"){ NewUserScreen(navController, statsViewModel) }
+            composable("register"){ RegisterScreen(navController, authViewModel = authViewModel) }
+            composable("login"){ LoginScreen(navController, authViewModel = authViewModel, statsViewModel = statsViewModel) }
         }
     }
 
+}
+
+private fun isNetworkAvailable(context: Context): Boolean {
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val network = connectivityManager.activeNetwork ?: return false
+    val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+    return activeNetwork.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }

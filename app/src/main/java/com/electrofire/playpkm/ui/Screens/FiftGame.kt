@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -37,14 +38,21 @@ import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.CardItems.PokemonCard
+import com.electrofire.playpkm.ui.CardItems.StatsApiCard
+import com.electrofire.playpkm.ui.CardItems.StatsPokemonApiCard
+import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.PokemonViewModel
+import com.electrofire.playpkm.ui.ViewModels.StatsApiViewModel
 import com.electrofire.playpkm.ui.ViewModels.StatsViewModel
+import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaStatsApiPokemon
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaStatsPokemon
 
 @Composable
-fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewModel(), statsViewModel: HomeStatsViewModel) {
+fun FiftGame(navController: NavController, viewModel: StatsApiViewModel = hiltViewModel(), statsViewModel: HomeStatsViewModel) {
     var respuesta by remember { mutableStateOf("") }
     val pokemonActual = viewModel.pokemon
     var respondido by remember { mutableStateOf(false) }
@@ -65,15 +73,38 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
         ) {
             if (!respondido) {
 
-                Image(
-                    painter = painterResource(id = R.drawable.quintojuego),
-                    contentDescription = null,
-                    modifier = Modifier.height(80.dp).wrapContentWidth()
-                )
+//                Image(
+//                    painter = painterResource(id = R.drawable.quintojuego),
+//                    contentDescription = null,
+//                    modifier = Modifier.height(65.dp).wrapContentWidth()
+//                )
+                Box {
+                    // Contorno
+                    Text(
+                        text = "MYSTERIOUS\nSTATS",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            drawStyle = Stroke(width = 6f)
+                        )
+                    )
+                    // Relleno
+                    Text(
+                        text = "MYSTERIOUS\nSTATS",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                StatPokemonCard()
+                StatsApiCard()
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -85,7 +116,7 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
                 Spacer(modifier = Modifier.height(32.dp))
 
                 ConfirmButton(onConfirm = {
-                    if (verificarRespuestaStatsPokemon(pokemonActual, respuesta)) {
+                    if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
                         respondido = true // acertó, termina el juego
                     } else {
                         intentosRestantes--
@@ -97,23 +128,33 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
                     }
                 })
 
-                Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(70.dp))
 
                 Hearts(actuales = intentosRestantes)
             } else{
                 Spacer(modifier = Modifier.height(90.dp))
 
-                PokemonStatsCard()
+                StatsPokemonApiCard()
 
                 Spacer(modifier = Modifier.height(64.dp))
 
-                if (verificarRespuestaStatsPokemon(pokemonActual, respuesta)) {
-                    WinCard(onButtonClick = { navController.navigate("home") })
+                if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
+                    WinCard(onButtonClick = {
+                        navController.navigate("home") {
+                            popUpTo(Screen.FiftGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 } else {
-                    LoserCard(onButtonClick = { navController.navigate("home") })
+                    LoserCard(onButtonClick = {
+                        navController.navigate("home"){
+                            popUpTo(Screen.FiftGame.route){inclusive=true}
+                        }
+                    }
+                    )
                 }
                 LaunchedEffect(Unit) {
-                    if (verificarRespuestaStatsPokemon(pokemonActual, respuesta)) {
+                    if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
                         statsViewModel.registrarVictoria()
                     } else {
                         statsViewModel.registrarDerrota()
@@ -121,6 +162,6 @@ fun FiftGame(navController: NavController, viewModel: StatsViewModel = hiltViewM
                 }
             }
         }
-
+        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 }

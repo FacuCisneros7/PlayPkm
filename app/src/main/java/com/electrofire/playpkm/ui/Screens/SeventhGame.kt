@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -40,11 +42,13 @@ import com.electrofire.playpkm.Data.PokemonApi
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.CardItems.PokemonApiCard
 import com.electrofire.playpkm.ui.CardItems.PokemonCard
+import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.WinCard
+import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.SeventhGameViewModel
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaPokemon
@@ -72,19 +76,31 @@ fun SeventhGame(navController: NavController, viewModel: SeventhGameViewModel = 
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Image(
-                    painter = painterResource(id = R.drawable.septimojuego),
-                    contentDescription = null,
-                    modifier = Modifier.height(90.dp).wrapContentWidth()
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
+                Box {
+                    Text(
+                        text = "THE BEST",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            drawStyle = Stroke(width = 6f)
+                        )
+                    )
+                    Text(
+                        text = "THE BEST",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 40.sp,
+                            lineHeight = 38.sp,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
                     text = "${state.selectedStat}".replaceFirstChar { it.uppercase() },
@@ -94,17 +110,18 @@ fun SeventhGame(navController: NavController, viewModel: SeventhGameViewModel = 
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 state.pokemons.forEach { pkm ->
                     PokemonApiCard(
                         pokemon = pkm,
                         onSelected = pkm == selectedPokemon,
-                        onClick = { selectedPokemon = pkm }
+                        onClick = { selectedPokemon = pkm },
+                        modifier = Modifier.size(152.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 ConfirmButton(
                     onConfirm = { respondido = true },
@@ -156,16 +173,26 @@ fun SeventhGame(navController: NavController, viewModel: SeventhGameViewModel = 
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    Spacer(Modifier.height(64.dp))
+                    Spacer(Modifier.height(32.dp))
 
                     if (verificarRespuestaSeventhGame(
                             correctPokemon = state.correctPokemon!!,
                             choisePokemon = selectedPokemon!!
                         )
                     ) {
-                        WinCard(onButtonClick = { navController.navigate("home") })
+                        WinCard(onButtonClick = {
+                            navController.navigate("home") {
+                                popUpTo(Screen.SeventhGame.route){inclusive=true}
+                            }
+                        }
+                        )
                     } else {
-                        LoserCard(onButtonClick = { navController.navigate("home") })
+                        LoserCard(onButtonClick = {
+                            navController.navigate("home"){
+                                popUpTo(Screen.SeventhGame.route){inclusive=true}
+                            }
+                        }
+                        )
                     }
 
                     LaunchedEffect(Unit) {
@@ -185,7 +212,5 @@ fun SeventhGame(navController: NavController, viewModel: SeventhGameViewModel = 
         }else{
                 Loading()
         }
-
-
     }
 }

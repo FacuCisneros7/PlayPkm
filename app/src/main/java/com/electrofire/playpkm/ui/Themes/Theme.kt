@@ -12,7 +12,7 @@ private val colorScheme = lightColorScheme(
     onPrimary = CelesteAzulado,
 
     secondary = AzulOscuro,
-    onSecondary = Blanco,
+    onSecondary = AzulMarino,
 
     tertiary = CelesteAzuladoDos,
 

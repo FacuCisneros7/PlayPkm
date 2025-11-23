@@ -30,7 +30,7 @@ fun BottomBar(navController: NavController, modifier: Modifier = Modifier){
 
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    NavigationBar(containerColor = MaterialTheme.colorScheme.primary, modifier = Modifier.height(100.dp)) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.secondary, modifier = Modifier.height(100.dp)) {
         items.forEach { item ->
             NavigationBarItem(
                 selected = currentRoute == item.route,
@@ -47,8 +47,8 @@ fun BottomBar(navController: NavController, modifier: Modifier = Modifier){
                 label = null,
                 alwaysShowLabel = false,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.tertiary,
-                    unselectedIconColor = MaterialTheme.colorScheme.secondary,
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedIconColor = MaterialTheme.colorScheme.primary,
                     indicatorColor = Color.Transparent
                 )
             )

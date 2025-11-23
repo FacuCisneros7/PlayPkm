@@ -52,7 +52,7 @@ class PokemonApiRepository @Inject constructor(
             // Traer los detalles de esa habilidad (incluye lista de Pokémon)
             pokemonList = api.getPokemonByAbility(ability.name)
 
-        } while (pokemonList.pokemon.size < 4)
+        } while (pokemonList.pokemon.size < 6)
 
         //Selecciono los 4 pokemon
         val pokemonsConHabilidad = pokemonList.pokemon.orEmpty()
@@ -111,6 +111,17 @@ class PokemonApiRepository @Inject constructor(
 
     }
 
+    suspend fun obtenerPokemonRandom(): PokemonApi? {
+        val randomId = (1..1025).random()
+        val response = api.getPokemon(randomId)
+        return PokemonApi(
+            name = response.name.replaceFirstChar { it.uppercase() },
+            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$randomId.png",
+            stats = response.stats.associate { it.stat.name to it.base_stat },
+            abilities = response.abilities.map { it.ability.name }
+        )
+    }
+
     suspend fun obtenerPokemonDelDia(): PokemonApi? {
 
         val horaServidor = timeRepository.obtenerHoraServidor()
@@ -132,6 +143,28 @@ class PokemonApiRepository @Inject constructor(
             abilities = response.abilities.map { it.ability.name }
         )
 
+    }
+
+    suspend fun obtenerStatPokemonDelDia(): PokemonApi? {
+
+        val horaServidor = timeRepository.obtenerHoraServidor()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
+        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
+
+        val allIds = (1..1025).shuffled(Random(1242)) // la semilla asegura que todos vean lo mismo
+
+        // Selecciono el ID según el día del año
+        val idDelDia = allIds[diaDelAnio % allIds.size]
+
+        val response = api.getPokemon(idDelDia)
+
+        return PokemonApi(
+            name = response.name.replaceFirstChar { it.uppercase() },
+            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
+            stats = response.stats.associate { it.stat.name to it.base_stat },
+            abilities = response.abilities.map { it.ability.name }
+        )
 
     }
 
@@ -192,7 +225,7 @@ class PokemonApiRepository @Inject constructor(
     }
 
     //Verificar si la base local está vacía
-    suspend fun isEmpty(): Boolean {
+    suspend fun isEmptyQuestion(): Boolean {
         return dao.count() == 0
     }
 

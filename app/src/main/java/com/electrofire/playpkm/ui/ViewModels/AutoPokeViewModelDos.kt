@@ -23,7 +23,7 @@ class AutoPokeViewModelDos @Inject constructor(
     init {
         // Al iniciar, sincroniza si la base local está vacía
         viewModelScope.launch {
-            if (repository.isEmpty()) {
+            if (repository.isEmptyQuestion()) {
                 repository.syncPokemon()
             }
         }

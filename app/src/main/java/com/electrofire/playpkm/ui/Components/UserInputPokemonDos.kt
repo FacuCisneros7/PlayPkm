@@ -129,8 +129,8 @@ fun UserInputPokemonDos(title: String,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,    // Fondo cuando está enfocado
                         unfocusedContainerColor = MaterialTheme.colorScheme.inversePrimary,  // Fondo cuando NO está enfocado
-                        focusedTextColor = Color.Black,       // Texto ingresado
-                        unfocusedTextColor = Color.Black,
+                        focusedTextColor = Color.White,       // Texto ingresado
+                        unfocusedTextColor = Color.White,
                         focusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder enfocado
                         unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
                         cursorColor = Color.Black,

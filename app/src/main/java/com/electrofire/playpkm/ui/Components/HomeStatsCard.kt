@@ -53,12 +53,12 @@ fun HomeStatsCard(modifier: Modifier = Modifier,statsViewModel: HomeStatsViewMod
                         Text(
                             " Victorias: ${stats.victorias}  /",
                             color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp)
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
                         )
                         Text(
                             "  Derrotas: ${stats.derrotas} ",
                             color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp)
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
                         )
                         }
                     }

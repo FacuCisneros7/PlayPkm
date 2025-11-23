@@ -1,6 +1,7 @@
 package com.electrofire.playpkm.ui.Components
 
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,46 +27,72 @@ import com.electrofire.playpkm.Data.UserData
 import com.electrofire.playpkm.ui.ViewModels.RankingViewModel
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 
 @Composable
 fun Ranking(viewModel : RankingViewModel = viewModel()){
 
-    val users = viewModel.users
+    val users by viewModel.users.collectAsState()
+
+    val currentUserId = Firebase.auth.currentUser?.uid
 
     LazyColumn(modifier = Modifier.fillMaxSize(),verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         itemsIndexed(users) {index, user ->
-            UserItem(user = user, position = index + 1)
+            val isCurrentUser = user.id == currentUserId
+            UserItem(user = user, position = index + 1, isCurrentUser = isCurrentUser)
         }
     }
 
 }
 
 @Composable
-fun UserItem(modifier: Modifier = Modifier, user: UserData, position : Int){
+fun UserItem(modifier: Modifier = Modifier, user: UserData, position : Int, isCurrentUser: Boolean = false){
+
+    val color = when {
+        position == 1 -> Color(0xFFFFC107)
+        position <= 5 -> Color(0xFFF027FF)
+        position <= 15 -> MaterialTheme.colorScheme.onPrimary
+        else -> Color(0xFFBABECF)
+        }
+
+    val borderColor = if (isCurrentUser) {
+        MaterialTheme.colorScheme.primary
+    } else{
+        Color.Transparent
+    }
 
     Card(
         modifier = modifier.width(320.dp).height(50.dp),
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+        border = BorderStroke(3.dp, borderColor)
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
-        ){
+        ) {
 
-            Column(modifier.width(32.dp),horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "$position", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.titleLarge )
+            Column(modifier.width(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "$position",
+                    color = color,
+                    style = MaterialTheme.typography.titleLarge
+                )
             }
 
-            Column(modifier.width(65.dp),horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier.width(50.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     painter = rememberAsyncImagePainter(user.imagen),
                     contentDescription = "Foto perfil",
@@ -76,17 +103,50 @@ fun UserItem(modifier: Modifier = Modifier, user: UserData, position : Int){
                 )
             }
 
-            Column(modifier.width(110.dp),horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = user.userName.toString().uppercase(), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontSize = 12.sp) )
+            Column(modifier.width(100.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = user.userName.toString().uppercase(),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 12.sp)
+                )
             }
 
-            Column(modifier.width(50.dp),horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "W: ${user.victorias} ", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge )
-            }
+            Row(
+                modifier = Modifier.width(130.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                Column(modifier.width(25.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "W:",
+                        color = MaterialTheme.colorScheme.outline,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+                Column(modifier.width(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "${user.victorias}",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
 
-            Column(modifier.width(50.dp),horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "L: ${user.derrotas} ", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge )
 
+                Column(modifier.width(25.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "L:",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                }
+                Column(modifier.width(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "${user.derrotas} ",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
             }
         }
 
