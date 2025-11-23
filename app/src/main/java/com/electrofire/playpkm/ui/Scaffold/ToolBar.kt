@@ -214,7 +214,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Para completar el juegos mas sencillo, deberas adivinar la silueta del pokemon a contrarreloj!",
+                                text = "Para completar el juego mas fácil, deberás adivinar la silueta del pokemon a contrarreloj!",
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -262,7 +262,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Podras recordar una habilidad del pokemon del día?",
+                                text = "Podrás recordar una habilidad del pokemon del día?",
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,

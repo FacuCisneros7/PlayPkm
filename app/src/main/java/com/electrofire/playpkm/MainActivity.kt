@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.Scaffold.BottomBar
+import com.electrofire.playpkm.ui.Scaffold.NetworkMonitor
 import com.electrofire.playpkm.ui.Scaffold.ToolBar
 import com.electrofire.playpkm.ui.Screens.EightGame
 import com.electrofire.playpkm.ui.Screens.FiftGame
@@ -52,13 +54,18 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private lateinit var networkMonitor: NetworkMonitor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         MobileAds.initialize(this)
+        networkMonitor = NetworkMonitor(this)
         setContent {
             PLAYPKMTheme {
-                if (isNetworkAvailable(this)) {
+                val isConnected by networkMonitor.isConnected.collectAsState()
+                if (isConnected) {
                     ViewContainer()
                 } else {
                     NotInternetScreen()
@@ -192,12 +199,4 @@ fun AppNavigation(
         }
     }
 
-}
-
-private fun isNetworkAvailable(context: Context): Boolean {
-    val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val network = connectivityManager.activeNetwork ?: return false
-    val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
-    return activeNetwork.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }

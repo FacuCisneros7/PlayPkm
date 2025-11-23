@@ -3,6 +3,7 @@ package com.electrofire.playpkm.ui.Screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -161,13 +162,34 @@ fun SeventhGame(
                     }
                     Spacer(Modifier.height(32.dp))
 
-                    Text(
-                        text = "${state.selectedStat}: ${state.correctPokemon!!.stats[state.selectedStatEnglish]}",
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Row{
+                        Box {
+                            Text(
+                                text = "${state.selectedStat}: ",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 30.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    drawStyle = Stroke(width = 2f)
+                                ),
+                            )
+                            Text(
+                                text = "${state.selectedStat}: ",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 30.sp,
+                                    color = MaterialTheme.colorScheme.secondary
+                                ),
+                            )
+                        }
+                        Text(
+                            text = "${state.correctPokemon!!.stats[state.selectedStatEnglish]}",
+                            color = MaterialTheme.colorScheme.outline,
+                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
 
                     Spacer(Modifier.height(32.dp))
 
