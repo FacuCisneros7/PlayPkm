@@ -21,12 +21,15 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.StatsViewModel
 
 @Composable
-fun PokemonStatsCard(modifier: Modifier = Modifier,viewModel: StatsViewModel = viewModel()) {
+fun PokemonStatsCard(modifier: Modifier = Modifier, viewModel: StatsViewModel = viewModel()) {
     val pokemon = viewModel.pokemon
 
     if (pokemon == null) {
         Card(
-            modifier = modifier.width(230.dp).height(230.dp).fillMaxSize(),
+            modifier = modifier
+                .width(230.dp)
+                .height(230.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -40,7 +43,10 @@ fun PokemonStatsCard(modifier: Modifier = Modifier,viewModel: StatsViewModel = v
         }
     } else {
         Card(
-            modifier = modifier.width(230.dp).height(230.dp).fillMaxSize(),
+            modifier = modifier
+                .width(230.dp)
+                .height(230.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )

@@ -2,7 +2,6 @@ package com.electrofire.playpkm.ui.Screens
 
 import android.media.MediaPlayer
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -34,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,11 +45,13 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.NinthViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 
 @Composable
-fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltViewModel(),statsViewModel: HomeStatsViewModel){
+fun NinthGame(
+    navController: NavController,
+    viewModel: NinthViewModel = hiltViewModel(),
+    statsViewModel: HomeStatsViewModel
+) {
 
     val usuario = statsViewModel.userData
 
@@ -78,17 +76,18 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
 
         Column(
             modifier = Modifier
-                .fillMaxSize().padding(top = 24.dp, bottom = 32.dp),
+                .fillMaxSize()
+                .padding(top = 24.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             if (pokemonA != null && pokemonB != null) {
-                if(estadoJuego == "playing"){
+                if (estadoJuego == "playing") {
 
                     Column(
                         verticalArrangement = Arrangement.spacedBy((-12).dp),
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
                         Box {
                             Text(
                                 text = "GOOD",
@@ -109,7 +108,7 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
                             )
                         }
 
-                        Box{
+                        Box {
                             Text(
                                 text = "CHOISE",
                                 textAlign = TextAlign.Center,
@@ -134,7 +133,8 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
                     Spacer(Modifier.height(16.dp))
 
                     Text(
-                        text = "SELECCIONA AL POKEMON CON MAYOR STATS BASE!", color = MaterialTheme.colorScheme.primary,
+                        text = "SELECCIONA AL POKEMON CON MAYOR STATS BASE!",
+                        color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
                         textAlign = TextAlign.Center
                     )
@@ -147,14 +147,14 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
                             .height(170.dp)
                             .padding(8.dp)
                             .clickable {
-                                val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                                val mediaPlayer =
+                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                 mediaPlayer.start()
                                 mediaPlayer.setOnCompletionListener { it.release() }
 
                                 viewModel.elegirPokemon(pokemonA!!)
                             },
-                            border = BorderStroke(4.dp, Color(0xFF00C853))
-                        ,
+                        border = BorderStroke(4.dp, Color(0xFF00C853)),
                         shape = MaterialTheme.shapes.large,
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
@@ -197,14 +197,14 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
                             .height(170.dp)
                             .padding(8.dp)
                             .clickable {
-                                val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                                val mediaPlayer =
+                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                 mediaPlayer.start()
                                 mediaPlayer.setOnCompletionListener { it.release() }
 
                                 viewModel.elegirPokemon(pokemonB!!)
                             },
-                        border = BorderStroke(4.dp, Color(0xFFFF1456))
-                        ,
+                        border = BorderStroke(4.dp, Color(0xFFFF1456)),
                         shape = MaterialTheme.shapes.large,
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
@@ -242,7 +242,7 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
                         )
                     }
 
-                } else{
+                } else {
                     Column(
                         modifier = Modifier.wrapContentSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -271,8 +271,8 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
 
                         Spacer(Modifier.height(32.dp))
 
-                        Row{
-                            Box{
+                        Row {
+                            Box {
                                 Text(
                                     text = "PUNTUACIÓN FINAL: ",
                                     color = MaterialTheme.colorScheme.inversePrimary,
@@ -289,7 +289,7 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
                                     )
                                 )
                             }
-                            Box{
+                            Box {
                                 Text(
                                     text = "$puntaje",
                                     color = MaterialTheme.colorScheme.outline,
@@ -311,8 +311,8 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
 
                         Spacer(Modifier.height(32.dp))
 
-                        Row{
-                            Box{
+                        Row {
+                            Box {
                                 Text(
                                     text = "MAX PUNTUACIÓN: ",
                                     color = MaterialTheme.colorScheme.onSecondary,
@@ -329,7 +329,7 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
                                     )
                                 )
                             }
-                            Box{
+                            Box {
                                 Text(
                                     text = "${usuario.maxPoints}",
                                     color = MaterialTheme.colorScheme.outline,
@@ -353,8 +353,9 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
 
                         ConfirmButton(
                             onConfirm = { viewModel.iniciarJuego() },
-                            modifier = Modifier.width(200.dp).
-                            height(50.dp),
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(50.dp),
                             title = "jugar otra vez"
                         )
 
@@ -362,16 +363,19 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
 
                         Button(
                             onClick = {
-                                val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                                val mediaPlayer =
+                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                 mediaPlayer.start()
                                 mediaPlayer.setOnCompletionListener { it.release() }
 
-                                navController.navigate("home"){
-                                    popUpTo(Screen.NinthGame.route){inclusive=true}
+                                navController.navigate("home") {
+                                    popUpTo(Screen.NinthGame.route) { inclusive = true }
                                 }
                             },
                             elevation = ButtonDefaults.buttonElevation(5.dp),
-                            modifier = Modifier.width(200.dp).height(50.dp),
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(50.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),       // Fondo del botón
                                 contentColor = MaterialTheme.colorScheme.primary        // Color del texto/icono
@@ -386,7 +390,7 @@ fun NinthGame(navController: NavController, viewModel: NinthViewModel = hiltView
                         }
                     }
                 }
-            } else{
+            } else {
                 Spacer(Modifier.height(300.dp))
                 Loading()
             }

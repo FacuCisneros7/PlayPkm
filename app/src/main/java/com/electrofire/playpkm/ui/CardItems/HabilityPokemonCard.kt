@@ -21,12 +21,15 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.HabilityViewModel
 
 @Composable
-fun HabilityPokemonCard(modifier: Modifier = Modifier,viewModel: HabilityViewModel = viewModel()) {
+fun HabilityPokemonCard(modifier: Modifier = Modifier, viewModel: HabilityViewModel = viewModel()) {
     val pokemon = viewModel.pokemon
 
     if (pokemon == null) {
         Card(
-            modifier = modifier.width(230.dp).height(230.dp).fillMaxSize(),
+            modifier = modifier
+                .width(230.dp)
+                .height(230.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -40,7 +43,10 @@ fun HabilityPokemonCard(modifier: Modifier = Modifier,viewModel: HabilityViewMod
         }
     } else {
         Card(
-            modifier = modifier.width(230.dp).height(230.dp).fillMaxSize(),
+            modifier = modifier
+                .width(230.dp)
+                .height(230.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )

@@ -50,17 +50,17 @@ dependencies {
     //admob
     implementation("com.google.android.gms:play-services-ads:23.3.0")
 
-    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
-    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
     // Room runtime
-    implementation ("androidx.room:room-runtime:2.6.0")
+    implementation("androidx.room:room-runtime:2.6.0")
     // Kotlin extensions y coroutines support
-    implementation ("androidx.room:room-ktx:2.6.0")
+    implementation("androidx.room:room-ktx:2.6.0")
     // KAPT para generar código
-    kapt ("androidx.room:room-compiler:2.6.0")
+    kapt("androidx.room:room-compiler:2.6.0")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.52")
@@ -71,9 +71,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.1.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
-    implementation ("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-auth")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
-    implementation ("androidx.navigation:navigation-compose:2.9.3")
+    implementation("androidx.navigation:navigation-compose:2.9.3")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

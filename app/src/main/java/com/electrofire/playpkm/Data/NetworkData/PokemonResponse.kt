@@ -22,7 +22,6 @@ data class AbilitySlot(
 )
 
 
-
 data class PokemonListResponse(
     val count: Int,
     val next: String?,

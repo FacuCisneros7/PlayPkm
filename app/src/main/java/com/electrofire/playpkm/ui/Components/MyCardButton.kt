@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
 
 
 @Composable
@@ -27,25 +27,33 @@ fun MyCardButton(
     onClick: () -> Unit,
     title: String,
     @DrawableRes imageRes: Int
-){
+) {
     Card(
-        modifier = modifier.width(234.dp).height(68.dp).clickable { onClick() },
+        modifier = modifier
+            .width(234.dp)
+            .height(68.dp)
+            .clickable { onClick() },
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary)
+            containerColor = MaterialTheme.colorScheme.secondary
+        )
     ) {
 
-        Column (
+        Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
 
             Image(
-               painter = painterResource(id = imageRes) ,
+                painter = painterResource(id = imageRes),
                 contentDescription = null,
             )
-            Text(text = title, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge )
+            Text(
+                text = title,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleLarge
+            )
 
         }
 
@@ -54,7 +62,7 @@ fun MyCardButton(
 
 @Preview
 @Composable
-fun MyCardButtonPreview(){
+fun MyCardButtonPreview() {
     PLAYPKMTheme {
         MyCardButton(title = "¿Quién es este Pokemon?", imageRes = R.drawable.pokedex, onClick = {})
     }

@@ -1,9 +1,6 @@
 package com.electrofire.playpkm.ui.Screens
 
-import android.media.MediaPlayer
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,10 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.electrofire.playpkm.Data.PokemonApi
-import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.CardItems.PokemonApiCard
-import com.electrofire.playpkm.ui.CardItems.PokemonCard
-import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.Loading
@@ -51,11 +43,14 @@ import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.SeventhGameViewModel
-import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaPokemon
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaSeventhGame
 
 @Composable
-fun SeventhGame(navController: NavController, viewModel: SeventhGameViewModel = hiltViewModel(), statsViewModel: HomeStatsViewModel) {
+fun SeventhGame(
+    navController: NavController,
+    viewModel: SeventhGameViewModel = hiltViewModel(),
+    statsViewModel: HomeStatsViewModel
+) {
 
     val state by viewModel.state.collectAsState()
 
@@ -74,60 +69,61 @@ fun SeventhGame(navController: NavController, viewModel: SeventhGameViewModel = 
 
             if (!respondido) {
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize().padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box {
-                    Text(
-                        text = "THE BEST",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            drawStyle = Stroke(width = 6f)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box {
+                        Text(
+                            text = "THE BEST",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontSize = 40.sp,
+                                lineHeight = 38.sp,
+                                color = MaterialTheme.colorScheme.primary,
+                                drawStyle = Stroke(width = 6f)
+                            )
                         )
+                        Text(
+                            text = "THE BEST",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontSize = 40.sp,
+                                lineHeight = 38.sp,
+                                color = MaterialTheme.colorScheme.onSecondary
+                            )
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "${state.selectedStat}".replaceFirstChar { it.uppercase() },
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
-                    Text(
-                        text = "THE BEST",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.onSecondary
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    state.pokemons.forEach { pkm ->
+                        PokemonApiCard(
+                            pokemon = pkm,
+                            onSelected = pkm == selectedPokemon,
+                            onClick = { selectedPokemon = pkm },
+                            modifier = Modifier.size(152.dp)
                         )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    ConfirmButton(
+                        onConfirm = { respondido = true },
+                        enabled = selectedPokemon != null
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "${state.selectedStat}".replaceFirstChar { it.uppercase() },
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                state.pokemons.forEach { pkm ->
-                    PokemonApiCard(
-                        pokemon = pkm,
-                        onSelected = pkm == selectedPokemon,
-                        onClick = { selectedPokemon = pkm },
-                        modifier = Modifier.size(152.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                ConfirmButton(
-                    onConfirm = { respondido = true },
-                    enabled = selectedPokemon != null
-                )
-            }
 
             } else {
 
@@ -182,14 +178,14 @@ fun SeventhGame(navController: NavController, viewModel: SeventhGameViewModel = 
                     ) {
                         WinCard(onButtonClick = {
                             navController.navigate("home") {
-                                popUpTo(Screen.SeventhGame.route){inclusive=true}
+                                popUpTo(Screen.SeventhGame.route) { inclusive = true }
                             }
                         }
                         )
                     } else {
                         LoserCard(onButtonClick = {
-                            navController.navigate("home"){
-                                popUpTo(Screen.SeventhGame.route){inclusive=true}
+                            navController.navigate("home") {
+                                popUpTo(Screen.SeventhGame.route) { inclusive = true }
                             }
                         }
                         )
@@ -209,8 +205,8 @@ fun SeventhGame(navController: NavController, viewModel: SeventhGameViewModel = 
 
                 }
             }
-        }else{
-                Loading()
+        } else {
+            Loading()
         }
     }
 }

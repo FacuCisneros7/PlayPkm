@@ -20,14 +20,18 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.CartaViewModel
 
 @Composable
-fun BlurredCard(modifier: Modifier = Modifier,
-                viewModel: CartaViewModel = hiltViewModel()
+fun BlurredCard(
+    modifier: Modifier = Modifier,
+    viewModel: CartaViewModel = hiltViewModel()
 ) {
     val carta = viewModel.carta
 
     if (carta == null) {
         Card(
-            modifier = modifier.width(181.dp).height(254.dp).fillMaxSize(),
+            modifier = modifier
+                .width(181.dp)
+                .height(254.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -40,11 +44,14 @@ fun BlurredCard(modifier: Modifier = Modifier,
             }
         }
     } else {
-                AsyncImage(
-                    model = carta.ImagenBorrosa,
-                    contentDescription = null,
-                    modifier = modifier.width(181.dp).height(254.dp).clip(shape = MaterialTheme.shapes.medium),
-                    contentScale = ContentScale.Fit
-                )
-            }
+        AsyncImage(
+            model = carta.ImagenBorrosa,
+            contentDescription = null,
+            modifier = modifier
+                .width(181.dp)
+                .height(254.dp)
+                .clip(shape = MaterialTheme.shapes.medium),
+            contentScale = ContentScale.Fit
+        )
+    }
 }

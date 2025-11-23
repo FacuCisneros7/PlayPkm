@@ -1,11 +1,9 @@
 package com.electrofire.playpkm.Data.Repository
 
-import android.util.Log
 import com.electrofire.playpkm.Data.ImpostorGameData
 import com.electrofire.playpkm.Data.LocalData.PokemonDao
 import com.electrofire.playpkm.Data.LocalData.PokemonEntity
 import com.electrofire.playpkm.Data.NetworkData.Ability
-import com.electrofire.playpkm.Data.NetworkData.AbilityListResponse
 import com.electrofire.playpkm.Data.NetworkData.ApiPokemon
 import com.electrofire.playpkm.Data.NetworkData.ListPokemonAbilityResponse
 import com.electrofire.playpkm.Data.NetworkData.PokemonResponse
@@ -69,14 +67,16 @@ class PokemonApiRepository @Inject constructor(
         do {
             val p = api.getPokemon(idDelDia)
             // verificamos que NO tenga la habilidad
-            pokemonSinHabilidad = if (p.abilities.none { it.ability.name == abilityName }) p else null
+            pokemonSinHabilidad =
+                if (p.abilities.none { it.ability.name == abilityName }) p else null
         } while (pokemonSinHabilidad == null)
 
         val listPokemonResponse = (pokemonConHabilidadCompletos + pokemonSinHabilidad).shuffled()
 
         //Traducir habilidad
-        val translatedAbility =  api.getAbilityByUrl(ability.url)
-        val spanishName = translatedAbility.names?.firstOrNull { it.language.name == "es" } ?.name ?: ability.name
+        val translatedAbility = api.getAbilityByUrl(ability.url)
+        val spanishName =
+            translatedAbility.names?.firstOrNull { it.language.name == "es" }?.name ?: ability.name
 
         //Traducir habilidades del pokemon impostor
         val translatedAbilities = pokemonSinHabilidad.abilities.map { slot ->
@@ -168,7 +168,7 @@ class PokemonApiRepository @Inject constructor(
 
     }
 
-    suspend fun obtenerHabilidadPokemonDelDia(): PokemonApi ?{
+    suspend fun obtenerHabilidadPokemonDelDia(): PokemonApi? {
 
         val horaServidor = timeRepository.obtenerHoraServidor()
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -209,11 +209,11 @@ class PokemonApiRepository @Inject constructor(
                 name = response.name.replaceFirstChar { it.uppercase() },
                 imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png",
                 stats = response.stats.associate { it.stat.name to it.base_stat },
-                abilities = response.abilities.map { it.ability.name }            )
+                abilities = response.abilities.map { it.ability.name })
         }
     }
 
-    suspend fun syncPokemon(){
+    suspend fun syncPokemon() {
         val response = api.getAllPokemon(limit = 1025, offset = 0)
         val allPokemonEntities = response.results.map { PokemonEntity(nombre = it.name) }
 

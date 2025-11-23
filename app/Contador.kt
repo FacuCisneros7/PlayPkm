@@ -1,4 +1,4 @@
 @Composable
-fun contador(){
+fun contador() {
 
 }

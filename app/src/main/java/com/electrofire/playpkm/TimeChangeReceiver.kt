@@ -15,7 +15,8 @@ class TimeChangeReceiver(
             Intent.ACTION_DATE_CHANGED,
             Intent.ACTION_TIMEZONE_CHANGED -> {
                 onTimeChanged()
-                Toast.makeText(context, "Se detectó cambio de fecha/hora", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Se detectó cambio de fecha/hora", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

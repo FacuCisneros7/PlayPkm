@@ -11,8 +11,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-@InstallIn (SingletonComponent::class)
-object PokemonModule{
+@InstallIn(SingletonComponent::class)
+object PokemonModule {
 
     @Provides
     @Singleton
@@ -29,6 +29,6 @@ object PokemonModule{
     @Provides
     @Singleton
     fun providePokemonRepository(api: ApiPokemon, dao: PokemonDao):
-            PokemonApiRepository = PokemonApiRepository(api,dao)
+            PokemonApiRepository = PokemonApiRepository(api, dao)
 
 }

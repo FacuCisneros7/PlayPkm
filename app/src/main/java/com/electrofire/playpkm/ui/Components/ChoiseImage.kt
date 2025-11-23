@@ -6,15 +6,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -39,7 +37,6 @@ import com.electrofire.playpkm.Data.Avatar
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
@@ -78,8 +75,8 @@ fun ChoiseImage(
     ) {
         TextField(
             value = searchText,
-            textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-            onValueChange = {searchText = it},
+            textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+            onValueChange = { searchText = it },
             placeholder = {
                 Text(
                     text = "Buscar Pokemon...",
@@ -122,7 +119,7 @@ fun ChoiseImage(
                             shape = CircleShape
                         )
                         .clickable {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 

@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovimientoViewModel @Inject constructor(
-    private val repo : MovimientosRepository
-) : ViewModel(){
+    private val repo: MovimientosRepository
+) : ViewModel() {
 
     var movimiento by mutableStateOf<Movimiento?>(null)
         private set
@@ -27,9 +27,12 @@ class MovimientoViewModel @Inject constructor(
 
 }
 
-fun verificarRespuestaPotenciaMovimiento(respuesta: String, movimientoActual: Movimiento?): Boolean {
-    if(respuesta != ""){
+fun verificarRespuestaPotenciaMovimiento(
+    respuesta: String,
+    movimientoActual: Movimiento?
+): Boolean {
+    if (respuesta != "") {
         return movimientoActual != null && respuesta.toInt() == movimientoActual.Potencia
     }
-       return false
+    return false
 }

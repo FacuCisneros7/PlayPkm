@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StatsViewModel @Inject constructor(
-    private val repo : PokemonRepository
-): ViewModel(){
+    private val repo: PokemonRepository
+) : ViewModel() {
 
     var pokemon by mutableStateOf<Pokemon?>(null)
         private set
@@ -26,6 +26,8 @@ class StatsViewModel @Inject constructor(
     }
 
 }
+
 fun verificarRespuestaStatsPokemon(pokemonActual: Pokemon?, respuesta: String): Boolean {
-    return pokemonActual != null && respuesta.trim().equals(pokemonActual.Nombre.trim(), ignoreCase = true)
+    return pokemonActual != null && respuesta.trim()
+        .equals(pokemonActual.Nombre.trim(), ignoreCase = true)
 }

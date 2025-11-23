@@ -1,28 +1,28 @@
 package com.electrofire.playpkm.Data.Repository
 
 import com.electrofire.playpkm.Data.LocalData.PokemonDao
-import com.electrofire.playpkm.Data.LocalData.PokemonEntity
 import com.electrofire.playpkm.Data.Pokemon
 import com.google.firebase.firestore.FirebaseFirestore
-import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import java.util.TimeZone
+import javax.inject.Inject
 import kotlin.random.Random
 
 class PokemonRepository @Inject constructor(
     private val dao: PokemonDao
-){
-    private val timeRepository= TimeRepository()
+) {
+    private val timeRepository = TimeRepository()
     private val db = FirebaseFirestore.getInstance()
     private val collection = db.collection("Pokemon")
 
-    suspend fun obtenerTodosLosPokemon(): List<Pokemon>{
-        val snapshot = collection.get().await()  //Snapshot contiene_todo lo devuelto en la coleccion
+    suspend fun obtenerTodosLosPokemon(): List<Pokemon> {
+        val snapshot =
+            collection.get().await()  //Snapshot contiene_todo lo devuelto en la coleccion
         return snapshot.toObjects(Pokemon::class.java)
     }
 
-    suspend fun obtenerStatsPokemonDelDia(): Pokemon ?{
+    suspend fun obtenerStatsPokemonDelDia(): Pokemon? {
         val lista = obtenerTodosLosPokemon()
 
         val horaServidor = timeRepository.obtenerHoraServidor()

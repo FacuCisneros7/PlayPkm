@@ -18,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.ViewModels.PokemonViewModel
 import com.electrofire.playpkm.ui.ViewModels.StatsApiViewModel
 
 @Composable
@@ -30,7 +29,10 @@ fun StatsPokemonApiCard(
 
     if (pokemon == null) {
         Card(
-            modifier = modifier.width(230.dp).height(230.dp).fillMaxSize(),
+            modifier = modifier
+                .width(230.dp)
+                .height(230.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -44,7 +46,10 @@ fun StatsPokemonApiCard(
         }
     } else {
         Card(
-            modifier = modifier.width(230.dp).height(230.dp).fillMaxSize(),
+            modifier = modifier
+                .width(230.dp)
+                .height(230.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )

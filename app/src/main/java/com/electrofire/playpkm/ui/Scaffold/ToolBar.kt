@@ -1,14 +1,10 @@
 package com.electrofire.playpkm.ui.Scaffold
 
-import android.app.Dialog
 import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -40,15 +35,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -56,7 +48,6 @@ import androidx.navigation.NavController
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.MyCardButton
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -128,7 +119,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                     LazyColumn(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxSize().padding(12.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(12.dp)
                     ) {
 
                         item {
@@ -211,7 +204,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "EASY GAME",
                                 imageRes = R.drawable.asfasfasfa,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
 
@@ -233,7 +228,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "BLURRED CARD",
                                 imageRes = R.drawable.carta,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
 
@@ -255,7 +252,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "ONE ABILITY",
                                 imageRes = R.drawable.habilidad,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
 
@@ -277,7 +276,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "POWER OF MOVE",
                                 imageRes = R.drawable.movimiento,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
 
@@ -299,7 +300,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "MYSTERIOUS STATS",
                                 imageRes = R.drawable.movimientodos,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
 
@@ -322,7 +325,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "FUSION!",
                                 imageRes = R.drawable.fision,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
 
@@ -344,7 +349,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "THE BEST",
                                 imageRes = R.drawable.adasdad,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
                         }
@@ -366,7 +373,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "IMPOSTOR",
                                 imageRes = R.drawable.dfsfsdf,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
 
@@ -389,7 +398,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                 title = "GOOD CHOICE",
                                 imageRes = R.drawable.goodchoisesc,
                                 onClick = {},
-                                modifier = Modifier.height(55.dp).width(175.dp)
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
                             )
                             Spacer(Modifier.height(6.dp))
 
@@ -448,7 +459,9 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                             Image(
                                 painter = painterResource(id = R.drawable.pantallarecomendable),
                                 contentDescription = null,
-                                modifier = Modifier.width(175.dp).wrapContentHeight()
+                                modifier = Modifier
+                                    .width(175.dp)
+                                    .wrapContentHeight()
                             )
                             Spacer(Modifier.height(32.dp))
                         }
@@ -512,10 +525,11 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                         FirebaseAuth.getInstance().signOut()
                         showInfoCard = false
                         statsViewModel.reset()
-                        navController.navigate("register"){
-                            popUpTo(Screen.Home.route){inclusive=true}
+                        navController.navigate("register") {
+                            popUpTo(Screen.Home.route) { inclusive = true }
                         }
-                        Toast.makeText(context, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Sesión cerrada correctamente", Toast.LENGTH_SHORT)
+                            .show()
                     },
                     modifier = Modifier
                         .width(180.dp)

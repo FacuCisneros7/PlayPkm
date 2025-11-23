@@ -15,18 +15,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.StatsViewModel
 
 @Composable
-fun StatPokemonCard(modifier: Modifier = Modifier,viewModel: StatsViewModel = hiltViewModel()) {
+fun StatPokemonCard(modifier: Modifier = Modifier, viewModel: StatsViewModel = hiltViewModel()) {
     val pokemon = viewModel.pokemon
 
     if (pokemon == null) {
         Card(
-            modifier = modifier.width(290.dp).height(154.dp).fillMaxSize(),
+            modifier = modifier
+                .width(290.dp)
+                .height(154.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -40,7 +42,10 @@ fun StatPokemonCard(modifier: Modifier = Modifier,viewModel: StatsViewModel = hi
         }
     } else {
         Card(
-            modifier = modifier.width(290.dp).height(154.dp).fillMaxSize(),
+            modifier = modifier
+                .width(290.dp)
+                .height(154.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),

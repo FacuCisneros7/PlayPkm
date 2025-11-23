@@ -1,7 +1,6 @@
 package com.electrofire.playpkm.ui.Screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,9 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,10 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +34,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.electrofire.playpkm.Data.PokemonApi
-import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.CardItems.PokemonApiCard
 import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.ConfirmButton
@@ -51,13 +45,14 @@ import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.EightGameViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.SeventhGameViewModel
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaEightGame
-import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaSeventhGame
-import kotlin.collections.get
 
 @Composable
-fun EightGame(navController: NavController, viewModel: EightGameViewModel = hiltViewModel(), statsViewModel: HomeStatsViewModel) {
+fun EightGame(
+    navController: NavController,
+    viewModel: EightGameViewModel = hiltViewModel(),
+    statsViewModel: HomeStatsViewModel
+) {
 
     val state by viewModel.state.collectAsState()
 
@@ -73,7 +68,8 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
 
         Column(
             modifier = Modifier
-                .fillMaxSize().padding(16.dp),
+                .fillMaxSize()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -223,14 +219,14 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
                     ) {
                         WinCard(onButtonClick = {
                             navController.navigate("home") {
-                                popUpTo(Screen.EightGame.route){inclusive=true}
+                                popUpTo(Screen.EightGame.route) { inclusive = true }
                             }
                         }
                         )
                     } else {
                         LoserCard(onButtonClick = {
-                            navController.navigate("home"){
-                                popUpTo(Screen.EightGame.route){inclusive=true}
+                            navController.navigate("home") {
+                                popUpTo(Screen.EightGame.route) { inclusive = true }
                             }
                         }
                         )
@@ -249,7 +245,7 @@ fun EightGame(navController: NavController, viewModel: EightGameViewModel = hilt
                     }
 
                 }
-            } else{
+            } else {
                 Spacer(Modifier.height(300.dp))
                 Loading()
             }

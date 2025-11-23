@@ -8,18 +8,19 @@ import java.util.TimeZone
 import javax.inject.Inject
 import kotlin.random.Random
 
-class FusionRepository @Inject constructor(){
-    private val timeRepository= TimeRepository()
+class FusionRepository @Inject constructor() {
+    private val timeRepository = TimeRepository()
 
     private val db = FirebaseFirestore.getInstance()
     private val collection = db.collection("Fusion")
 
-    suspend fun obtenerTodasLasFusiones(): List<Fusion>{
-        val snapshot = collection.get().await()  //Snapshot contiene_todo lo devuelto en la coleccion
+    suspend fun obtenerTodasLasFusiones(): List<Fusion> {
+        val snapshot =
+            collection.get().await()  //Snapshot contiene_todo lo devuelto en la coleccion
         return snapshot.toObjects(Fusion::class.java)
     }
 
-    suspend fun obtenerFusionDelDia(): Fusion ?{
+    suspend fun obtenerFusionDelDia(): Fusion? {
         val lista = obtenerTodasLasFusiones()
 
         val horaServidor = timeRepository.obtenerHoraServidor()

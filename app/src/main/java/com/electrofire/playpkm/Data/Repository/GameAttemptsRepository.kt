@@ -2,18 +2,11 @@ package com.electrofire.playpkm.Data.Repository
 
 import com.electrofire.playpkm.Data.GameAttempts
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.time.ZoneOffset
-import java.util.Locale
-import javax.inject.Inject
 
 class GameAttemptsRepository {
 
@@ -112,7 +105,8 @@ class GameAttemptsRepository {
             // Obtener hora del servidor usando callback del repo
             timeRepository.obtenerHoraServidorDos { horaServidor ->
                 val nowUTC = horaServidor?.toInstant()?.atZone(ZoneOffset.UTC)?.toLocalDate()
-                val lastDayUTC = lastTimestamp?.toDate()?.toInstant()?.atZone(ZoneOffset.UTC)?.toLocalDate()
+                val lastDayUTC =
+                    lastTimestamp?.toDate()?.toInstant()?.atZone(ZoneOffset.UTC)?.toLocalDate()
                 val canPlay = lastDayUTC != nowUTC
 
                 // Actualizar timestamp si puede jugar

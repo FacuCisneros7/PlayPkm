@@ -15,19 +15,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.FusionViewModel
 
 @Composable
-fun FusionCard(modifier: Modifier = Modifier,viewModel: FusionViewModel = hiltViewModel()) {
+fun FusionCard(modifier: Modifier = Modifier, viewModel: FusionViewModel = hiltViewModel()) {
     val fusion = viewModel.fusion
 
     if (fusion == null) {
         Card(
-            modifier = modifier.width(230.dp).height(230.dp).fillMaxSize(),
+            modifier = modifier
+                .width(230.dp)
+                .height(230.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -41,7 +43,10 @@ fun FusionCard(modifier: Modifier = Modifier,viewModel: FusionViewModel = hiltVi
         }
     } else {
         Card(
-            modifier = modifier.width(230.dp).height(230.dp).fillMaxSize(),
+            modifier = modifier
+                .width(230.dp)
+                .height(230.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )

@@ -10,17 +10,18 @@ import kotlin.random.Random
 
 class CartasRepository @Inject constructor(
 ) {
-    private val timeRepository= TimeRepository()
+    private val timeRepository = TimeRepository()
 
     private val db = FirebaseFirestore.getInstance()
     private val collection = db.collection("Cartas")
 
-    suspend fun obtenerTodasLasCartas(): List<Carta>{
-        val snapshot = collection.get().await()  //Snapshot contiene_todo lo devuelto en la coleccion
+    suspend fun obtenerTodasLasCartas(): List<Carta> {
+        val snapshot =
+            collection.get().await()  //Snapshot contiene_todo lo devuelto en la coleccion
         return snapshot.toObjects(Carta::class.java)
     }
 
-    suspend fun obtenerCartaDelDia(): Carta ?{
+    suspend fun obtenerCartaDelDia(): Carta? {
         val lista = obtenerTodasLasCartas()
 
         val horaServidor = timeRepository.obtenerHoraServidor()

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -24,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,13 +42,15 @@ import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.ConfirmButtonRegLog
 import com.electrofire.playpkm.ui.Components.GradientBackground
-import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
-import kotlinx.coroutines.delay
 
 @Composable
-fun LoginScreen(navController: NavController, authViewModel: AuthViewModel,statsViewModel: HomeStatsViewModel) {
+fun LoginScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    statsViewModel: HomeStatsViewModel
+) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -72,14 +72,18 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel,stats
             GradientBackground()
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(top = 64.dp, start = 32.dp, end = 32.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 64.dp, start = 32.dp, end = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 Image(
                     painter = painterResource(id = R.drawable.logohomecopia),
                     contentDescription = null,
-                    modifier = Modifier.height(120.dp).wrapContentWidth()
+                    modifier = Modifier
+                        .height(120.dp)
+                        .wrapContentWidth()
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -107,7 +111,10 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel,stats
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Card(
-                    modifier = Modifier.fillMaxWidth().height(55.dp).fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .fillMaxSize(),
                     elevation = CardDefaults.cardElevation(10.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
@@ -116,7 +123,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel,stats
                 ) {
                     TextField(
                         value = email,
-                        textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                         onValueChange = {
                             email = it
                         },
@@ -146,7 +153,10 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel,stats
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Card(
-                    modifier = Modifier.fillMaxWidth().height(55.dp).fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .fillMaxSize(),
                     elevation = CardDefaults.cardElevation(10.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
@@ -155,7 +165,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel,stats
                 ) {
                     TextField(
                         value = password,
-                        textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                         onValueChange = {
                             password = it
                         },
@@ -197,7 +207,7 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel,stats
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if(errorMessage != null){
+                if (errorMessage != null) {
                     Text(
                         text = errorMessage!!,
                         color = Color.Red,
@@ -208,41 +218,43 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel,stats
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                ConfirmButton(onConfirm = {
-                    if (email.isBlank() || password.isBlank()) {
-                        errorMessage = "Complete todos los campos"
-                    } else {
-                        authViewModel.login(
-                            email,
-                            password,
-                            onSuccess = {
-                                statsViewModel.cargarStats()
-                                respondido = true
-                            },
-                            onError = { mensaje ->
-                                errorMessage = mensaje
-                            }
-                        )
-                    }
-                },
+                ConfirmButton(
+                    onConfirm = {
+                        if (email.isBlank() || password.isBlank()) {
+                            errorMessage = "Complete todos los campos"
+                        } else {
+                            authViewModel.login(
+                                email,
+                                password,
+                                onSuccess = {
+                                    statsViewModel.cargarStats()
+                                    respondido = true
+                                },
+                                onError = { mensaje ->
+                                    errorMessage = mensaje
+                                }
+                            )
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(64.dp))
 
-                ConfirmButtonRegLog(onConfirm = {
-                    navController.navigate("register")
-                },
+                ConfirmButtonRegLog(
+                    onConfirm = {
+                        navController.navigate("register")
+                    },
                     title = "registrar"
                 )
 
             }
         }
 
-    } else{
-            navController.navigate("home"){
-                popUpTo("login"){inclusive=true}
-            }
+    } else {
+        navController.navigate("home") {
+            popUpTo("login") { inclusive = true }
+        }
     }
 
 }

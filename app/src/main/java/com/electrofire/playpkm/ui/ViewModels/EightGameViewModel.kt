@@ -3,7 +3,6 @@ package com.electrofire.playpkm.ui.ViewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.ImpostorGameData
-import com.electrofire.playpkm.Data.PokemonApi
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EightGameViewModel @Inject constructor(
     private val repo: PokemonApiRepository
-): ViewModel()
-{
+) : ViewModel() {
 
     private val _state = MutableStateFlow(ImpostorGameData())
     val state: StateFlow<ImpostorGameData> = _state
@@ -28,7 +26,7 @@ class EightGameViewModel @Inject constructor(
             _state.value = ImpostorGameData(
                 abilityName = game.abilityName,
                 pokemons = game.pokemons,
-                impostor= game.impostor
+                impostor = game.impostor
             )
 
         }

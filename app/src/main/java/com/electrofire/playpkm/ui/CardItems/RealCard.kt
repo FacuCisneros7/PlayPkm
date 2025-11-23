@@ -20,14 +20,18 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.CartaViewModel
 
 @Composable
-fun RealCard(modifier: Modifier = Modifier,
-             viewModel: CartaViewModel = hiltViewModel()
+fun RealCard(
+    modifier: Modifier = Modifier,
+    viewModel: CartaViewModel = hiltViewModel()
 ) {
     val carta = viewModel.carta
 
     if (carta == null) {
         Card(
-            modifier = modifier.width(200.dp).height(280.dp).fillMaxSize(),
+            modifier = modifier
+                .width(200.dp)
+                .height(280.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -43,7 +47,10 @@ fun RealCard(modifier: Modifier = Modifier,
         AsyncImage(
             model = carta.ImagenReal,
             contentDescription = null,
-            modifier = modifier.width(200.dp).height(280.dp).clip(shape = MaterialTheme.shapes.medium),
+            modifier = modifier
+                .width(200.dp)
+                .height(280.dp)
+                .clip(shape = MaterialTheme.shapes.medium),
             contentScale = ContentScale.Fit
         )
     }

@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CartaViewModel @Inject constructor(
-    private val repo : CartasRepository
-): ViewModel(){
+    private val repo: CartasRepository
+) : ViewModel() {
 
 
     var carta by mutableStateOf<Carta?>(null)
@@ -29,5 +29,6 @@ class CartaViewModel @Inject constructor(
 }
 
 fun verificarRespuestaCartaBorrosa(cartaActual: Carta?, respuesta: String): Boolean {
-    return cartaActual != null && respuesta.trim().equals(cartaActual.Nombre.trim(), ignoreCase = true)
+    return cartaActual != null && respuesta.trim()
+        .equals(cartaActual.Nombre.trim(), ignoreCase = true)
 }

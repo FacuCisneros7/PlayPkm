@@ -18,50 +18,52 @@ import androidx.compose.ui.unit.sp
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 
 @Composable
-fun HomeStatsCard(modifier: Modifier = Modifier,statsViewModel: HomeStatsViewModel) {
+fun HomeStatsCard(modifier: Modifier = Modifier, statsViewModel: HomeStatsViewModel) {
     val stats = statsViewModel.userData
 
-        val gradientColors = listOf(
-            MaterialTheme.colorScheme.outline,
-            MaterialTheme.colorScheme.onPrimary,
-            MaterialTheme.colorScheme.tertiary
-        )
+    val gradientColors = listOf(
+        MaterialTheme.colorScheme.outline,
+        MaterialTheme.colorScheme.onPrimary,
+        MaterialTheme.colorScheme.tertiary
+    )
 
-        Card(
-            modifier.wrapContentSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            ),
-            elevation = CardDefaults.cardElevation(10.dp),
-            shape = MaterialTheme.shapes.large,
+    Card(
+        modifier.wrapContentSize(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
+        elevation = CardDefaults.cardElevation(10.dp),
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Box(
+            modifier = modifier
+                .background(
+                    brush = Brush.verticalGradient(gradientColors),
+                    shape = MaterialTheme.shapes.large,
+                )
+                .padding(2.dp), // grosor del "trazo"
         ) {
-            Box(
-                modifier = modifier
-                    .background(
-                        brush = Brush.verticalGradient(gradientColors),
-                        shape = MaterialTheme.shapes.large,
-                    )
-                    .padding(2.dp), // grosor del "trazo"
+            Card(
+                modifier
+                    .wrapContentSize()
+                    .padding(4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
             ) {
-                Card(
-                    modifier.wrapContentSize().padding(4.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondary
+                Row {
+                    Text(
+                        " Victorias: ${stats.victorias}  /",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
                     )
-                ) {
-                    Row {
-                        Text(
-                            " Victorias: ${stats.victorias}  /",
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
-                        )
-                        Text(
-                            "  Derrotas: ${stats.derrotas} ",
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
-                        )
-                        }
-                    }
+                    Text(
+                        "  Derrotas: ${stats.derrotas} ",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
+                    )
                 }
+            }
         }
+    }
 }

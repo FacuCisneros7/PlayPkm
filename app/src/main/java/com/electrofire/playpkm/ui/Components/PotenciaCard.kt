@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.electrofire.playpkm.ui.ViewModels.MovimientoViewModel
 
 @Composable
-fun PotenciaCard(modifier: Modifier = Modifier,viewModel: MovimientoViewModel = viewModel()) {
+fun PotenciaCard(modifier: Modifier = Modifier, viewModel: MovimientoViewModel = viewModel()) {
     val movimiento = viewModel.movimiento
 
     if (movimiento != null) {
@@ -49,7 +49,11 @@ fun PotenciaCard(modifier: Modifier = Modifier,viewModel: MovimientoViewModel = 
                     .padding(2.dp), // grosor del "trazo"
             ) {
                 Card(
-                    modifier.width(125.dp).height(50.dp).padding(3.dp).fillMaxSize(),
+                    modifier
+                        .width(125.dp)
+                        .height(50.dp)
+                        .padding(3.dp)
+                        .fillMaxSize(),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondary
                     )

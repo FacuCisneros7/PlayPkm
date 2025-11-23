@@ -10,12 +10,12 @@ import kotlinx.coroutines.launch
 
 class ContadorViewModel : ViewModel() {
 
-    var contador by mutableStateOf <Int>(60)
-    private set
+    var contador by mutableStateOf<Int>(60)
+        private set
 
-    fun iniciarContador(){
+    fun iniciarContador() {
         viewModelScope.launch {
-            for (i in 60 downTo 0){
+            for (i in 60 downTo 0) {
                 contador = i
                 delay(1000L)
             }

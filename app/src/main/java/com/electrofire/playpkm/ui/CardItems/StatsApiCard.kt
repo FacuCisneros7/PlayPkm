@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,12 +28,15 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.StatsApiViewModel
 
 @Composable
-fun StatsApiCard(modifier: Modifier = Modifier,viewModel: StatsApiViewModel = hiltViewModel()) {
+fun StatsApiCard(modifier: Modifier = Modifier, viewModel: StatsApiViewModel = hiltViewModel()) {
     val pokemon = viewModel.pokemon
 
     if (pokemon == null) {
         Card(
-            modifier = modifier.width(290.dp).height(154.dp).fillMaxSize(),
+            modifier = modifier
+                .width(290.dp)
+                .height(154.dp)
+                .fillMaxSize(),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             )
@@ -74,27 +76,27 @@ fun StatsApiCard(modifier: Modifier = Modifier,viewModel: StatsApiViewModel = hi
 }
 
 @Composable
-fun StatRow(statName: String, statValue: Int, maxStat: Int = 200){
+fun StatRow(statName: String, statValue: Int, maxStat: Int = 200) {
 
-    val progress = (statValue.toFloat() / maxStat).coerceIn(0f,1f)
+    val progress = (statValue.toFloat() / maxStat).coerceIn(0f, 1f)
     var statNameRecorted = " "
 
-    when(statName){
-        "special-attack"-> statNameRecorted = "SPA"
-        "special-defense"-> statNameRecorted = "SPD"
-        "attack"-> statNameRecorted = "ATK"
-        "defense"-> statNameRecorted = "DEF"
-        "speed"-> statNameRecorted = "SPE"
-        "hp"-> statNameRecorted = "HP"
+    when (statName) {
+        "special-attack" -> statNameRecorted = "SPA"
+        "special-defense" -> statNameRecorted = "SPD"
+        "attack" -> statNameRecorted = "ATK"
+        "defense" -> statNameRecorted = "DEF"
+        "speed" -> statNameRecorted = "SPE"
+        "hp" -> statNameRecorted = "HP"
     }
 
-    val statColor = when(statName.lowercase()){
-        "special-attack"-> Color(0xFF00C70A)
-        "special-defense"-> Color(0xFFEF8D00)
-        "attack"-> Color(0xFFC7221A)
-        "defense"-> Color(0xFFE6D800)
-        "speed"-> Color(0xFF0E3ADC)
-        "hp"-> Color(0xFFDB63C9)
+    val statColor = when (statName.lowercase()) {
+        "special-attack" -> Color(0xFF00C70A)
+        "special-defense" -> Color(0xFFEF8D00)
+        "attack" -> Color(0xFFC7221A)
+        "defense" -> Color(0xFFE6D800)
+        "speed" -> Color(0xFF0E3ADC)
+        "hp" -> Color(0xFFDB63C9)
         else -> Color(0xFF0E3ADC)
     }
 
@@ -116,8 +118,9 @@ fun StatRow(statName: String, statValue: Int, maxStat: Int = 200){
         )
 
         LinearProgressIndicator(
-            progress = {progress},
-            modifier = Modifier.weight(1f)
+            progress = { progress },
+            modifier = Modifier
+                .weight(1f)
                 .height(10.dp)
                 .clip(RoundedCornerShape(5.dp)),
             color = statColor,

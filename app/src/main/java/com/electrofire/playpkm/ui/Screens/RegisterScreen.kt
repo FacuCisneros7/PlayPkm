@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -45,7 +45,7 @@ import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) {
+fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
@@ -68,14 +68,18 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
             GradientBackground()
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(top = 64.dp, start = 32.dp, end = 32.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 64.dp, start = 32.dp, end = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 Image(
                     painter = painterResource(id = R.drawable.logohomecopia),
                     contentDescription = null,
-                    modifier = Modifier.height(120.dp).wrapContentWidth()
+                    modifier = Modifier
+                        .height(120.dp)
+                        .wrapContentWidth()
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -103,7 +107,10 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Card(
-                    modifier = Modifier.fillMaxWidth().height(55.dp).fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .fillMaxSize(),
                     elevation = CardDefaults.cardElevation(10.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
@@ -112,7 +119,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
                 ) {
                     TextField(
                         value = email,
-                        textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                         onValueChange = {
                             email = it
                             if (email.length < 30) {
@@ -145,7 +152,10 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Card(
-                    modifier = Modifier.fillMaxWidth().height(55.dp).fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .fillMaxSize(),
                     elevation = CardDefaults.cardElevation(10.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
@@ -154,7 +164,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
                 ) {
                     TextField(
                         value = password,
-                        textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                         onValueChange = {
                             password = it
                             if (password.length >= 6) {
@@ -200,7 +210,10 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Card(
-                    modifier = Modifier.fillMaxWidth().height(55.dp).fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .fillMaxSize(),
                     elevation = CardDefaults.cardElevation(10.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
@@ -209,7 +222,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
                 ) {
                     TextField(
                         value = repeatPassword,
-                        textStyle =  MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                         onValueChange = {
                             repeatPassword = it
                             if (repeatPassword.length >= 6) {
@@ -244,7 +257,9 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
                         trailingIcon = {
                             val image =
                                 if (repeatPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                            IconButton(onClick = { repeatPasswordVisible = !repeatPasswordVisible }) {
+                            IconButton(onClick = {
+                                repeatPasswordVisible = !repeatPasswordVisible
+                            }) {
                                 Icon(imageVector = image, contentDescription = null)
                             }
                         },
@@ -254,7 +269,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if(errorMessage != null){
+                if (errorMessage != null) {
                     Text(
                         text = errorMessage!!,
                         color = Color.Red,
@@ -265,42 +280,46 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel,) 
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                ConfirmButton(onConfirm = {
-                    if (email.isBlank()) {
-                        errorMessage = "El email no puede estar vacío"
-                    } else if (password.length <= 6) {
-                        errorMessage = "La contraseña debe tener por lo menos 7 caracteres"
-                    } else if(password != repeatPassword){
-                        errorMessage = "Verifique que coincidan ambas contraseñas"
-                    }else {
-                        authViewModel.register(
-                            email = email,
-                            password = password,
-                            onSuccess = { uid ->
-                                respondido = true },
-                            onError = { error ->
-                                errorMessage = error }
-                        )
-                    }
-                },
+                ConfirmButton(
+                    onConfirm = {
+                        if (email.isBlank()) {
+                            errorMessage = "El email no puede estar vacío"
+                        } else if (password.length <= 6) {
+                            errorMessage = "La contraseña debe tener por lo menos 7 caracteres"
+                        } else if (password != repeatPassword) {
+                            errorMessage = "Verifique que coincidan ambas contraseñas"
+                        } else {
+                            authViewModel.register(
+                                email = email,
+                                password = password,
+                                onSuccess = { uid ->
+                                    respondido = true
+                                },
+                                onError = { error ->
+                                    errorMessage = error
+                                }
+                            )
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(64.dp))
 
-                ConfirmButtonRegLog(onConfirm = {
-                    navController.navigate("login")
-                },
+                ConfirmButtonRegLog(
+                    onConfirm = {
+                        navController.navigate("login")
+                    },
                     title = "iniciar sesion"
                 )
 
             }
         }
 
-        } else{
-            navController.navigate("new_user"){
-                popUpTo("register"){inclusive=true}
-            }
+    } else {
+        navController.navigate("new_user") {
+            popUpTo("register") { inclusive = true }
+        }
     }
 }
 

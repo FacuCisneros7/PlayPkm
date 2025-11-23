@@ -14,8 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SeventhGameViewModel @Inject constructor(
     private val repo: PokemonApiRepository
-): ViewModel()
-{
+) : ViewModel() {
 
     private val _state = MutableStateFlow(GameState())
     val state: StateFlow<GameState> = _state
@@ -24,18 +23,21 @@ class SeventhGameViewModel @Inject constructor(
         viewModelScope.launch {
 
             val pokemons = repo.getRandomPokemons()
-            val englishStat = listOf("special-attack","attack","hp","defense","speed","special-defense")
-                .random()
+            val englishStat =
+                listOf("special-attack", "attack", "hp", "defense", "speed", "special-defense")
+                    .random()
             var spanishStat = englishStat
-            val correct = pokemons.maxByOrNull { it.stats[englishStat] ?:0 } //Obtenemos al pokemon correcto basandonos en la stat elegida.
+            val correct = pokemons.maxByOrNull {
+                it.stats[englishStat] ?: 0
+            } //Obtenemos al pokemon correcto basandonos en la stat elegida.
 
-            when(spanishStat){
-                "special-attack"-> spanishStat = "Ataque Especial"
-                "special-defense"-> spanishStat = "Defensa Especial"
-                "attack"-> spanishStat = "Ataque Físico"
-                "defense"-> spanishStat = "Defensa Física"
-                "speed"-> spanishStat = "Velocidad"
-                "hp"-> spanishStat = "PS"
+            when (spanishStat) {
+                "special-attack" -> spanishStat = "Ataque Especial"
+                "special-defense" -> spanishStat = "Defensa Especial"
+                "attack" -> spanishStat = "Ataque Físico"
+                "defense" -> spanishStat = "Defensa Física"
+                "speed" -> spanishStat = "Velocidad"
+                "hp" -> spanishStat = "PS"
             }
 
             _state.value = GameState(

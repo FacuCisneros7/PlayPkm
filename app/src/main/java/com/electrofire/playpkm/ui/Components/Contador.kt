@@ -19,7 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 
 @Composable
-fun Contador(modifier: Modifier = Modifier, contadorViewModel : ContadorViewModel = viewModel()){
+fun Contador(modifier: Modifier = Modifier, contadorViewModel: ContadorViewModel = viewModel()) {
 
     val contador = contadorViewModel.contador
 
@@ -55,11 +55,11 @@ fun Contador(modifier: Modifier = Modifier, contadorViewModel : ContadorViewMode
                     containerColor = MaterialTheme.colorScheme.secondary
                 )
             ) {
-                    Text(
-                        " $contador ",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 40.sp)
-                    )
+                Text(
+                    " $contador ",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 40.sp)
+                )
             }
         }
     }

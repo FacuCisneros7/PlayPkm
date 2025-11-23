@@ -1,7 +1,6 @@
 package com.electrofire.playpkm.ui.Screens
 
 import android.media.MediaPlayer
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -12,45 +11,42 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.runtime.getValue
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.electrofire.playpkm.Data.Repository.GameAttemptsRepository
-import com.electrofire.playpkm.ui.Components.HomeStatsCard
-import com.electrofire.playpkm.ui.Components.MyCardButton
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.HomeStatsCard
+import com.electrofire.playpkm.ui.Components.MyCardButton
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 
 @Composable
-fun HomeScreen(navController: NavController,
-               statsViewModel: HomeStatsViewModel,
-               authViewModel: AuthViewModel,
-               homeContadorViewModel: HomeContadorViewModel = hiltViewModel()
-){
+fun HomeScreen(
+    navController: NavController,
+    statsViewModel: HomeStatsViewModel,
+    authViewModel: AuthViewModel,
+    homeContadorViewModel: HomeContadorViewModel = hiltViewModel()
+) {
 
     val timeLeft by homeContadorViewModel.timeLeft.collectAsState() // escucha el StateFlow
 
@@ -80,7 +76,7 @@ fun HomeScreen(navController: NavController,
         authViewModel.checkUserLoggedIn()
     }
 
-    Box(Modifier.fillMaxSize()){
+    Box(Modifier.fillMaxSize()) {
 
         GradientBackground()
 
@@ -93,12 +89,14 @@ fun HomeScreen(navController: NavController,
             Image(
                 painter = painterResource(id = R.drawable.logohomecopia),
                 contentDescription = null,
-                modifier = Modifier.height(100.dp).wrapContentWidth()
+                modifier = Modifier
+                    .height(100.dp)
+                    .wrapContentWidth()
             )
 
             Spacer(modifier = Modifier.height(17.dp))
 
-            HomeStatsCard(statsViewModel= statsViewModel)
+            HomeStatsCard(statsViewModel = statsViewModel)
 
             Spacer(modifier = Modifier.height(18.dp))
 
@@ -113,7 +111,7 @@ fun HomeScreen(navController: NavController,
                         title = "EASY GAME",
                         imageRes = R.drawable.asfasfasfa,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
                             navController.navigate("first_game")
@@ -130,12 +128,12 @@ fun HomeScreen(navController: NavController,
                     )
                 }
 
-                item{
+                item {
                     MyCardButton(
                         title = "BLURRED CARD",
                         imageRes = R.drawable.carta,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
@@ -153,12 +151,12 @@ fun HomeScreen(navController: NavController,
                     )
                 }
 
-                item{
+                item {
                     MyCardButton(
                         title = "ONE ABILITY",
                         imageRes = R.drawable.habilidad,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
                             navController.navigate("third_game")
@@ -174,12 +172,12 @@ fun HomeScreen(navController: NavController,
                     )
                 }
 
-                item{
+                item {
                     MyCardButton(
                         title = "POWER OF MOVE",
                         imageRes = R.drawable.movimiento,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
                             navController.navigate("fourth_game")
@@ -195,12 +193,12 @@ fun HomeScreen(navController: NavController,
                     )
                 }
 
-                item{
+                item {
                     MyCardButton(
                         title = "MYSTERIOUS STATS",
                         imageRes = R.drawable.movimientodos,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
                             navController.navigate("fift_game")
@@ -221,7 +219,7 @@ fun HomeScreen(navController: NavController,
                         title = "FUSION!",
                         imageRes = R.drawable.fision,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
                             navController.navigate("sixth_game")
@@ -242,7 +240,7 @@ fun HomeScreen(navController: NavController,
                         title = "THE BEST",
                         imageRes = R.drawable.adasdad,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
                             navController.navigate("seventh_game")
@@ -264,7 +262,7 @@ fun HomeScreen(navController: NavController,
                         title = "IMPOSTOR",
                         imageRes = R.drawable.dfsfsdf,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
                             navController.navigate("eight_game")
@@ -286,12 +284,12 @@ fun HomeScreen(navController: NavController,
                         title = "GOOD CHOISE",
                         imageRes = R.drawable.goodchoisess,
                         onClick = {
-                            val mediaPlayer = MediaPlayer.create(context,R.raw.buttonuisoundeffect)
+                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
                             navController.navigate(Screen.NinthGame.route)
-                            }
+                        }
                     )
                 }
 
@@ -299,7 +297,7 @@ fun HomeScreen(navController: NavController,
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row{
+            Row {
                 Text(
                     text = "Actualización en: ",
                     style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),

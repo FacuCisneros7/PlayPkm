@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.PokemonApi
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,8 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NinthViewModel @Inject constructor(
     private val repo: PokemonApiRepository
-): ViewModel()
-{
+) : ViewModel() {
 
     private val _pokemonA = MutableStateFlow<PokemonApi?>(null)
     val pokemonA = _pokemonA.asStateFlow()
@@ -71,7 +68,6 @@ class NinthViewModel @Inject constructor(
             }
         }
     }
-
 
 
 }

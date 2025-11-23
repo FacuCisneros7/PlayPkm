@@ -23,18 +23,18 @@ import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.GradientBackground
 
 @Composable
-fun NotInternetScreen(){
+fun NotInternetScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
-    ){
+    ) {
         GradientBackground()
 
         Column(
             Modifier.wrapContentSize(),
             horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        ) {
             Text(
                 text = "ERROR DE CONEXION",
                 color = Color.White,
@@ -47,7 +47,9 @@ fun NotInternetScreen(){
             Image(
                 painter = painterResource(id = R.drawable.rotom),
                 contentDescription = null,
-                modifier = Modifier.height(300.dp).wrapContentWidth()
+                modifier = Modifier
+                    .height(300.dp)
+                    .wrapContentWidth()
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -61,11 +63,9 @@ fun NotInternetScreen(){
             )
 
 
-
         }
 
     }
-
 
 
 }

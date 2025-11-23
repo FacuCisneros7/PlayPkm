@@ -1,6 +1,5 @@
 package com.electrofire.playpkm.ui.CardItems
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +23,10 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.MovimientoViewModel
 
 @Composable
-fun MovimientoCard(modifier: Modifier = Modifier,viewModel: MovimientoViewModel = hiltViewModel()) {
+fun MovimientoCard(
+    modifier: Modifier = Modifier,
+    viewModel: MovimientoViewModel = hiltViewModel()
+) {
 
     val movimiento = viewModel.movimiento
 
@@ -43,19 +45,19 @@ fun MovimientoCard(modifier: Modifier = Modifier,viewModel: MovimientoViewModel 
             }
         }
     } else {
-            AsyncImage(
-                model = movimiento.Imagen,
-                contentDescription = null,
-                modifier = Modifier.
-                height(190.dp).
-                width(270.dp).
-                clip(RoundedCornerShape(16.dp))
-                    .border( // el borde también redondeado 👇
-                        width = 4.dp,
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                        shape = RoundedCornerShape(16.dp)
-                    ),
-                contentScale = ContentScale.Crop // o Fit si quieres que se vea completa
-            )
-        }
+        AsyncImage(
+            model = movimiento.Imagen,
+            contentDescription = null,
+            modifier = Modifier
+                .height(190.dp)
+                .width(270.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border( // el borde también redondeado 👇
+                    width = 4.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                    shape = RoundedCornerShape(16.dp)
+                ),
+            contentScale = ContentScale.Crop // o Fit si quieres que se vea completa
+        )
+    }
 }

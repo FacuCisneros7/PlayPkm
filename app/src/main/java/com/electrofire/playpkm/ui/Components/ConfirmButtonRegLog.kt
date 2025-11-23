@@ -23,8 +23,7 @@ fun ConfirmButtonRegLog(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     title: String = "confirmar"
-)
-{
+) {
     val context = LocalContext.current
     val soundPool = remember {
         SoundPool.Builder().setMaxStreams(1).build()
@@ -38,10 +37,10 @@ fun ConfirmButtonRegLog(
             soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
             onConfirm()
         },
-        modifier.
-        width(305.dp).
-        height(40.dp).
-        fillMaxSize(),
+        modifier
+            .width(305.dp)
+            .height(40.dp)
+            .fillMaxSize(),
         elevation = ButtonDefaults.buttonElevation(5.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.inversePrimary, // Fondo del botón
@@ -51,14 +50,14 @@ fun ConfirmButtonRegLog(
         ),
         enabled = enabled
     ) {
-        if(title == "iniciar sesion"){
+        if (title == "iniciar sesion") {
             Text(
                 text = "Ya tienes una cuenta? Inicia sesión!",
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-        } else{
+        } else {
             Text(
                 text = "No tienes una cuenta? Registrate!",
                 style = MaterialTheme.typography.titleLarge,

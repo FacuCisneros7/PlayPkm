@@ -1,9 +1,8 @@
 package com.electrofire.playpkm.ui.Components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Card
@@ -17,9 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.electrofire.playpkm.Data.PokemonApi
-import com.electrofire.playpkm.ui.ViewModels.HabilityViewModel
 
 
 @Composable
@@ -50,7 +47,9 @@ fun HabilityCard(modifier: Modifier = Modifier, pokemonActual: PokemonApi?) {
                     .padding(2.dp), // grosor del "trazo"
             ) {
                 Card(
-                    modifier.wrapContentSize().padding(3.dp),
+                    modifier
+                        .wrapContentSize()
+                        .padding(3.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondary
                     ),

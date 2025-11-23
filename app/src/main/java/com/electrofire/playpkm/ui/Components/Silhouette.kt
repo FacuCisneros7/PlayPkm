@@ -16,7 +16,10 @@ fun SilhouetteImage(imageUrl: String, modifier: Modifier = Modifier) {
     AsyncImage(
         model = imageUrl,
         contentDescription = null,
-        modifier = modifier.width(200.dp).height(200.dp).fillMaxSize(),
+        modifier = modifier
+            .width(200.dp)
+            .height(200.dp)
+            .fillMaxSize(),
         contentScale = ContentScale.Fit,
         colorFilter = ColorFilter.tint(Color.Black)
     )

@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class HomeStatsViewModel : ViewModel() {
 
     var userData by mutableStateOf(UserData())
-    private set
+        private set
 
     var isUserLoaded by mutableStateOf(false)
         private set
@@ -28,32 +28,33 @@ class HomeStatsViewModel : ViewModel() {
         cargarStats()
     }
 
-    fun registrarVictoria(){
+    fun registrarVictoria() {
         userData = userData.copy(victorias = userData.victorias + 1)
         guardarStats()
     }
-    fun registrarDerrota(){
+
+    fun registrarDerrota() {
         userData = userData.copy(derrotas = userData.derrotas + 1)
         guardarStats()
     }
 
-   fun registrarUserName(userName : String){
+    fun registrarUserName(userName: String) {
         userData = userData.copy(userName = userName)
         guardarStats()
     }
 
-    fun registrarFoto(image : String){
+    fun registrarFoto(image: String) {
         userData = userData.copy(imagen = image)
         guardarStats()
     }
 
-    private fun guardarStats(){
+    private fun guardarStats() {
         userId?.let { uid -> //Si userId no es nulo, ejecuta el bloque y asigna su valor a uid
             firestore.collection("Users")
                 .document(uid)
                 .set(userData) //Guarda los datos actuales de data stats en el documento.
-                .addOnSuccessListener { Log.d("Firestore","Stats guardados") }
-                .addOnFailureListener { Log.e("Firestore","Error: ${it.message}") }
+                .addOnSuccessListener { Log.d("Firestore", "Stats guardados") }
+                .addOnFailureListener { Log.e("Firestore", "Error: ${it.message}") }
         }
     }
 

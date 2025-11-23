@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FusionViewModel @Inject constructor(
     private val repo: FusionRepository
-): ViewModel(){
+) : ViewModel() {
 
     var fusion by mutableStateOf<Fusion?>(null)
         private set
@@ -25,10 +25,15 @@ class FusionViewModel @Inject constructor(
         }
     }
 }
-fun verificarRespuestaFusion(fusionActual: Fusion?, respuesta: String, respuestaDos: String): Boolean {
-    if(fusionActual != null){
-        return fusionActual.Pokemones.any{ it.equals(respuesta.trim(), ignoreCase = true)} &&
-                fusionActual.Pokemones.any{ it.equals(respuestaDos.trim(), ignoreCase = true)}
+
+fun verificarRespuestaFusion(
+    fusionActual: Fusion?,
+    respuesta: String,
+    respuestaDos: String
+): Boolean {
+    if (fusionActual != null) {
+        return fusionActual.Pokemones.any { it.equals(respuesta.trim(), ignoreCase = true) } &&
+                fusionActual.Pokemones.any { it.equals(respuestaDos.trim(), ignoreCase = true) }
     }
     return false
 }
