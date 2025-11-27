@@ -46,18 +46,18 @@ fun MovimientoCard(
         }
     } else {
         AsyncImage(
-            model = movimiento.Imagen,
+            model = movimiento.i,
             contentDescription = null,
             modifier = Modifier
                 .height(190.dp)
                 .width(270.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .border( // el borde también redondeado 👇
+                .border(
                     width = 4.dp,
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                     shape = RoundedCornerShape(16.dp)
                 ),
-            contentScale = ContentScale.Crop // o Fit si quieres que se vea completa
+            contentScale = ContentScale.Crop
         )
     }
 }

@@ -2,6 +2,7 @@ package com.electrofire.playpkm.ui.Screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -70,13 +71,7 @@ fun FourthGame(
 
             if (!respondido) {
 
-//                Image(
-//                    painter = painterResource(id = R.drawable.cuartojuego),
-//                    contentDescription = null,
-//                    modifier = Modifier.height(80.dp).wrapContentWidth()
-//                )
                 Box {
-                    // Contorno
                     Text(
                         text = "POWER\nOF MOVE",
                         textAlign = TextAlign.Center,
@@ -87,7 +82,6 @@ fun FourthGame(
                             drawStyle = Stroke(width = 6f)
                         )
                     )
-                    // Relleno
                     Text(
                         text = "POWER\nOF MOVE",
                         textAlign = TextAlign.Center,
@@ -124,7 +118,33 @@ fun FourthGame(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                PotenciaCard()
+                Row{
+                    Box {
+                        Text(
+                            text = "Potencia: ",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontSize = 30.sp,
+                                color = MaterialTheme.colorScheme.primary,
+                                drawStyle = Stroke(width = 2f)
+                            ),
+                        )
+                        Text(
+                            text = "Potencia: ",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontSize = 30.sp,
+                                color = MaterialTheme.colorScheme.secondary
+                            ),
+                        )
+                    }
+                    Text(
+                        text = movimientoActual?.p.toString(),
+                        color = MaterialTheme.colorScheme.outline,
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -132,7 +152,7 @@ fun FourthGame(
                         respuesta,
                         movimientoActual
                     )
-                ) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
+                ) {
                     WinCard(onButtonClick = {
                         navController.navigate("home") {
                             popUpTo(Screen.FourthGame.route) { inclusive = true }
@@ -152,7 +172,7 @@ fun FourthGame(
                             respuesta,
                             movimientoActual
                         )
-                    ) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
+                    ) {
                         statsViewModel.registrarVictoria()
                     } else {
                         statsViewModel.registrarDerrota()

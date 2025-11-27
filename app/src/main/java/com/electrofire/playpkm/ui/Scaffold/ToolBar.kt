@@ -457,7 +457,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Image(
-                                painter = painterResource(id = R.drawable.pantallarecomendable),
+                                painter = painterResource(id = R.drawable.sugerencia),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .width(175.dp)
@@ -492,9 +492,8 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Toda sugerencia, " +
-                                        "aviso de errores, o ideas para el futuro son recibidas con gratitud. (Mi Instagram se encuentra " +
-                                        "arriba a la derecha)",
+                                text = "Me ayuda mucho que dejes tu valoración en playstore, comentando tu opinion, sugerencias, errores o" +
+                                        " ideas para el futuro.",
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -502,6 +501,68 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                             )
                             Spacer(Modifier.height(32.dp))
                         }
+
+                        item {
+                            Box {
+                                Text(
+                                    text = "CRÉDITOS",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineLarge.copy(
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onSecondary,
+                                        drawStyle = Stroke(width = 4f)
+                                    ),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                Text(
+                                    text = "CRÉDITOS",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineLarge.copy(
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.tertiary
+                                    ),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+
+                        item {
+                            Text(
+                                text = "Las ilustraciones utilizados en el juego Power of move, pertenecen" +
+                                        " a los videojuegos oficiales de Pokemon, cumplen un rol meramente ilustrativo. A su vez, " +
+                                        "las capturas pertenecen a WIKIDEX.",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        }
+
+                        item {
+                            Text(
+                                text = "Las ilustraciones utilizados en el juego Fusion!, pertenecen" +
+                                        " a Infinite Fusion Calculator, cumplen un rol meramente ilustrativo.",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(8.dp))
+                        }
+
+                        item {
+                            Text(
+                                text = "El resto de las imágenes son obtenidas a través de la API oficial de Pokémon, " +
+                                        "puesta a disposición de manera pública por The Pokémon Company para fines de desarrollo.",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(32.dp))
+                        }
+
 
                         item {
                             Text(

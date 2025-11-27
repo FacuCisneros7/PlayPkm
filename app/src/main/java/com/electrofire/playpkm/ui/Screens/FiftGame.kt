@@ -62,18 +62,13 @@ fun FiftGame(
         ) {
             if (!respondido) {
 
-//                Image(
-//                    painter = painterResource(id = R.drawable.quintojuego),
-//                    contentDescription = null,
-//                    modifier = Modifier.height(65.dp).wrapContentWidth()
-//                )
                 Box {
                     // Contorno
                     Text(
                         text = "MYSTERIOUS\nSTATS",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 36.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
@@ -84,7 +79,7 @@ fun FiftGame(
                         text = "MYSTERIOUS\nSTATS",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 36.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.onSecondary
                         )
@@ -102,7 +97,7 @@ fun FiftGame(
                     text = respuesta,
                     onTextChange = { respuesta = it })
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 ConfirmButton(onConfirm = {
                     if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
@@ -117,7 +112,7 @@ fun FiftGame(
                     }
                 })
 
-                Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(48.dp))
 
                 Hearts(actuales = intentosRestantes)
             } else {

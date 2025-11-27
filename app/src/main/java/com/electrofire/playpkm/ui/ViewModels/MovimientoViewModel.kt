@@ -32,7 +32,7 @@ fun verificarRespuestaPotenciaMovimiento(
     movimientoActual: Movimiento?
 ): Boolean {
     if (respuesta != "") {
-        return movimientoActual != null && respuesta.toInt() == movimientoActual.Potencia
+        return movimientoActual != null && respuesta.toInt() == movimientoActual.p
     }
     return false
 }

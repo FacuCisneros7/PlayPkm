@@ -70,30 +70,22 @@ fun SecondGame(
 
             if (!respondido) {
 
-//                Image(
-//                    painter = painterResource(id = R.drawable.segundojuego),
-//                    contentDescription = null,
-//                    modifier = Modifier.height(80.dp).wrapContentWidth()
-//                )
-
                 Box {
-                    // Contorno
                     Text(
                         text = "BLURRED\nCARD",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 36.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
                         )
                     )
-                    // Relleno
                     Text(
                         text = "BLURRED\nCARD",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 36.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.onSecondary
                         )
@@ -104,18 +96,18 @@ fun SecondGame(
 
                 BlurredCard()
 
-                Spacer(modifier = Modifier.height(36.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 UserInputPokemon(
                     title = "Pokemon",
                     text = respuesta,
                     onTextChange = { respuesta = it })
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 ConfirmButton(onConfirm = { respondido = true })
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Contador(contadorViewModel = contadorViewModel)
             } else {
@@ -130,7 +122,7 @@ fun SecondGame(
                         cartaActual,
                         respuesta
                     )
-                ) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
+                ) {
                     WinCard(onButtonClick = {
                         navController.navigate("home") {
                             popUpTo(Screen.SecondGame.route) { inclusive = true }
@@ -150,7 +142,7 @@ fun SecondGame(
                             cartaActual,
                             respuesta
                         )
-                    ) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
+                    ) { 
                         statsViewModel.registrarVictoria()
                     } else {
                         statsViewModel.registrarDerrota()

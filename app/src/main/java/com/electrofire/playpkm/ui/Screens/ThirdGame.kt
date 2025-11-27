@@ -69,15 +69,10 @@ fun ThirdGame(
         ) {
 
             if (!respondido) {
-//                Image(
-//                    painter = painterResource(id = R.drawable.tercerjuego),
-//                    contentDescription = null,
-//                    modifier = Modifier.height(80.dp).wrapContentWidth()
-//                )
+
                 Box {
-                    // Contorno
                     Text(
-                        text = "ONE\nABILITY",
+                        text = "ONE ABILITY",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = 40.sp,
@@ -88,7 +83,7 @@ fun ThirdGame(
                     )
                     // Relleno
                     Text(
-                        text = "ONE\nABILITY",
+                        text = "ONE ABILITY",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = 40.sp,
@@ -98,7 +93,7 @@ fun ThirdGame(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 HabilityPokemonCard()
 
@@ -113,7 +108,7 @@ fun ThirdGame(
 
                 ConfirmButton(onConfirm = { respondido = true })
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Contador(contadorViewModel = contadorViewModel)
             } else {

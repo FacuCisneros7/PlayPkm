@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +35,7 @@ import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
+import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModel
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.PokemonViewModel
@@ -74,7 +77,7 @@ fun FirstGame(
 
                 Box {
                     Text(
-                        text = "EASY\nGAME",
+                        text = "EASY GAME",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = 40.sp,
@@ -84,7 +87,7 @@ fun FirstGame(
                         )
                     )
                     Text(
-                        text = "EASY\nGAME",
+                        text = "EASY GAME",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = 40.sp,
@@ -94,22 +97,23 @@ fun FirstGame(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 SilhouettePokemonCard()
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 UserInputPokemon(
                     title = "Pokemon",
                     text = respuesta,
-                    onTextChange = { respuesta = it })
+                    onTextChange = { respuesta = it }
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 ConfirmButton(onConfirm = { respondido = true })
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Contador(contadorViewModel = contadorViewModel)
             } else {
