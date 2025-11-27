@@ -144,6 +144,6 @@ fun SixthGame(
                 }
             }
         }
-//        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
+      BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 }

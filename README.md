@@ -8,35 +8,30 @@ Además, uno de los modos es ilimitado y jugable con amigos, ideal para ver qui�
 Podrás elegir tu criatura insignia entre una selección disponible… ¡pero elige con cuidado, no podrás cambiarla luego! 🫣
 
 🎮 Minijuegos disponibles
+
 🖤 ¿Quién está detrás de la silueta?
 
-Captura
+![FirstGame](screenshots/easygame.png)
 
 🔍 ¿Quién aparece en la carta desenfocada?
 
-Captura
+![SecondGame](screenshots/card.png)
 
 🧠 ¿Recuerdas alguna habilidad de esta criatura?
 
-Captura
+![ThirdGame](screenshots/onehability.png)
 
 💥 ¿Cuál es la potencia del movimiento?
 
-Captura
+![FourthGame](screenshots/powerofmove.png)
 
 📊 ¿Quién se oculta detrás de las estadísticas?
 
-(¡El más difícil!)
-Captura
+![FiftGame](screenshots/stats.png)
 
 🔀 Fusión misteriosa
 
-Una imagen… dos criaturas. ¿Quiénes son?
-Captura
-
-⚖️ ¿Qué criatura tiene más stats?
-
-Captura
+![SixthGame](screenshots/fusion.png)
 
 …¡y muchos más que deberás descubrir!
 
@@ -63,8 +58,6 @@ Estructura modular basada en buenas prácticas de Clean Architecture.
 Firebase Authentication — Inicio de sesión por email.
 
 Firestore — Base de datos en tiempo real para usuarios, rankings y estadísticas.
-
-Firebase Analytics (si aplica).
 
 🗄️ Base de datos local
 
