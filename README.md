@@ -7,6 +7,8 @@ Domina los 9 modos distintos, gana puntos y pone a prueba tus conocimientos. �
 Además, uno de los modos es ilimitado y jugable con amigos, ideal para ver quién es el verdadero maestro.
 Podrás elegir tu criatura insignia entre una selección disponible… ¡pero elige con cuidado, no podrás cambiarla luego! 🫣
 
+-
+
 🎮 Minijuegos disponibles
 
 🖤 ¿Quién está detrás de la silueta?
@@ -41,11 +43,13 @@ Podrás elegir tu criatura insignia entre una selección disponible… ¡pero el
 
 …¡y muchos más que deberás descubrir!
 
+-
 
 🛠️ Tecnologías utilizadas
 
 PlayPkm está desarrollado con un enfoque moderno basado en la arquitectura recomendada por Android:
 
+-
 
 👨‍💻 Frontend / UI
 
@@ -55,6 +59,7 @@ State Management con ViewModels.
 
 Navegación con Navigation Compose.
 
+-
 
 🏗️ Arquitectura
 
@@ -62,6 +67,7 @@ Inyección de dependencias con Hilt.
 
 Estructura modular basada en buenas prácticas de Clean Architecture.
 
+-
 
 ☁️ Backend y servicios
 
@@ -69,12 +75,13 @@ Firebase Authentication — Inicio de sesión por email.
 
 Firestore — Base de datos en tiempo real para usuarios, rankings y estadísticas.
 
+-
 
 🗄️ Base de datos local
 
 Room — Almacenamiento local para datos offline, progreso y configuraciones.
 
-
+-
 
 📷 Créditos de imágenes
 
@@ -89,7 +96,7 @@ Infinite Fusion Calculator — Imágenes generadas del proyecto Pokémon Infinit
 Las imágenes son utilizadas únicamente con fines ilustrativos, educativos y de juego casual dentro de la app.
 Cada recurso pertenece a sus respectivos autores.
 
-
+-
 
 ⚠️ Aviso legal
 PlayPkm no es una aplicación oficial de Pokémon y no está afiliada, aprobada ni respaldada por Nintendo, GAME FREAK o The Pokémon Company.
