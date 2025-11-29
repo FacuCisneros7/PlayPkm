@@ -75,7 +75,7 @@ fun ThirdGame(
                         text = "ONE ABILITY",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 32.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
@@ -86,7 +86,7 @@ fun ThirdGame(
                         text = "ONE ABILITY",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 32.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.onSecondary
                         )

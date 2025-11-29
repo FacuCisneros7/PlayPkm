@@ -30,7 +30,6 @@ import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.Contador
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.LoserCard
-import com.electrofire.playpkm.ui.Components.PotenciaCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
@@ -76,7 +75,7 @@ fun FourthGame(
                         text = "POWER\nOF MOVE",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 34.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
@@ -86,7 +85,7 @@ fun FourthGame(
                         text = "POWER\nOF MOVE",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 34.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.onSecondary
                         )

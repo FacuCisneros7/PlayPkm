@@ -1,6 +1,7 @@
 package com.electrofire.playpkm.ui.Screens
 
 import android.media.MediaPlayer
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -114,15 +115,15 @@ fun HomeScreen(
                             val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
-                            navController.navigate("first_game")
-//                            repo.canPlayTodayDos("first_game") { canPlay ->
-//                                if(canPlay){
-//                                    navController.navigate("first_game")
-//                                }
-//                                else{
-//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
+
+                            repo.canPlayTodayDos("first_game") { canPlay ->
+                                if(canPlay){
+                                    navController.navigate("first_game")
+                                }
+                                else{
+                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+                                }
+                            }
 
                         }
                     )
@@ -137,15 +138,14 @@ fun HomeScreen(
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
-                            navController.navigate("second_game")
-//                            repo.canPlayTodayDos("second_game") { canPlay ->
-//                                if(canPlay){
-//                                    navController.navigate("second_game")
-//                                }
-//                                else{
-//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
+                            repo.canPlayTodayDos("second_game") { canPlay ->
+                                if(canPlay){
+                                    navController.navigate("second_game")
+                                }
+                                else{
+                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+                                }
+                            }
 
                         }
                     )
@@ -159,15 +159,15 @@ fun HomeScreen(
                             val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
-                            navController.navigate("third_game")
-//                            repo.canPlayTodayDos("third_game") { canPlay ->
-//                                if(canPlay){
-//                                    navController.navigate("third_game")
-//                                }
-//                                else{
-//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
+
+                            repo.canPlayTodayDos("third_game") { canPlay ->
+                                if(canPlay){
+                                    navController.navigate("third_game")
+                                }
+                                else{
+                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     )
                 }
@@ -180,15 +180,15 @@ fun HomeScreen(
                             val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
-                            navController.navigate("fourth_game")
-//                            repo.canPlayTodayDos("fourth_game") { canPlay ->
-//                                if(canPlay){
-//                                    navController.navigate("fourth_game")
-//                                }
-//                                else{
-//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
+
+                            repo.canPlayTodayDos("fourth_game") { canPlay ->
+                                if(canPlay){
+                                    navController.navigate("fourth_game")
+                                }
+                                else{
+                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     )
                 }
@@ -201,15 +201,14 @@ fun HomeScreen(
                             val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
-                            navController.navigate("fift_game")
-//                            repo.canPlayTodayDos("fift_game") { canPlay ->
-//                                if(canPlay){
-//                                    navController.navigate("fift_game")
-//                                }
-//                                else{
-//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
+                            repo.canPlayTodayDos("fift_game") { canPlay ->
+                                if(canPlay){
+                                    navController.navigate("fift_game")
+                                }
+                                else{
+                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     )
                 }
@@ -222,15 +221,15 @@ fun HomeScreen(
                             val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
-                            navController.navigate("sixth_game")
-//                            repo.canPlayTodayDos("sixth_game") { canPlay ->
-//                                if(canPlay){
-//                                    navController.navigate("sixth_game")
-//                                }
-//                                else{
-//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
+
+                            repo.canPlayTodayDos("sixth_game") { canPlay ->
+                                if(canPlay){
+                                    navController.navigate("sixth_game")
+                                }
+                                else{
+                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     )
                 }
@@ -243,15 +242,14 @@ fun HomeScreen(
                             val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
-                            navController.navigate("seventh_game")
-//                            repo.canPlayTodayDos("seventh_game") { canPlay ->
-//                                if(canPlay){
-//                                    navController.navigate("seventh_game")
-//                                }
-//                                else{
-//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
+                            repo.canPlayTodayDos("seventh_game") { canPlay ->
+                                if(canPlay){
+                                    navController.navigate("seventh_game")
+                                }
+                                else{
+                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+                                }
+                            }
 
                         }
                     )
@@ -265,15 +263,15 @@ fun HomeScreen(
                             val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
-                            navController.navigate("eight_game")
-//                            repo.canPlayTodayDos("eight_game") { canPlay ->
-//                                if(canPlay){
-//                                    navController.navigate("eight_game")
-//                                }
-//                                else{
-//                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
-//                                }
-//                            }
+
+                            repo.canPlayTodayDos("eight_game") { canPlay ->
+                                if(canPlay){
+                                    navController.navigate("eight_game")
+                                }
+                                else{
+                                    Toast.makeText(context,"Ya jugaste hoy! Espera a mañana", Toast.LENGTH_SHORT).show()
+                                }
+                            }
 
                         }
                     )

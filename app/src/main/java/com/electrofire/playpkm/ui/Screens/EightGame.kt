@@ -82,7 +82,7 @@ fun EightGame(
                             text = "IMPOSTOR",
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 50.sp,
+                                fontSize = 40.sp,
                                 lineHeight = 38.sp,
                                 color = MaterialTheme.colorScheme.primary,
                                 drawStyle = Stroke(width = 6f)
@@ -92,7 +92,7 @@ fun EightGame(
                             text = "IMPOSTOR",
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 50.sp,
+                                fontSize = 40.sp,
                                 lineHeight = 38.sp,
                                 color = MaterialTheme.colorScheme.onSecondary
                             )

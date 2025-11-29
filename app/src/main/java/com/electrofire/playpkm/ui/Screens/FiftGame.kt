@@ -68,7 +68,7 @@ fun FiftGame(
                         text = "MYSTERIOUS\nSTATS",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 36.sp,
+                            fontSize = 34.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
@@ -79,7 +79,7 @@ fun FiftGame(
                         text = "MYSTERIOUS\nSTATS",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 36.sp,
+                            fontSize = 34.sp,
                             lineHeight = 38.sp,
                             color = MaterialTheme.colorScheme.onSecondary
                         )
