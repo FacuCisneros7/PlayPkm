@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,14 +25,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.electrofire.playpkm.ui.CardItems.StatsApiCard
 import com.electrofire.playpkm.ui.CardItems.StatsPokemonApiCard
-import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.Hearts
+import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
+import com.electrofire.playpkm.ui.ViewModels.FiftGameState
+import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.StatsApiViewModel
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaStatsApiPokemon
@@ -40,13 +43,13 @@ import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaStatsApiPokemon
 fun FiftGame(
     navController: NavController,
     viewModel: StatsApiViewModel = hiltViewModel(),
-    statsViewModel: HomeStatsViewModel
+    statsViewModel: HomeStatsViewModel,
+    gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
     var respuesta by remember { mutableStateOf("") }
-    val pokemonActual = viewModel.pokemon
-    var respondido by remember { mutableStateOf(false) }
+    val state by viewModel.state.collectAsState()
 
-    var intentosRestantes by remember { mutableStateOf(3) } // 👈 contador de vidas
+    var intentosRestantes by remember { mutableStateOf(3) }
 
     Box(
         Modifier.fillMaxSize()
@@ -54,98 +57,118 @@ fun FiftGame(
 
         GradientBackground()
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            if (!respondido) {
-
-                Box {
-                    // Contorno
-                    Text(
-                        text = "MYSTERIOUS\nSTATS",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 34.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            drawStyle = Stroke(width = 6f)
-                        )
-                    )
-                    // Relleno
-                    Text(
-                        text = "MYSTERIOUS\nSTATS",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 34.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.onSecondary
-                        )
-                    )
+        when (val currentState = state) {
+            is FiftGameState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Loading()
                 }
+            }
 
-                Spacer(modifier = Modifier.height(32.dp))
-
-                StatsApiCard()
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                UserInputPokemon(
-                    title = "Pokemon",
-                    text = respuesta,
-                    onTextChange = { respuesta = it })
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ConfirmButton(onConfirm = {
-                    if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
-                        respondido = true // acertó, termina el juego
-                    } else {
-                        intentosRestantes--
-                        if (intentosRestantes <= 0) {
-                            respondido = true // perdió todos los intentos
-                        } else {
-                            respuesta = "" // limpiar input y permitir otro intento
-                        }
-                    }
-                })
-
-                Spacer(modifier = Modifier.height(48.dp))
-
-                Hearts(actuales = intentosRestantes)
-            } else {
-                Spacer(modifier = Modifier.height(90.dp))
-
-                StatsPokemonApiCard()
-
-                Spacer(modifier = Modifier.height(64.dp))
-
-                if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
-                    WinCard(onButtonClick = {
-                        navController.navigate("home") {
-                            popUpTo(Screen.FiftGame.route) { inclusive = true }
-                        }
-                    }
-                    )
+            is FiftGameState.Error -> {
+                if (currentState.message.contains("conexión", ignoreCase = true)) {
+                    NotInternetScreen()
                 } else {
-                    LoserCard(onButtonClick = {
-                        navController.navigate("home") {
-                            popUpTo(Screen.FiftGame.route) { inclusive = true }
-                        }
-                    }
-                    )
+                    ErrorScreen()
                 }
-                LaunchedEffect(Unit) {
-                    if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
-                        statsViewModel.registrarVictoria()
+            }
+
+            is FiftGameState.Success -> {
+                val pokemonActual = currentState.pokemon
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    if (!gameStateViewModel.respondido) {
+
+                        Box {
+                            Text(
+                                text = "MYSTERIOUS\nSTATS",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 34.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    drawStyle = Stroke(width = 6f)
+                                )
+                            )
+                            Text(
+                                text = "MYSTERIOUS\nSTATS",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 34.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.onSecondary
+                                )
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        StatsApiCard(pokemon = pokemonActual)
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        UserInputPokemon(
+                            title = "Pokemon",
+                            text = respuesta,
+                            onTextChange = { respuesta = it })
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        ConfirmButton(onConfirm = {
+                            if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
+                                gameStateViewModel.responder()
+                            } else {
+                                intentosRestantes--
+                                if (intentosRestantes <= 0) {
+                                    gameStateViewModel.responder()
+                                } else {
+                                    respuesta = ""
+                                }
+                            }
+                        })
+
+                        Spacer(modifier = Modifier.height(48.dp))
+
+                        Hearts(actuales = intentosRestantes)
                     } else {
-                        statsViewModel.registrarDerrota()
+                        Spacer(modifier = Modifier.height(90.dp))
+
+                        StatsPokemonApiCard(pokemon = pokemonActual)
+
+                        Spacer(modifier = Modifier.height(64.dp))
+
+                        if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
+                            WinCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.FiftGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        } else {
+                            LoserCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.FiftGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        }
+                        LaunchedEffect(gameStateViewModel.respondido) {
+                            if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
+                                statsViewModel.registrarVictoria()
+                            } else {
+                                statsViewModel.registrarDerrota()
+                            }
+                        }
                     }
                 }
             }
         }
-        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 }

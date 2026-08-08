@@ -1,49 +1,76 @@
 package com.electrofire.playpkm.Data.Repository
 
-import android.util.Log
 import com.electrofire.playpkm.Data.UserData
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class UsersRepository {
+class UsersRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
 
-//    fun getUsersOrderedByVictories(onResult: (List<UserData>) -> Unit) {
-//        db.collection("Users")
-//            .orderBy("victorias", Query.Direction.DESCENDING)
-//            .orderBy("derrotas", Query.Direction.ASCENDING)
-//            .get()
-//            .addOnSuccessListener { snapshot ->
-//                val users = snapshot.documents.mapNotNull { doc ->
-//                    doc.toObject(UserData::class.java)?.copy(id = doc.id) // 👈 acá guardamos el UID
-//                }
-//                onResult(users)
-//            }
-//            .addOnFailureListener { e ->
-//                Log.e("Firestore", "Error al obtener usuarios", e)
-//                onResult(emptyList())
-//            }
-//    }
+    suspend fun getUsersOrderedByVictories(): List<UserData> {
+        return try {
+            val snapshot = db.collection("Users")
+                .orderBy("victorias", Query.Direction.DESCENDING)
+                .orderBy("derrotas", Query.Direction.ASCENDING)
+                .limit(30)
+                .get()
+                .await()
 
-    fun getUsersOrderedByVictories(onResult: (List<UserData>) -> Unit): ListenerRegistration {
-        return db.collection("Users")
-            .orderBy("victorias", Query.Direction.DESCENDING)
-            .orderBy("derrotas", Query.Direction.ASCENDING)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Log.e("Firestore", "Error al escuchar usuarios", error)
-                    onResult(emptyList())
-                    return@addSnapshotListener
-                }
-
-                if (snapshot != null) {
-                    val users = snapshot.documents.mapNotNull { doc ->
-                        doc.toObject(UserData::class.java)?.copy(id = doc.id)
-                    }
-                    onResult(users)
-                }
+            snapshot.documents.mapNotNull { doc ->
+                doc.toObject(UserData::class.java)?.copy(id = doc.id)
             }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
+    suspend fun getUsersOrderedByVictoriesInGC(): List<UserData> {
+        return try {
+            val snapshot = db.collection("Users")
+                .orderBy("maxPoints", Query.Direction.DESCENDING)
+                .limit(30)
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { doc ->
+                doc.toObject(UserData::class.java)?.copy(id = doc.id)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    suspend fun getUsersOrderedByVictoriesInTS(): List<UserData> {
+        return try {
+            val snapshot = db.collection("Users")
+                .orderBy("maxPointsDos", Query.Direction.DESCENDING)
+                .limit(30)
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { doc ->
+                doc.toObject(UserData::class.java)?.copy(id = doc.id)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    suspend fun getUsersOrderedByVictoriesInBA(): List<UserData> {
+        return try {
+            val snapshot = db.collection("Users")
+                .orderBy("maxPointsTres", Query.Direction.DESCENDING)
+                .limit(30)
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { doc ->
+                doc.toObject(UserData::class.java)?.copy(id = doc.id)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 }

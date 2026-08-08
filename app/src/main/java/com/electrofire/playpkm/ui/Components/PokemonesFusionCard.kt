@@ -16,57 +16,54 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.electrofire.playpkm.ui.ViewModels.FusionViewModel
+import com.electrofire.playpkm.Data.Fusion
 
 @Composable
-fun PokemonesFusionCard(modifier: Modifier = Modifier, viewModel: FusionViewModel = viewModel()) {
-    val fusionActual = viewModel.fusion
+fun PokemonesFusionCard(
+    fusionActual: Fusion,
+    modifier: Modifier = Modifier
+) {
+    val gradientColors = listOf(
+        MaterialTheme.colorScheme.outline,
+        MaterialTheme.colorScheme.onPrimary,
+        MaterialTheme.colorScheme.tertiary
+    ) //Degradado
 
-    if (fusionActual != null) {
-
-        val gradientColors = listOf(
-            MaterialTheme.colorScheme.outline,
-            MaterialTheme.colorScheme.onPrimary,
-            MaterialTheme.colorScheme.tertiary
-        ) //Degradado
-
-        Card(
-            modifier.wrapContentSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            ),
-            elevation = CardDefaults.cardElevation(10.dp),
-            shape = MaterialTheme.shapes.large,
+    Card(
+        modifier.wrapContentSize(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
+        elevation = CardDefaults.cardElevation(10.dp),
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Box(
+            modifier = modifier
+                .background(
+                    brush = Brush.verticalGradient(gradientColors),
+                    shape = MaterialTheme.shapes.large,
+                )
+                .padding(2.dp), // grosor del "trazo"
         ) {
-            Box(
-                modifier = modifier
-                    .background(
-                        brush = Brush.verticalGradient(gradientColors),
-                        shape = MaterialTheme.shapes.large,
-                    )
-                    .padding(2.dp), // grosor del "trazo"
+            Card(
+                modifier
+                    .wrapContentSize()
+                    .padding(3.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                ),
+                shape = MaterialTheme.shapes.large
             ) {
-                Card(
-                    modifier
-                        .wrapContentSize()
-                        .padding(3.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondary
-                    ),
-                    shape = MaterialTheme.shapes.large
+                Column(
+                    modifier.padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        modifier.padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        for (fusion in fusionActual.Pokemones) {
-                            Text(
-                                fusion.uppercase(),
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
-                            )
-                        }
+                    for (fusion in fusionActual.Pokemones) {
+                        Text(
+                            fusion.uppercase(),
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
+                        )
                     }
                 }
             }

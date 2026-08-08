@@ -6,31 +6,31 @@ import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import java.util.TimeZone
 import javax.inject.Inject
-import kotlin.random.Random
 
 class MovimientosRepository @Inject constructor() {
     private val timeRepository = TimeRepository()
-
     private val db = FirebaseFirestore.getInstance()
     private val collection = db.collection("Movimientos")
 
-    suspend fun obtenerTodosLosMovimientos(): List<Movimiento> {
-        val snapshot =
-            collection.get().await()  //Snapshot contiene_todo lo devuelto en la coleccion
-        return snapshot.toObjects(Movimiento::class.java)
-    }
+    private val TOTAL_MOVIMIENTOS = 70
 
     suspend fun obtenerMovimientoDelDia(): Movimiento? {
-        val lista = obtenerTodosLosMovimientos()
 
-        val horaServidor = timeRepository.obtenerHoraServidor()
+        val horaServidor = timeRepository.obtenerHoraServidor() ?: return null
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
+        calendar.time = horaServidor
         val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
 
-        val random = Random(diaDelAnio.toLong())
-        val indice = random.nextInt(lista.size)
-        return lista[indice]
+        val indice = diaDelAnio % TOTAL_MOVIMIENTOS
+
+        val snapshot = collection
+            .whereEqualTo("id", indice)
+            .limit(1)
+            .get()
+            .await()
+
+        return snapshot.documents.firstOrNull()
+            ?.toObject(Movimiento::class.java)
     }
 
 }

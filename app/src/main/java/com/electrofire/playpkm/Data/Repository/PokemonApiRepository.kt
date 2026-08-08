@@ -91,7 +91,8 @@ class PokemonApiRepository @Inject constructor(
             name = pokemonSinHabilidad.name,
             imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonSinHabilidad.id}.png",
             stats = pokemonSinHabilidad.stats.associate { it.stat.name to it.base_stat },
-            abilities = translatedAbilities
+            abilities = translatedAbilities,
+            id = pokemonSinHabilidad.id
         )
 
         val listaPokemonCompleta: List<PokemonApi> = listPokemonResponse.map { pokemon ->
@@ -99,7 +100,8 @@ class PokemonApiRepository @Inject constructor(
                 name = pokemon.name,
                 imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png",
                 stats = pokemon.stats.associate { it.stat.name to it.base_stat },
-                abilities = pokemon.abilities.map { it.ability.name }
+                abilities = pokemon.abilities.map { it.ability.name },
+                id = pokemon.id
             )
         }
 
@@ -111,6 +113,7 @@ class PokemonApiRepository @Inject constructor(
 
     }
 
+
     suspend fun obtenerPokemonRandom(): PokemonApi? {
         val randomId = (1..1025).random()
         val response = api.getPokemon(randomId)
@@ -118,7 +121,8 @@ class PokemonApiRepository @Inject constructor(
             name = response.name.replaceFirstChar { it.uppercase() },
             imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$randomId.png",
             stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = response.abilities.map { it.ability.name }
+            abilities = response.abilities.map { it.ability.name },
+            id = response.id
         )
     }
 
@@ -126,12 +130,11 @@ class PokemonApiRepository @Inject constructor(
 
         val horaServidor = timeRepository.obtenerHoraServidor()
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
+        calendar.time = horaServidor!!
         val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
 
-        val allIds = (1..1025).shuffled(Random(1234)) // la semilla asegura que todos vean lo mismo
+        val allIds = (1..1025).shuffled(Random(1234))
 
-        // Selecciono el ID según el día del año
         val idDelDia = allIds[diaDelAnio % allIds.size]
 
         val response = api.getPokemon(idDelDia)
@@ -140,7 +143,31 @@ class PokemonApiRepository @Inject constructor(
             name = response.name.replaceFirstChar { it.uppercase() },
             imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
             stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = response.abilities.map { it.ability.name }
+            abilities = response.abilities.map { it.ability.name },
+            id = response.id
+        )
+
+    }
+
+    suspend fun obtenerPokemonDelDiaConZoom(): PokemonApi? {
+
+        val horaServidor = timeRepository.obtenerHoraServidor()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.time = horaServidor!!
+        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
+
+        val allIds = (1..1025).shuffled(Random(1534))
+
+        val idDelDia = allIds[diaDelAnio % allIds.size]
+
+        val response = api.getPokemon(idDelDia)
+
+        return PokemonApi(
+            name = response.name.replaceFirstChar { it.uppercase() },
+            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
+            stats = response.stats.associate { it.stat.name to it.base_stat },
+            abilities = response.abilities.map { it.ability.name },
+            id = response.id
         )
 
     }
@@ -152,9 +179,8 @@ class PokemonApiRepository @Inject constructor(
         calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
         val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
 
-        val allIds = (1..1025).shuffled(Random(1242)) // la semilla asegura que todos vean lo mismo
+        val allIds = (1..1025).shuffled(Random(1242))
 
-        // Selecciono el ID según el día del año
         val idDelDia = allIds[diaDelAnio % allIds.size]
 
         val response = api.getPokemon(idDelDia)
@@ -163,7 +189,8 @@ class PokemonApiRepository @Inject constructor(
             name = response.name.replaceFirstChar { it.uppercase() },
             imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
             stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = response.abilities.map { it.ability.name }
+            abilities = response.abilities.map { it.ability.name },
+            id = response.id
         )
 
     }
@@ -194,7 +221,8 @@ class PokemonApiRepository @Inject constructor(
             name = response.name.replaceFirstChar { it.uppercase() },
             imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
             stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = translatedAbilities
+            abilities = translatedAbilities,
+            id = response.id
         )
     }
 
@@ -209,7 +237,9 @@ class PokemonApiRepository @Inject constructor(
                 name = response.name.replaceFirstChar { it.uppercase() },
                 imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png",
                 stats = response.stats.associate { it.stat.name to it.base_stat },
-                abilities = response.abilities.map { it.ability.name })
+                abilities = response.abilities.map { it.ability.name },
+                id = response.id
+            )
         }
     }
 

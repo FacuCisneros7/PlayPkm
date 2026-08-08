@@ -2,10 +2,8 @@ package com.electrofire.playpkm.ui.CardItems
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,54 +21,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.ViewModels.StatsApiViewModel
+import com.electrofire.playpkm.Data.PokemonApi
 
 @Composable
-fun StatsApiCard(modifier: Modifier = Modifier, viewModel: StatsApiViewModel = hiltViewModel()) {
-    val pokemon = viewModel.pokemon
-
-    if (pokemon == null) {
-        Card(
-            modifier = modifier
-                .width(290.dp)
-                .height(154.dp)
-                .fillMaxSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            )
+fun StatsApiCard(
+    pokemon: PokemonApi,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        border = BorderStroke(3.dp, MaterialTheme.colorScheme.secondary.copy(0.8f)),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .background(Color.Transparent)
+                .padding(16.dp)
         ) {
-            Box(
-                Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Loading()
+            pokemon.stats.forEach { (statName, statValue) ->
+                StatRow(statName = statName, statValue = statValue)
             }
-        }
-    } else {
-        Card(
-            modifier = modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
-            border = BorderStroke(3.dp, MaterialTheme.colorScheme.secondary.copy(0.8f)),
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(8.dp)
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .background(Color.Transparent)
-                    .padding(16.dp)
-            ) {
-
-                pokemon.stats.forEach { (statName, statValue) ->
-                    StatRow(statName = statName, statValue = statValue)
-                }
-
-            }
-
         }
     }
 }
@@ -104,7 +78,6 @@ fun StatRow(statName: String, statValue: Int, maxStat: Int = 200) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-
         Text(
             text = statNameRecorted,
             modifier = Modifier.width(40.dp),
@@ -126,7 +99,5 @@ fun StatRow(statName: String, statValue: Int, maxStat: Int = 200) {
             color = statColor,
             trackColor = MaterialTheme.colorScheme.inversePrimary
         )
-
     }
-
 }

@@ -42,7 +42,9 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
+import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
+import com.electrofire.playpkm.ui.ViewModels.SeventhGameState
 import com.electrofire.playpkm.ui.ViewModels.SeventhGameViewModel
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaSeventhGame
 
@@ -50,14 +52,12 @@ import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaSeventhGame
 fun SeventhGame(
     navController: NavController,
     viewModel: SeventhGameViewModel = hiltViewModel(),
-    statsViewModel: HomeStatsViewModel
+    statsViewModel: HomeStatsViewModel,
+    gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
 
     val state by viewModel.state.collectAsState()
-
     var selectedPokemon by remember { mutableStateOf<PokemonApi?>(null) }
-
-    var respondido by remember { mutableStateOf(false) }
 
     Box(
         Modifier.fillMaxSize(),
@@ -66,169 +66,187 @@ fun SeventhGame(
 
         GradientBackground()
 
-        if (state.pokemons.isNotEmpty() && state.selectedStat != null) {
-
-            if (!respondido) {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+        when (val currentState = state) {
+            is SeventhGameState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box {
-                        Text(
-                            text = "THE BEST",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 40.sp,
-                                lineHeight = 38.sp,
-                                color = MaterialTheme.colorScheme.primary,
-                                drawStyle = Stroke(width = 6f)
-                            )
-                        )
-                        Text(
-                            text = "THE BEST",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 40.sp,
-                                lineHeight = 38.sp,
-                                color = MaterialTheme.colorScheme.onSecondary
-                            )
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "${state.selectedStat}".replaceFirstChar { it.uppercase() },
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    state.pokemons.forEach { pkm ->
-                        PokemonApiCard(
-                            pokemon = pkm,
-                            onSelected = pkm == selectedPokemon,
-                            onClick = { selectedPokemon = pkm },
-                            modifier = Modifier.size(152.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    ConfirmButton(
-                        onConfirm = { respondido = true },
-                        enabled = selectedPokemon != null
-                    )
+                    Loading()
                 }
+            }
 
-            } else {
+            is SeventhGameState.Error -> {
+                if (currentState.message.contains("conexión", ignoreCase = true)) {
+                    NotInternetScreen()
+                } else {
+                    ErrorScreen()
+                }
+            }
 
-                Column(
-                    modifier = Modifier
-                        .wrapContentSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                )
-                {
+            is SeventhGameState.Success -> {
+                val gameData = currentState.data
 
-                    Card(
+                if (!gameStateViewModel.respondido) {
+
+                    Column(
                         modifier = Modifier
-                            .width(180.dp)
-                            .height(180.dp)
-                            .padding(8.dp),
-                        border = BorderStroke(4.dp, Color(0xFF00C853)),
-                        shape = MaterialTheme.shapes.large,
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                        )
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            AsyncImage(
-                                model = state.correctPokemon?.imageUrl,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(150.dp)
-                                    .height(150.dp),
-                                contentScale = ContentScale.Fit
-                            )
-                        }
-                    }
-                    Spacer(Modifier.height(32.dp))
-
-                    Row{
                         Box {
                             Text(
-                                text = "${state.selectedStat}: ",
+                                text = "THE BEST",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
-                                    fontSize = 30.sp,
+                                    fontSize = 40.sp,
+                                    lineHeight = 38.sp,
                                     color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 2f)
-                                ),
+                                    drawStyle = Stroke(width = 6f)
+                                )
                             )
                             Text(
-                                text = "${state.selectedStat}: ",
+                                text = "THE BEST",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
-                                    fontSize = 30.sp,
-                                    color = MaterialTheme.colorScheme.secondary
-                                ),
+                                    fontSize = 40.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.onSecondary
+                                )
                             )
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         Text(
-                            text = "${state.correctPokemon!!.stats[state.selectedStatEnglish]}",
-                            color = MaterialTheme.colorScheme.outline,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
+                            text = "${gameData.selectedStat}".replaceFirstChar { it.uppercase() },
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
                             textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        gameData.pokemons.forEach { pkm ->
+                            PokemonApiCard(
+                                pokemon = pkm,
+                                onSelected = pkm == selectedPokemon,
+                                onClick = { selectedPokemon = pkm },
+                                modifier = Modifier.size(152.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        ConfirmButton(
+                            onConfirm = { gameStateViewModel.responder() },
+                            enabled = selectedPokemon != null
                         )
                     }
 
+                } else {
 
-                    Spacer(Modifier.height(32.dp))
+                    Column(
+                        modifier = Modifier
+                            .wrapContentSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    )
+                    {
 
-                    if (verificarRespuestaSeventhGame(
-                            correctPokemon = state.correctPokemon!!,
-                            choisePokemon = selectedPokemon!!
-                        )
-                    ) {
-                        WinCard(onButtonClick = {
-                            navController.navigate("home") {
-                                popUpTo(Screen.SeventhGame.route) { inclusive = true }
+                        Card(
+                            modifier = Modifier
+                                .width(180.dp)
+                                .height(180.dp)
+                                .padding(8.dp),
+                            border = BorderStroke(4.dp, Color(0xFF00C853)),
+                            shape = MaterialTheme.shapes.large,
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                            )
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                AsyncImage(
+                                    model = gameData.correctPokemons.first().imageUrl,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .height(150.dp),
+                                    contentScale = ContentScale.Fit
+                                )
                             }
                         }
-                        )
-                    } else {
-                        LoserCard(onButtonClick = {
-                            navController.navigate("home") {
-                                popUpTo(Screen.SeventhGame.route) { inclusive = true }
-                            }
-                        }
-                        )
-                    }
+                        Spacer(Modifier.height(32.dp))
 
-                    LaunchedEffect(Unit) {
+                        Row {
+                            Box {
+                                Text(
+                                    text = "${gameData.selectedStat}: ",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineLarge.copy(
+                                        fontSize = 30.sp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        drawStyle = Stroke(width = 2f)
+                                    ),
+                                )
+                                Text(
+                                    text = "${gameData.selectedStat}: ",
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineLarge.copy(
+                                        fontSize = 30.sp,
+                                        color = MaterialTheme.colorScheme.secondary
+                                    ),
+                                )
+                            }
+                            Text(
+                                text = "${gameData.correctPokemons.first().stats[gameData.selectedStatEnglish]}",
+                                color = MaterialTheme.colorScheme.outline,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+
+
+                        Spacer(Modifier.height(32.dp))
+
                         if (verificarRespuestaSeventhGame(
-                                correctPokemon = state.correctPokemon!!,
+                                correctPokemons = gameData.correctPokemons,
                                 choisePokemon = selectedPokemon!!
                             )
                         ) {
-                            statsViewModel.registrarVictoria()
+                            WinCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.SeventhGame.route) { inclusive = true }
+                                }
+                            }
+                            )
                         } else {
-                            statsViewModel.registrarDerrota()
+                            LoserCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.SeventhGame.route) { inclusive = true }
+                                }
+                            }
+                            )
                         }
-                    }
 
+                        LaunchedEffect(gameStateViewModel.respondido) {
+                            if (verificarRespuestaSeventhGame(
+                                    correctPokemons = gameData.correctPokemons,
+                                    choisePokemon = selectedPokemon!!
+                                )
+                            ) {
+                                statsViewModel.registrarVictoria()
+                            } else {
+                                statsViewModel.registrarDerrota()
+                            }
+                        }
+
+                    }
                 }
             }
-        } else {
-            Loading()
         }
     }
 }

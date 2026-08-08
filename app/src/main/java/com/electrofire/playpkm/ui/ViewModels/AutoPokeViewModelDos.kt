@@ -5,18 +5,27 @@ import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.LocalData.PokemonEntity
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
 class AutoPokeViewModelDos @Inject constructor(
     private val repository: PokemonApiRepository
 ) : ViewModel() {
 
+    private val _queryFlow = MutableStateFlow("")
+
     private val _suggestions = MutableStateFlow<List<PokemonEntity>>(emptyList())
-    val sugerencias: StateFlow<List<PokemonEntity>> = _suggestions
+    val sugerencias: StateFlow<List<PokemonEntity>> = _suggestions.asStateFlow()
 
     init {
         // Al iniciar, sincroniza si la base local está vacía
@@ -25,15 +34,22 @@ class AutoPokeViewModelDos @Inject constructor(
                 repository.syncPokemon()
             }
         }
+
+        viewModelScope.launch {
+            _queryFlow
+                .debounce(700L)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    _suggestions.value = if (query.isEmpty()) {
+                        emptyList()
+                    } else {
+                        repository.searchPokemon(query)
+                    }
+                }
+        }
     }
 
     fun onQueryChanged(query: String) {
-        viewModelScope.launch {
-            repository.searchPokemon(query)
-
-            _suggestions.value =
-                if (query.isEmpty()) emptyList()
-                else repository.searchPokemon(query)
-        }
+        _queryFlow.value = query
     }
 }

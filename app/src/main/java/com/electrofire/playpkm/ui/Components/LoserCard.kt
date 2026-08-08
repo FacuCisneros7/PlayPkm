@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,7 +53,7 @@ fun LoserCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "DERROTA",
+                    text = stringResource(id = R.string.defeat),
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
                     textAlign = TextAlign.Center,
@@ -77,7 +78,7 @@ fun LoserCard(
                     )
                 ) {
                     Text(
-                        text = "INICIO",
+                        text = stringResource(id = R.string.ninthgame_home),
                         style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()

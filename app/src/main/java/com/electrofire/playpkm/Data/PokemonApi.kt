@@ -4,5 +4,6 @@ data class PokemonApi(
     val name: String,
     val imageUrl: String?,
     val stats: Map<String, Int>,
-    val abilities: List<String>
+    val abilities: List<String>,
+    val id: Int
 )

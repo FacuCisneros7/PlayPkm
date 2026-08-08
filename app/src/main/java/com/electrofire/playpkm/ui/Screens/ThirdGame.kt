@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,18 +25,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.electrofire.playpkm.ui.CardItems.HabilityPokemonCard
-import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.Contador
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.HabilityCard
+import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
+import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HabilityViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
+import com.electrofire.playpkm.ui.ViewModels.ThirdGameState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaHabilidadPokemon
 
 @Composable
@@ -43,17 +46,17 @@ fun ThirdGame(
     navController: NavController,
     viewModel: HabilityViewModel = hiltViewModel(),
     statsViewModel: HomeStatsViewModel,
-    contadorViewModel: ContadorViewModel = viewModel()
+    contadorViewModel: ContadorViewModel = viewModel(),
+    gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
     var respuesta by remember { mutableStateOf("") }
-    val pokemonActual = viewModel.pokemon
-    var respondido by remember { mutableStateOf(false) }
+    val state by viewModel.state.collectAsState()
 
     val contador = contadorViewModel.contador
 
     LaunchedEffect(contador) {
         if (contador == 0) {
-            respondido = true
+            gameStateViewModel.responder()
         }
     }
 
@@ -61,100 +64,121 @@ fun ThirdGame(
 
         GradientBackground()
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            if (!respondido) {
-
-                Box {
-                    Text(
-                        text = "ONE ABILITY",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 32.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            drawStyle = Stroke(width = 6f)
-                        )
-                    )
-                    // Relleno
-                    Text(
-                        text = "ONE ABILITY",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 32.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.onSecondary
-                        )
-                    )
+        when (val currentState = state) {
+            is ThirdGameState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Loading()
                 }
+            }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                HabilityPokemonCard()
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                UserInputPokemon(
-                    title = "Habilidad",
-                    text = respuesta,
-                    onTextChange = { respuesta = it })
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ConfirmButton(onConfirm = { respondido = true })
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Contador(contadorViewModel = contadorViewModel)
-            } else {
-                Spacer(modifier = Modifier.height(40.dp))
-
-                HabilityPokemonCard()
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                HabilityCard(pokemonActual = pokemonActual)
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if (verificarRespuestaHabilidadPokemon(
-                        pokemonActual,
-                        respuesta
-                    )
-                ) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
-                    WinCard(onButtonClick = {
-                        navController.navigate("home") {
-                            popUpTo(Screen.ThirdGame.route) { inclusive = true }
-                        }
-                    }
-                    )
+            is ThirdGameState.Error -> {
+                if (currentState.message.contains("conexión", ignoreCase = true)) {
+                    NotInternetScreen()
                 } else {
-                    LoserCard(onButtonClick = {
-                        navController.navigate("home") {
-                            popUpTo(Screen.ThirdGame.route) { inclusive = true }
-                        }
-                    }
-                    )
+                    ErrorScreen()
                 }
-                LaunchedEffect(Unit) {
-                    if (verificarRespuestaHabilidadPokemon(
-                            pokemonActual,
-                            respuesta
-                        )
-                    ) {  //verificarRespuesta por verificarRespuestaCartaBorrosa
-                        statsViewModel.registrarVictoria()
+            }
+
+            is ThirdGameState.Success -> {
+                val pokemonActual = currentState.pokemon
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    if (!gameStateViewModel.respondido) {
+
+                        Box {
+                            Text(
+                                text = "ONE ABILITY",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 32.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    drawStyle = Stroke(width = 6f)
+                                )
+                            )
+                            Text(
+                                text = "ONE ABILITY",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 32.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.onSecondary
+                                )
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        HabilityPokemonCard(pokemon = pokemonActual)
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        UserInputPokemon(
+                            title = "Habilidad",
+                            text = respuesta,
+                            onTextChange = { respuesta = it })
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        ConfirmButton(onConfirm = { gameStateViewModel.responder() })
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        Contador(contadorViewModel = contadorViewModel)
                     } else {
-                        statsViewModel.registrarDerrota()
+                        Spacer(modifier = Modifier.height(40.dp))
+
+                        HabilityPokemonCard(pokemon = pokemonActual)
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        HabilityCard(pokemonActual = pokemonActual)
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        if (verificarRespuestaHabilidadPokemon(
+                                pokemonActual,
+                                respuesta
+                            )
+                        ) {
+                            WinCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.ThirdGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        } else {
+                            LoserCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.ThirdGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        }
+                        LaunchedEffect(gameStateViewModel.respondido) {
+                            if (verificarRespuestaHabilidadPokemon(
+                                    pokemonActual,
+                                    respuesta
+                                )
+                            ) {
+                                statsViewModel.registrarVictoria()
+                            } else {
+                                statsViewModel.registrarDerrota()
+                            }
+                        }
                     }
                 }
             }
         }
-        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 
 }

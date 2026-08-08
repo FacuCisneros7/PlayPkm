@@ -41,6 +41,8 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 
+import com.electrofire.playpkm.Data.AvatarData
+
 @Composable
 fun ChoiseImage(
     statsViewModel: HomeStatsViewModel,
@@ -49,21 +51,9 @@ fun ChoiseImage(
 
     val context = LocalContext.current
 
-    var imageList by remember { mutableStateOf<List<Avatar>>(emptyList()) }
+    val imageList = remember { AvatarData.avatars }
     var selectedImage by remember { mutableStateOf<String?>(null) }
     var searchText by remember { mutableStateOf("") }
-
-
-    // Traer las imágenes de Firestore
-    LaunchedEffect(Unit) {
-        val db = Firebase.firestore
-        val avatars = db.collection("ImagenesDePerfil").get().await()
-        imageList = avatars.documents.mapNotNull { doc ->
-            val url = doc.getString("url")
-            val nombre = doc.getString("nombre")
-            if (url != null && nombre != null) Avatar(url, nombre) else null
-        }
-    }
 
     val filteredList = imageList.filter {
         it.nombre.contains(searchText, ignoreCase = true)

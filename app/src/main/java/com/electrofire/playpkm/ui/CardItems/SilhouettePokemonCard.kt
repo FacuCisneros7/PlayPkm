@@ -14,58 +14,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.electrofire.playpkm.Data.PokemonApi
 import com.electrofire.playpkm.R
-import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.SilhouetteImage
-import com.electrofire.playpkm.ui.ViewModels.PokemonViewModel
 
 @Composable
 fun SilhouettePokemonCard(
-    modifier: Modifier = Modifier,
-    viewModel: PokemonViewModel = hiltViewModel()
+    pokemon: PokemonApi,
+    modifier: Modifier = Modifier
 ) {
-    val pokemon = viewModel.pokemon
-
-    if (pokemon == null) {
-        Card(
-            modifier = modifier
-                .width(230.dp)
-                .height(230.dp)
-                .fillMaxSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            )
+    Card(
+        modifier = modifier
+            .width(230.dp)
+            .height(230.dp)
+            .fillMaxSize(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        )
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Loading()
-            }
-        }
-    } else {
-        Card(
-            modifier = modifier
-                .width(230.dp)
-                .height(230.dp)
-                .fillMaxSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
+            Image(
+                painter = painterResource(id = R.drawable.circulo),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize()
             )
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.circulo),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
-                )
-                SilhouetteImage(pokemon.imageUrl!!)
-            }
+            SilhouetteImage(pokemon.imageUrl!!)
         }
     }
 }

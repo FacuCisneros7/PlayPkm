@@ -1,3 +1,179 @@
 <resources>
     <string name="app_name">PlayPkm</string>
+
+    <!-- Toolbar -->
+    <!-- Títulos principales -->
+    <string name="about_title">ACERCA DE PLAYPKM</string>
+    <string name="minigames_title">MINIJUEGOS</string>
+    <string name="suggestion_title">SUGERENCIA</string>
+    <string name="thanks_title">GRACIAS POR DESCARGAR PLAYPKM!</string>
+    <string name="credits_title">CRÉDITOS</string>
+
+    <!-- Descripción general -->
+    <string name="about_description">
+        PlayPkm es una aplicación móvil diseñada con la intención de desafiar tu conocimiento Pokémon.
+        También te permitirá competir en un ranking global con el resto de los usuarios.
+    </string>
+
+    <!-- Descripción minijuegos (general) -->
+    <string name="minigames_general_description">
+        Desafía los 12 minijuegos todos los días para llegar al top del ranking.
+        Los minijuegos se reinician a diario a las 00:00 UTC (guiarse con el contador en pantalla).
+    </string>
+
+    <!-- Minijuego: ZOOM GAME -->
+    <string name="zoom_game_title">ZOOM GAME</string>
+    <string name="zoom_game_description">
+        Será revelada una parte recortada del cuerpo, debes saber de qué pokemon se trata.
+    </string>
+
+    <!-- Minijuego: EASY GAME -->
+    <string name="easy_game_title">EASY GAME</string>
+    <string name="easy_game_description">
+        Para completar el juego más fácil, deberás adivinar la silueta del Pokémon a contrarreloj.
+    </string>
+
+    <!-- Minijuego: BLURRED CARD -->
+    <string name="blurred_card_title">BLURRED CARD</string>
+    <string name="blurred_card_description">
+        ¡Consigue adivinar el Pokémon en la carta borrosa!
+    </string>
+
+    <!-- Minijuego: ONE ABILITY -->
+    <string name="one_ability_title">ONE ABILITY</string>
+    <string name="one_ability_description">
+        ¿Podrás recordar una habilidad del Pokémon del día?
+    </string>
+
+    <!-- Minijuego: POWER OF MOVE -->
+    <string name="power_move_title">POWER OF MOVE</string>
+    <string name="power_move_description">
+        ¡Adivina la potencia del movimiento! No es tan fácil como parece…
+    </string>
+
+    <!-- Minijuego: MYSTERIOUS STATS -->
+    <string name="mysterious_stats_title">MYSTERIOUS STATS</string>
+    <string name="mysterious_stats_description">
+        ¡Un juego verdaderamente difícil! Por eso contarás con 3 vidas para adivinar el Pokémon detrás de esas estadísticas.
+    </string>
+
+    <!-- Minijuego: FUSION -->
+    <string name="fusion_title">FUSION!</string>
+    <string name="fusion_description">
+        ¡Deberás demostrar que puedes reconocer a los 2 Pokémon fusionados!
+    </string>
+
+    <!-- Minijuego: THE BEST -->
+    <string name="the_best_title">THE BEST</string>
+    <string name="the_best_description">
+        Habrá 3 Pokémon en pantalla y se mencionará una estadística…
+        ¿Cuál de los 3 tiene más puntos base de dicha estadística?
+    </string>
+
+    <!-- Minijuego: IMPOSTOR -->
+    <string name="impostor_title">IMPOSTOR</string>
+    <string name="impostor_description">
+        Verás 1 habilidad y 5 Pokémon…
+        ¡Encuentra al único que no posee dicha habilidad!
+    </string>
+
+    <!-- Minijuego: GOOD CHOICE -->
+    <string name="good_choice_title">GOOD CHOICE</string>
+    <string name="good_choice_description">
+        ¡Este minijuego se podrá jugar de manera ILIMITADA!
+        Selecciona el Pokémon más fuerte y consigue tu mayor puntuación.
+        No otorga puntos para el ranking global.
+    </string>
+
+    <!-- Minijuego: THOUSAND SHADOWS -->
+    <string name="thousand_shadows_title">THOUSAND SHADOWS</string>
+    <string name="thousand_shadows_description">
+        ¡Este minijuego se podrá jugar de manera ILIMITADA!
+        Adivina al pokemon y consigue tu mayor puntuación.
+        No otorga puntos para el ranking global.
+    </string>
+
+    <!-- Minijuego: BEFORE OR AFTER -->
+    <string name="before_or_after_title">BEFORE OR AFTER</string>
+    <string name="before_or_after_description">
+        ¡Este minijuego se podrá jugar de manera ILIMITADA!
+        Adivina al pokemon y consigue tu mayor puntuación.
+        No otorga puntos para el ranking global.
+    </string>
+
+    <!-- Sugerencia -->
+    <string name="suggestion_description">
+        Para una mejor experiencia, se recomienda ajustar el tamaño de pantalla de mitad para abajo.
+    </string>
+
+    <!-- Mensaje de agradecimiento -->
+    <string name="thanks_description">
+        Me ayuda mucho que dejes tu valoración en Play Store comentando tu opinión,
+        sugerencias, errores o ideas para el futuro.
+    </string>
+
+    <!-- Créditos -->
+    <string name="credits_description_1">
+        Las ilustraciones utilizadas en el juego Power of Move pertenecen a los videojuegos oficiales de Pokémon
+        y cumplen un rol meramente ilustrativo. Las capturas pertenecen a WIKIDEX.
+    </string>
+
+    <string name="credits_description_2">
+        Las ilustraciones utilizadas en el juego Fusion! pertenecen a Infinite Fusion Calculator,
+        y cumplen un rol meramente ilustrativo.
+    </string>
+
+    <string name="credits_description_3">
+        El resto de las imágenes son obtenidas a través de la API oficial de Pokémon,
+        puesta a disposición de forma pública por The Pokémon Company para fines de desarrollo.
+    </string>
+
+    <string name="credits_description_4">
+        La música le pertenece a Cindery, te invito a escuchar sus covers en youtube!.
+    </string>
+
+    <string name="credits_author">Creado por Facundo Cisneros</string>
+
+    <!-- Botón -->
+    <string name="logout_button">CERRAR SESION</string>
+    <string name="logout_toast">Sesión cerrada correctamente</string>
+
+    <!-- Home -->
+    <string name="actualizacion_en">Actualización en:</string>
+
+    <!-- HomeCard -->
+    <string name="stats_victories">Victorias: %1$d /</string>
+    <string name="stats_losses">Derrotas: %1$d</string>
+
+    <!-- RegisterScreen -->
+    <string name="password">Contraseña</string>
+    <string name="password_again">Repetir contraseña</string>
+    <string name="register">REGISTRO</string>
+    <string name="log_in">INICIAR SESION</string>
+
+    <!-- ConfirmButton -->
+    <string name="confirm">CONFIRMAR</string>
+    <string name="game_again">JUGAR DE NUEVO</string>
+
+    <!-- ConfirmButtonRegLog -->
+    <string name="reg">No tienes una cuenta? Registrate!</string>
+    <string name="log">Ya tienes una cuenta? Inicia sesión!</string>
+
+    <!-- NinthGame -->
+    <string name="ninthgame_description">SELECCIONA AL POKEMON CON MAYOR STAT BASE</string>
+    <string name="ninthgame_puntuation">PUNTUACION:</string>
+    <string name="ninthgame_derrota">DERROTA</string>
+    <string name="ninthgame_puntuation_final">PUNTUACIÓN FINAL:</string>
+    <string name="ninthgame_max_puntuacion">MAX PUNTUACIÓN:</string>
+    <string name="ninthgame_home">INICIO</string>
+
+    <!-- TwelveGame -->
+    <string name="twelvegame_description">SELECCIONA AL POKEMON CON MAYOR NRO DE LA POKEDEX</string>
+
+    <!-- Wincard -->
+    <string name="win">VICTORIA</string>
+
+    <!-- Losercard -->
+    <string name="defeat">DERROTA</string>
+
 </resources>

@@ -10,16 +10,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -32,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -89,18 +93,16 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Box {
-                    // Contorno
                     Text(
-                        text = "INICIAR SESION",
+                        text = stringResource(id = R.string.log_in),
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = 30.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
                         )
                     )
-                    // Relleno
                     Text(
-                        text = "INICIAR SESION",
+                        text = stringResource(id = R.string.log_in),
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = 30.sp,
                             color = MaterialTheme.colorScheme.onSecondary
@@ -171,7 +173,7 @@ fun LoginScreen(
                         },
                         placeholder = {
                             Text(
-                                text = "Password",
+                                text = stringResource(id = R.string.password),
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                                 textAlign = TextAlign.Center
                             )
@@ -238,6 +240,33 @@ fun LoginScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                Spacer(modifier = Modifier.height(64.dp))
+
+                TextButton(
+                    onClick = {
+                        if (email.isNotBlank()) {
+                            authViewModel.resetPassword(email) { success, msg ->
+                                errorMessage = msg
+                            }
+                        } else {
+                            errorMessage = "Ingresá tu email primero"
+                        }
+                    },
+                    Modifier
+                        .width(305.dp)
+                        .height(40.dp)
+                        .fillMaxSize(),
+                    elevation = ButtonDefaults.buttonElevation(5.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.inversePrimary, // Fondo del botón
+                        contentColor = MaterialTheme.colorScheme.primary, // Color del texto/icono
+                        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                        disabledContentColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text("¿Olvidaste tu contraseña?")
+                }
 
                 Spacer(modifier = Modifier.height(64.dp))
 

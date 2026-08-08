@@ -11,8 +11,13 @@ sealed class Screen(val route: String) {
     object SeventhGame : Screen("seventh_game")
     object EightGame : Screen("eight_game")
     object NinthGame : Screen("nine_game")
+    object TenGame : Screen("ten_game")
+    object ElevenGame : Screen("eleven_game")
+    object TwelveGame : Screen("twelve_game")
     object RankingScreen : Screen("ranking")
     object NewUserScreen : Screen("new_user")
+    object UserScreen : Screen("user_screen")
+
 }
 
 //Esa sealed class Screen es una manera ordenada

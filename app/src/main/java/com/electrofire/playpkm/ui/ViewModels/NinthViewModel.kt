@@ -1,73 +1,97 @@
 package com.electrofire.playpkm.ui.ViewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.PokemonApi
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
+
+sealed interface NinthGameState {
+    data object Loading : NinthGameState
+    data class Success(
+        val pokemonA: PokemonApi,
+        val pokemonB: PokemonApi,
+        val puntaje: Int,
+        val isGameOver: Boolean = false
+    ) : NinthGameState
+    data class Error(val message: String) : NinthGameState
+}
 
 @HiltViewModel
 class NinthViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
 
-    private val _pokemonA = MutableStateFlow<PokemonApi?>(null)
-    val pokemonA = _pokemonA.asStateFlow()
-
-    private val _pokemonB = MutableStateFlow<PokemonApi?>(null)
-    val pokemonB = _pokemonB.asStateFlow()
-
-    private val _puntaje = MutableStateFlow(0)
-    val puntaje = _puntaje.asStateFlow()
-
-    private val _estadoJuego = MutableStateFlow("playing")
-    val estadoJuego = _estadoJuego.asStateFlow()
+    private val _state = MutableStateFlow<NinthGameState>(NinthGameState.Loading)
+    val state: StateFlow<NinthGameState> = _state
 
     init {
-        viewModelScope.launch {
-            iniciarJuego()
-        }
+        iniciarJuego()
     }
-
 
     fun iniciarJuego() {
         viewModelScope.launch {
-            _puntaje.value = 0
-            _estadoJuego.value = "playing"
-            _pokemonA.value = repo.obtenerPokemonRandom()
-            _pokemonB.value = repo.obtenerPokemonRandom()
-        }
-    }
-
-    fun elegirPokemon(pokemonElegido: PokemonApi) {
-        viewModelScope.launch {
-            val a = _pokemonA.value ?: return@launch
-            val b = _pokemonB.value ?: return@launch
-
-            val bstA = a.stats.values.sum()
-            val bstB = b.stats.values.sum()
-
-            val esEmpate = bstA == bstB
-
-            val pokemonCorrecto = if (bstA > bstB) a else b
-
-            val respuestaCorrecta =
-                if (esEmpate) true  // cualquier elección vale
-                else pokemonElegido.name == pokemonCorrecto.name
-
-            if (respuestaCorrecta) {
-                _puntaje.value += 1
-                _pokemonA.value = _pokemonB.value
-                _pokemonB.value = repo.obtenerPokemonRandom() // se genera otro rival
-            } else {
-                _estadoJuego.value = "game_over"
+            _state.value = NinthGameState.Loading
+            try {
+                val a = repo.obtenerPokemonRandom()
+                val b = repo.obtenerPokemonRandom()
+                if (a != null && b != null) {
+                    _state.value = NinthGameState.Success(
+                        pokemonA = a,
+                        pokemonB = b,
+                        puntaje = 0
+                    )
+                } else {
+                    _state.value = NinthGameState.Error("No se pudieron cargar los Pokémon.")
+                }
+            } catch (e: IOException) {
+                _state.value = NinthGameState.Error("Sin conexión a internet.")
+            } catch (e: Exception) {
+                Log.e("NINTH_VM", "Error: ${e.message}")
+                _state.value = NinthGameState.Error("Error inesperado al cargar el juego.")
             }
         }
     }
 
+    fun elegirPokemon(pokemonElegido: PokemonApi) {
+        val currentState = _state.value
+        if (currentState is NinthGameState.Success) {
+            viewModelScope.launch {
+                val a = currentState.pokemonA
+                val b = currentState.pokemonB
+
+                val bstA = a.stats.values.sum()
+                val bstB = b.stats.values.sum()
+
+                val esEmpate = bstA == bstB
+                val pokemonCorrecto = if (bstA > bstB) a else b
+
+                val respuestaCorrecta =
+                    if (esEmpate) true
+                    else pokemonElegido.name == pokemonCorrecto.name
+
+                if (respuestaCorrecta) {
+                    val nextB = repo.obtenerPokemonRandom()
+                    if (nextB != null) {
+                        _state.value = currentState.copy(
+                            pokemonA = b,
+                            pokemonB = nextB,
+                            puntaje = currentState.puntaje + 1
+                        )
+                    } else {
+                        _state.value = NinthGameState.Error("Error al cargar el siguiente oponente.")
+                    }
+                } else {
+                    _state.value = currentState.copy(isGameOver = true)
+                }
+            }
+        }
+    }
 
 }

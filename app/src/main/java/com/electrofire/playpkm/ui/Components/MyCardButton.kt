@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
 
@@ -52,7 +53,11 @@ fun MyCardButton(
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleLarge
+                style = if (title == "THOUSAND SHADOWS") {
+                    MaterialTheme.typography.titleLarge.copy(fontSize = 14.sp)
+                } else {
+                    MaterialTheme.typography.titleLarge
+                }
             )
 
         }

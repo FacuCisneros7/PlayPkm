@@ -5,8 +5,10 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,17 +20,23 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +48,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,12 +58,20 @@ import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.MyCardButton
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
+import com.electrofire.playpkm.ui.ViewModels.MusicViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
+fun ToolBar(
+    navController: NavController,
+    statsViewModel: HomeStatsViewModel,
+    musicViewModel: MusicViewModel
+) {
     val context = LocalContext.current
+
+    val isMuted by musicViewModel.isMuted.collectAsState()
+
     var showInfoCard by remember { mutableStateOf(false) }
 
     CenterAlignedTopAppBar(
@@ -76,6 +93,14 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
             }
         },
         actions = {
+            IconButton(onClick = { musicViewModel.toggleMute() }) {
+                Icon(
+                    imageVector = if (isMuted) Icons.AutoMirrored.Filled.VolumeOff else Icons.AutoMirrored.Filled.VolumeUp,
+                    contentDescription = "Mute Toggle",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
             IconButton(onClick = {
                 val intent = Intent(
                     Intent.ACTION_VIEW,
@@ -110,10 +135,10 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                         .fillMaxWidth(0.9f)
                         .fillMaxHeight(0.7f),
                     shape = RoundedCornerShape(16.dp),
-                    border = BorderStroke(3.dp, Color.Black),
+                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary),
                     elevation = CardDefaults.cardElevation(8.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.inversePrimary
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
 
@@ -127,21 +152,21 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                         item {
                             Box {
                                 Text(
-                                    text = "ACERCA DE PLAYPKM",
+                                    text = stringResource(id = R.string.about_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 17.sp,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        drawStyle = Stroke(width = 2f)
+                                        color = MaterialTheme.colorScheme.onSecondary,
+                                        drawStyle = Stroke(width = 4f)
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                                 Text(
-                                    text = "ACERCA DE PLAYPKM",
+                                    text = stringResource(id = R.string.about_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 17.sp,
-                                        color = MaterialTheme.colorScheme.onSecondary
+                                        color = MaterialTheme.colorScheme.tertiary
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
@@ -152,9 +177,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                         item {
 
                             Text(
-                                text = "PlayPkm es una aplicacion movil diseñada con la intención de " +
-                                        "desafiar tu conocimiento pokemon, a su vez te permitirá medirte " +
-                                        "en un ranking global con el resto de los usuarios!",
+                                text = stringResource(id = R.string.about_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -166,7 +189,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                         item {
                             Box {
                                 Text(
-                                    text = "MINIJUEGOS",
+                                    text = stringResource(id = R.string.minigames_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 16.sp,
@@ -176,7 +199,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                     modifier = Modifier.fillMaxWidth()
                                 )
                                 Text(
-                                    text = "MINIJUEGOS",
+                                    text = stringResource(id = R.string.minigames_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 16.sp,
@@ -189,8 +212,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Desafia los 9 minijuegos todos los dias para llegar al top del ranking! " +
-                                        "Los minijuegos se reinician a diario, a las 00:00 UTC (Guiarse con el contador en pantalla)",
+                                text = stringResource(id = R.string.minigames_general_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -201,7 +223,103 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             MyCardButton(
-                                title = "EASY GAME",
+                                title = stringResource(id = R.string.before_or_after_title),
+                                imageRes = R.drawable.beforeorafter,
+                                onClick = {},
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
+                            )
+                            Spacer(Modifier.height(6.dp))
+
+                        }
+
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.before_or_after_description),
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(16.dp))
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = stringResource(id = R.string.thousand_shadows_title),
+                                imageRes = R.drawable.thousandshadows,
+                                onClick = {},
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
+                            )
+                            Spacer(Modifier.height(6.dp))
+
+                        }
+
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.thousand_shadows_description),
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(16.dp))
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = stringResource(id = R.string.good_choice_title),
+                                imageRes = R.drawable.goodchoisenew,
+                                onClick = {},
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
+                            )
+                            Spacer(Modifier.height(6.dp))
+
+                        }
+
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.good_choice_description),
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(16.dp))
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = stringResource(id = R.string.zoom_game_title),
+                                imageRes = R.drawable.adasdss,
+                                onClick = {},
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .width(175.dp)
+                            )
+                            Spacer(Modifier.height(6.dp))
+
+                        }
+
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.zoom_game_description),
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(16.dp))
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = stringResource(id = R.string.easy_game_title),
                                 imageRes = R.drawable.asfasfasfa,
                                 onClick = {},
                                 modifier = Modifier
@@ -214,7 +332,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Para completar el juego mas fácil, deberás adivinar la silueta del pokemon a contrarreloj!",
+                                text = stringResource(id = R.string.easy_game_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -225,7 +343,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             MyCardButton(
-                                title = "BLURRED CARD",
+                                title = stringResource(id = R.string.blurred_card_title),
                                 imageRes = R.drawable.carta,
                                 onClick = {},
                                 modifier = Modifier
@@ -238,7 +356,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Consigue adivinar el pokemon en la carta borrosa!",
+                                text = stringResource(id = R.string.blurred_card_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -249,7 +367,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             MyCardButton(
-                                title = "ONE ABILITY",
+                                title = stringResource(id = R.string.one_ability_title),
                                 imageRes = R.drawable.habilidad,
                                 onClick = {},
                                 modifier = Modifier
@@ -262,7 +380,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Podrás recordar una habilidad del pokemon del día?",
+                                text = stringResource(id = R.string.one_ability_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -273,7 +391,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             MyCardButton(
-                                title = "POWER OF MOVE",
+                                title = stringResource(id = R.string.power_move_title),
                                 imageRes = R.drawable.movimiento,
                                 onClick = {},
                                 modifier = Modifier
@@ -286,7 +404,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Adivina la potencia del movimiento! No es tan fácil como parece...",
+                                text = stringResource(id = R.string.power_move_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -297,7 +415,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             MyCardButton(
-                                title = "MYSTERIOUS STATS",
+                                title = stringResource(id = R.string.mysterious_stats_title),
                                 imageRes = R.drawable.movimientodos,
                                 onClick = {},
                                 modifier = Modifier
@@ -310,8 +428,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Un juego verdaderamente dificil! Por eso mismo contarás " +
-                                        "con 3 vidas para adivinar el pokemon detrás de esas stats.",
+                                text = stringResource(id = R.string.mysterious_stats_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -322,7 +439,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             MyCardButton(
-                                title = "FUSION!",
+                                title = stringResource(id = R.string.fusion_title),
                                 imageRes = R.drawable.fision,
                                 onClick = {},
                                 modifier = Modifier
@@ -335,7 +452,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Deberás demostrar que puedes reconocer a los 2 Pokemon fusionados!",
+                                text = stringResource(id = R.string.fusion_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -346,7 +463,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             MyCardButton(
-                                title = "THE BEST",
+                                title = stringResource(id = R.string.the_best_title),
                                 imageRes = R.drawable.adasdad,
                                 onClick = {},
                                 modifier = Modifier
@@ -358,8 +475,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Habrá 3 Pokemon en pantalla y se mencionará una stat... " +
-                                        "Cual de los 3 Pokemon tiene más puntos base de dicha stat?",
+                                text = stringResource(id = R.string.the_best_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -370,7 +486,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             MyCardButton(
-                                title = "IMPOSTOR",
+                                title = stringResource(id = R.string.impostor_title),
                                 imageRes = R.drawable.dfsfsdf,
                                 onClick = {},
                                 modifier = Modifier
@@ -383,34 +499,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Visualizarás 1 habilidad, y 5 pokemon... " +
-                                        "Encuentra al único que no posee dicha habilidad!",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            Spacer(Modifier.height(24.dp))
-                        }
-
-                        item {
-                            MyCardButton(
-                                title = "GOOD CHOICE",
-                                imageRes = R.drawable.goodchoisesc,
-                                onClick = {},
-                                modifier = Modifier
-                                    .height(55.dp)
-                                    .width(175.dp)
-                            )
-                            Spacer(Modifier.height(6.dp))
-
-                        }
-
-                        item {
-                            Text(
-                                text = "Este minijuego se podrá jugar de manera ILIMITADA! " +
-                                        "Selecciona el pokemon mas fuerte y suma tu mayor puntuación!" +
-                                        " Además, ten en cuenta que no sumará puntos para el ranking global...",
+                                text = stringResource(id = R.string.impostor_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -422,7 +511,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                         item {
                             Box {
                                 Text(
-                                    text = "SUGERENCIA",
+                                    text = stringResource(id = R.string.suggestion_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 16.sp,
@@ -432,7 +521,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                     modifier = Modifier.fillMaxWidth()
                                 )
                                 Text(
-                                    text = "SUGERENCIA",
+                                    text = stringResource(id = R.string.suggestion_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 16.sp,
@@ -446,7 +535,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Para tener una mejor experiencia se recomienda ajustar el tamaño de pantalla de mitad para abajo",
+                                text = stringResource(id = R.string.suggestion_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -469,7 +558,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                         item {
                             Box {
                                 Text(
-                                    text = "GRACIAS POR DESCARGAR PLAYPKM!",
+                                    text = stringResource(id = R.string.thanks_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 16.sp,
@@ -479,7 +568,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                     modifier = Modifier.fillMaxWidth()
                                 )
                                 Text(
-                                    text = "GRACIAS POR DESCARGAR PLAYPKM!",
+                                    text = stringResource(id = R.string.thanks_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 16.sp,
@@ -492,8 +581,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Me ayuda mucho que dejes tu valoración en playstore, comentando tu opinion, sugerencias, errores o" +
-                                        " ideas para el futuro.",
+                                text = stringResource(id = R.string.thanks_description),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
@@ -505,7 +593,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                         item {
                             Box {
                                 Text(
-                                    text = "CRÉDITOS",
+                                    text = stringResource(id = R.string.credits_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 16.sp,
@@ -515,7 +603,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                                     modifier = Modifier.fillMaxWidth()
                                 )
                                 Text(
-                                    text = "CRÉDITOS",
+                                    text = stringResource(id = R.string.credits_title),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 16.sp,
@@ -528,9 +616,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Las ilustraciones utilizados en el juego Power of move, pertenecen" +
-                                        " a los videojuegos oficiales de Pokemon, cumplen un rol meramente ilustrativo. A su vez, " +
-                                        "las capturas pertenecen a WIKIDEX.",
+                                text = stringResource(id = R.string.credits_description_1),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
                                 textAlign = TextAlign.Center,
@@ -541,8 +627,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "Las ilustraciones utilizados en el juego Fusion!, pertenecen" +
-                                        " a Infinite Fusion Calculator, cumplen un rol meramente ilustrativo.",
+                                text = stringResource(id = R.string.credits_description_2),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
                                 textAlign = TextAlign.Center,
@@ -553,8 +638,7 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                         item {
                             Text(
-                                text = "El resto de las imágenes son obtenidas a través de la API oficial de Pokémon, " +
-                                        "puesta a disposición de manera pública por The Pokémon Company para fines de desarrollo.",
+                                text = stringResource(id = R.string.credits_description_3),
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
                                 textAlign = TextAlign.Center,
@@ -563,11 +647,21 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
                             Spacer(Modifier.height(32.dp))
                         }
 
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.credits_description_4),
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 10.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(32.dp))
+                        }
 
                         item {
                             Text(
-                                text = "Creado por Facundo Cisneros",
-                                color = MaterialTheme.colorScheme.onSecondary,
+                                text = stringResource(id = R.string.credits_author),
+                                color = MaterialTheme.colorScheme.tertiary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 14.sp),
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.fillMaxWidth()
@@ -581,33 +675,43 @@ fun ToolBar(navController: NavController, statsViewModel: HomeStatsViewModel) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                Button(
-                    onClick = {
-                        FirebaseAuth.getInstance().signOut()
-                        showInfoCard = false
-                        statsViewModel.reset()
-                        navController.navigate("register") {
-                            popUpTo(Screen.Home.route) { inclusive = true }
-                        }
-                        Toast.makeText(context, "Sesión cerrada correctamente", Toast.LENGTH_SHORT)
-                            .show()
-                    },
-                    modifier = Modifier
-                        .width(180.dp)
-                        .height(40.dp),
-                    elevation = ButtonDefaults.buttonElevation(5.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = MaterialTheme.colorScheme.primary,
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "Cerrar sesión",
-                        style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Button(
+                        onClick = {
+                            FirebaseAuth.getInstance().signOut()
+                            showInfoCard = false
+                            statsViewModel.reset()
+                            navController.navigate("register") {
+                                popUpTo(Screen.Home.route) { inclusive = true }
+                            }
+                            Toast.makeText(
+                                context,
+                                "Sesión cerrada correctamente",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        },
+                        modifier = Modifier
+                            .width(180.dp)
+                            .height(40.dp),
+                        elevation = ButtonDefaults.buttonElevation(5.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = MaterialTheme.colorScheme.primary,
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.logout_button),
+                            style = MaterialTheme.typography.titleLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
+
 
             }
         }

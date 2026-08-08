@@ -14,60 +14,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.electrofire.playpkm.Data.Fusion
 import com.electrofire.playpkm.R
-import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.ViewModels.FusionViewModel
 
 @Composable
-fun FusionCard(modifier: Modifier = Modifier, viewModel: FusionViewModel = hiltViewModel()) {
-    val fusion = viewModel.fusion
-
-    if (fusion == null) {
-        Card(
-            modifier = modifier
-                .width(230.dp)
-                .height(230.dp)
-                .fillMaxSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            )
+fun FusionCard(
+    fusion: Fusion,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .width(230.dp)
+            .height(230.dp)
+            .fillMaxSize(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        )
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Loading()
-            }
-        }
-    } else {
-        Card(
-            modifier = modifier
-                .width(230.dp)
-                .height(230.dp)
-                .fillMaxSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
+            Image(
+                painter = painterResource(id = R.drawable.circulo),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize()
             )
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.circulo),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
-                )
-                AsyncImage(
-                    model = fusion.Imagen,
-                    contentDescription = null,
-                    modifier = modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
-            }
+            AsyncImage(
+                model = fusion.Imagen,
+                contentDescription = null,
+                modifier = modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
         }
     }
 }

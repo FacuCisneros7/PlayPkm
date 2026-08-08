@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.electrofire.playpkm.R
@@ -52,14 +53,14 @@ fun ConfirmButtonRegLog(
     ) {
         if (title == "iniciar sesion") {
             Text(
-                text = "Ya tienes una cuenta? Inicia sesión!",
+                text = stringResource(id = R.string.log),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
         } else {
             Text(
-                text = "No tienes una cuenta? Registrate!",
+                text = stringResource(id = R.string.reg),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()

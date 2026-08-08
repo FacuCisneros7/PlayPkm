@@ -119,47 +119,47 @@ fun UserInputPokemonDos(
                 )
 
             } else {
-                Box(modifier = Modifier.fillMaxSize()){
-                TextField(
-                    value = text.uppercase(),
-                    textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                    onValueChange = {
-                        onTextChange(it)
-                        viewModel.onQueryChanged(it)
-                    },
-                    placeholder = {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,    // Fondo cuando está enfocado
-                        unfocusedContainerColor = MaterialTheme.colorScheme.inversePrimary,  // Fondo cuando NO está enfocado
-                        focusedTextColor = Color.Black,       // Texto ingresado
-                        unfocusedTextColor = Color.Black,
-                        focusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder enfocado
-                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                        cursorColor = Color.Black,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (sugerencias.isNotEmpty() && title != "Habilidad") {
-                    Icon(
-                        painter = painterResource(id = R.drawable.caretabajo), // o Icons.Default.ArrowDropDown
-                        contentDescription = "Más sugerencias",
-                        tint = Color(0xFF00C853), // verde
-                        modifier = Modifier
-                            .size(30.dp)
-                            .align(Alignment.CenterEnd)
-                            .padding(end = 8.dp)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    TextField(
+                        value = text.uppercase(),
+                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                        onValueChange = {
+                            onTextChange(it)
+                            viewModel.onQueryChanged(it)
+                        },
+                        placeholder = {
+                            Text(
+                                text = title,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,    // Fondo cuando está enfocado
+                            unfocusedContainerColor = MaterialTheme.colorScheme.inversePrimary,  // Fondo cuando NO está enfocado
+                            focusedTextColor = Color.Black,       // Texto ingresado
+                            unfocusedTextColor = Color.Black,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder enfocado
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
+                            cursorColor = Color.Black,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
+                        ),
+                        modifier = Modifier.fillMaxWidth()
                     )
+                    if (sugerencias.isNotEmpty() && title != "Habilidad") {
+                        Icon(
+                            painter = painterResource(id = R.drawable.caretabajo), // o Icons.Default.ArrowDropDown
+                            contentDescription = "Más sugerencias",
+                            tint = Color(0xFF00C853), // verde
+                            modifier = Modifier
+                                .size(30.dp)
+                                .align(Alignment.CenterEnd)
+                                .padding(end = 8.dp)
+                        )
+                    }
                 }
-            }
             }
 
         }

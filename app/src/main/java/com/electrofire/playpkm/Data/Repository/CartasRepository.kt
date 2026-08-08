@@ -6,7 +6,6 @@ import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import java.util.TimeZone
 import javax.inject.Inject
-import kotlin.random.Random
 
 class CartasRepository @Inject constructor(
 ) {
@@ -15,23 +14,25 @@ class CartasRepository @Inject constructor(
     private val db = FirebaseFirestore.getInstance()
     private val collection = db.collection("Cartas")
 
-    suspend fun obtenerTodasLasCartas(): List<Carta> {
-        val snapshot =
-            collection.get().await()  //Snapshot contiene_todo lo devuelto en la coleccion
-        return snapshot.toObjects(Carta::class.java)
-    }
+    private val TOTAL_CARTAS = 100
 
     suspend fun obtenerCartaDelDia(): Carta? {
-        val lista = obtenerTodasLasCartas()
 
-        val horaServidor = timeRepository.obtenerHoraServidor()
+        val horaServidor = timeRepository.obtenerHoraServidor() ?: return null
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
+        calendar.time = horaServidor
         val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
 
-        val random = Random(diaDelAnio.toLong())
-        val indice = random.nextInt(lista.size)
-        return lista[indice]
+        val indice = diaDelAnio % TOTAL_CARTAS
+
+        val snapshot = collection
+            .whereEqualTo("id", indice)
+            .limit(1)
+            .get()
+            .await()
+
+        return snapshot.documents.firstOrNull()
+            ?.toObject(Carta::class.java)
     }
 
 }

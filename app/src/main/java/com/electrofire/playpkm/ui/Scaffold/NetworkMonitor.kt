@@ -27,15 +27,17 @@ class NetworkMonitor(context: Context) {
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build()
 
-            connectivityManager.registerNetworkCallback(request, object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    _isConnected.value = true
-                }
+            connectivityManager.registerNetworkCallback(
+                request,
+                object : ConnectivityManager.NetworkCallback() {
+                    override fun onAvailable(network: Network) {
+                        _isConnected.value = true
+                    }
 
-                override fun onLost(network: Network) {
-                    _isConnected.value = false
-                }
-            })
+                    override fun onLost(network: Network) {
+                        _isConnected.value = false
+                    }
+                })
 
         } catch (e: Exception) {
             // Si falla, asumimos sin internet

@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -85,18 +86,16 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Box {
-                    // Contorno
                     Text(
-                        text = "REGISTRO",
+                        text = stringResource(id = R.string.register),
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = 30.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
                         )
                     )
-                    // Relleno
                     Text(
-                        text = "REGISTRO",
+                        text = stringResource(id = R.string.register),
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = 30.sp,
                             color = MaterialTheme.colorScheme.onSecondary
@@ -173,7 +172,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                         },
                         placeholder = {
                             Text(
-                                text = "Contraseña",
+                                text = stringResource(id = R.string.password),
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                                 textAlign = TextAlign.Center
                             )
@@ -231,7 +230,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                         },
                         placeholder = {
                             Text(
-                                text = "Repetir contraseña",
+                                text = stringResource(id = R.string.password_again),
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                                 textAlign = TextAlign.Center
                             )

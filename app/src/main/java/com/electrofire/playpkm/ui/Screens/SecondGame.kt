@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,30 +29,34 @@ import com.electrofire.playpkm.ui.CardItems.RealCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.Contador
 import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.CartaViewModel
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
+import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
+import com.electrofire.playpkm.ui.ViewModels.SecondGameState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaCartaBorrosa
 
 @Composable
 fun SecondGame(
-    navController: NavController, viewModel: CartaViewModel = hiltViewModel(),
+    navController: NavController,
+    viewModel: CartaViewModel = hiltViewModel(),
     statsViewModel: HomeStatsViewModel,
-    contadorViewModel: ContadorViewModel = viewModel()
+    contadorViewModel: ContadorViewModel = viewModel(),
+    gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
     var respuesta by remember { mutableStateOf("") }
-    val cartaActual = viewModel.carta
-    var respondido by remember { mutableStateOf(false) }
+    val state by viewModel.state.collectAsState()
 
     val contador = contadorViewModel.contador
 
     LaunchedEffect(contador) {
         if (contador == 0) {
-            respondido = true
+            gameStateViewModel.responder()
         }
     }
 
@@ -61,91 +66,114 @@ fun SecondGame(
 
         GradientBackground()
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            if (!respondido) {
-
-                Box {
-                    Text(
-                        text = "BLURRED\nCARD",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 36.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            drawStyle = Stroke(width = 6f)
-                        )
-                    )
-                    Text(
-                        text = "BLURRED\nCARD",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 36.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.onSecondary
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                BlurredCard()
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                UserInputPokemon(
-                    title = "Pokemon",
-                    text = respuesta,
-                    onTextChange = { respuesta = it })
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ConfirmButton(onConfirm = { respondido = true })
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Contador(contadorViewModel = contadorViewModel)
-            } else {
-
-                Spacer(modifier = Modifier.height(50.dp))
-
-                RealCard()
-
-                Spacer(modifier = Modifier.height(64.dp))
-
-                if (verificarRespuestaCartaBorrosa(
-                        cartaActual,
-                        respuesta
-                    )
+        when (val currentState = state) {
+            is SecondGameState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    WinCard(onButtonClick = {
-                        navController.navigate("home") {
-                            popUpTo(Screen.SecondGame.route) { inclusive = true }
-                        }
-                    }
-                    )
-                } else {
-                    LoserCard(onButtonClick = {
-                        navController.navigate("home") {
-                            popUpTo(Screen.SecondGame.route) { inclusive = true }
-                        }
-                    }
-                    )
+                    Loading()
                 }
-                LaunchedEffect(Unit) {
-                    if (verificarRespuestaCartaBorrosa(
-                            cartaActual,
-                            respuesta
-                        )
-                    ) { 
-                        statsViewModel.registrarVictoria()
+            }
+
+            is SecondGameState.Error -> {
+                if (currentState.message.contains("conexión", ignoreCase = true)) {
+                    NotInternetScreen()
+                } else {
+                    ErrorScreen()
+                }
+            }
+
+            is SecondGameState.Success -> {
+                val cartaActual = currentState.carta
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    if (!gameStateViewModel.respondido) {
+
+                        Box {
+                            Text(
+                                text = "BLURRED\nCARD",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 36.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    drawStyle = Stroke(width = 6f)
+                                )
+                            )
+                            Text(
+                                text = "BLURRED\nCARD",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 36.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.onSecondary
+                                )
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        BlurredCard(carta = cartaActual)
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        UserInputPokemon(
+                            title = "Pokemon",
+                            text = respuesta,
+                            onTextChange = { respuesta = it })
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        ConfirmButton(onConfirm = { gameStateViewModel.responder() })
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        Contador(contadorViewModel = contadorViewModel)
                     } else {
-                        statsViewModel.registrarDerrota()
+
+                        Spacer(modifier = Modifier.height(50.dp))
+
+                        RealCard(carta = cartaActual)
+
+                        Spacer(modifier = Modifier.height(64.dp))
+
+                        if (verificarRespuestaCartaBorrosa(
+                                cartaActual,
+                                respuesta
+                            )
+                        ) {
+                            WinCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.SecondGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        } else {
+                            LoserCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.SecondGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        }
+                        LaunchedEffect(gameStateViewModel.respondido) {
+                            if (verificarRespuestaCartaBorrosa(
+                                    cartaActual,
+                                    respuesta
+                                )
+                            ) {
+                                statsViewModel.registrarVictoria()
+                            } else {
+                                statsViewModel.registrarDerrota()
+                            }
+                        }
                     }
                 }
             }

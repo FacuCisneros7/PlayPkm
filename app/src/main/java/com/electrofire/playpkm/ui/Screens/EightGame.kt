@@ -43,7 +43,9 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
+import com.electrofire.playpkm.ui.ViewModels.EightGameState
 import com.electrofire.playpkm.ui.ViewModels.EightGameViewModel
+import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaEightGame
 
@@ -51,14 +53,13 @@ import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaEightGame
 fun EightGame(
     navController: NavController,
     viewModel: EightGameViewModel = hiltViewModel(),
-    statsViewModel: HomeStatsViewModel
+    statsViewModel: HomeStatsViewModel,
+    gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
 
-    val state by viewModel.state.collectAsState()
-
+    val stateEightGame by viewModel.state.collectAsState()
     var selectedPokemon by remember { mutableStateOf<PokemonApi?>(null) }
 
-    var respondido by remember { mutableStateOf(false) }
 
     Box(
         Modifier.fillMaxSize()
@@ -66,191 +67,207 @@ fun EightGame(
 
         GradientBackground()
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            if (state.pokemons.isNotEmpty() && state.abilityName != null) {
-
-                if (!respondido) {
-
-                    Box {
-                        Text(
-                            text = "IMPOSTOR",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 40.sp,
-                                lineHeight = 38.sp,
-                                color = MaterialTheme.colorScheme.primary,
-                                drawStyle = Stroke(width = 6f)
-                            )
-                        )
-                        Text(
-                            text = "IMPOSTOR",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 40.sp,
-                                lineHeight = 38.sp,
-                                color = MaterialTheme.colorScheme.onSecondary
-                            )
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "Habilidad: ${state.abilityName}".replaceFirstChar { it.uppercase() },
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.wrapContentSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        PokemonApiCard(
-                            pokemon = state.pokemons[0],
-                            onSelected = state.pokemons[0] == selectedPokemon,
-                            onClick = { selectedPokemon = state.pokemons[0] },
-                            modifier = Modifier.size(130.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(32.dp))
-
-                        PokemonApiCard(
-                            pokemon = state.pokemons[1],
-                            onSelected = state.pokemons[1] == selectedPokemon,
-                            onClick = { selectedPokemon = state.pokemons[1] },
-                            modifier = Modifier.size(130.dp)
-                        )
-
-                    }
-
-                    Spacer(modifier = Modifier.width(26.dp))
-
-                    Row(
-                        modifier = Modifier.wrapContentSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        PokemonApiCard(
-                            pokemon = state.pokemons[2],
-                            onSelected = state.pokemons[2] == selectedPokemon,
-                            onClick = { selectedPokemon = state.pokemons[2] },
-                            modifier = Modifier.size(130.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(26.dp))
-
-                    Row(
-                        modifier = Modifier.wrapContentSize(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        PokemonApiCard(
-                            pokemon = state.pokemons[3],
-                            onSelected = state.pokemons[3] == selectedPokemon,
-                            onClick = { selectedPokemon = state.pokemons[3] },
-                            modifier = Modifier.size(130.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(32.dp))
-
-                        PokemonApiCard(
-                            pokemon = state.pokemons[4],
-                            onSelected = state.pokemons[4] == selectedPokemon,
-                            onClick = { selectedPokemon = state.pokemons[4] },
-                            modifier = Modifier.size(130.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    ConfirmButton(
-                        onConfirm = { respondido = true },
-                        enabled = selectedPokemon != null
-                    )
+        when (val currentState = stateEightGame){
+            is EightGameState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Loading()
+                }
+            }
+            is EightGameState.Error -> {
+                if (currentState.message.contains("conexión", ignoreCase = true)) {
+                    NotInternetScreen()
                 } else {
+                    ErrorScreen()
+                }
+            }
+            is EightGameState.Success -> {
+                val state = currentState.data
 
-                    Spacer(Modifier.height(32.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-                    Card(
-                        modifier = Modifier
-                            .width(180.dp)
-                            .height(180.dp)
-                            .padding(8.dp),
-                        border = BorderStroke(4.dp, MaterialTheme.colorScheme.onSurface),
-                        shape = MaterialTheme.shapes.large,
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                        )
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            AsyncImage(
-                                model = state.impostor!!.imageUrl,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(150.dp)
-                                    .height(150.dp),
-                                contentScale = ContentScale.Fit
+                    if (!gameStateViewModel.respondido) {
+
+                        Box {
+                            Text(
+                                text = "IMPOSTOR",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 40.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    drawStyle = Stroke(width = 6f)
+                                )
+                            )
+                            Text(
+                                text = "IMPOSTOR",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 40.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.onSecondary
+                                )
                             )
                         }
-                    }
 
-                    Spacer(Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    HabilityCard(pokemonActual = state.impostor)
-
-                    Spacer(Modifier.height(32.dp))
-
-                    if (verificarRespuestaEightGame(
-                            correctPokemon = state.impostor!!.name,
-                            choisePokemon = selectedPokemon!!.name
+                        Text(
+                            text = "Habilidad: ${state.abilityName}".replaceFirstChar { it.uppercase() },
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    ) {
-                        WinCard(onButtonClick = {
-                            navController.navigate("home") {
-                                popUpTo(Screen.EightGame.route) { inclusive = true }
-                            }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.wrapContentSize(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            PokemonApiCard(
+                                pokemon = state.pokemons[0],
+                                onSelected = state.pokemons[0] == selectedPokemon,
+                                onClick = { selectedPokemon = state.pokemons[0] },
+                                modifier = Modifier.size(130.dp)
+                            )
+
+                            Spacer(modifier = Modifier.width(32.dp))
+
+                            PokemonApiCard(
+                                pokemon = state.pokemons[1],
+                                onSelected = state.pokemons[1] == selectedPokemon,
+                                onClick = { selectedPokemon = state.pokemons[1] },
+                                modifier = Modifier.size(130.dp)
+                            )
+
                         }
+
+                        Spacer(modifier = Modifier.width(26.dp))
+
+                        Row(
+                            modifier = Modifier.wrapContentSize(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            PokemonApiCard(
+                                pokemon = state.pokemons[2],
+                                onSelected = state.pokemons[2] == selectedPokemon,
+                                onClick = { selectedPokemon = state.pokemons[2] },
+                                modifier = Modifier.size(130.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(26.dp))
+
+                        Row(
+                            modifier = Modifier.wrapContentSize(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            PokemonApiCard(
+                                pokemon = state.pokemons[3],
+                                onSelected = state.pokemons[3] == selectedPokemon,
+                                onClick = { selectedPokemon = state.pokemons[3] },
+                                modifier = Modifier.size(130.dp)
+                            )
+
+                            Spacer(modifier = Modifier.width(32.dp))
+
+                            PokemonApiCard(
+                                pokemon = state.pokemons[4],
+                                onSelected = state.pokemons[4] == selectedPokemon,
+                                onClick = { selectedPokemon = state.pokemons[4] },
+                                modifier = Modifier.size(130.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        ConfirmButton(
+                            onConfirm = { gameStateViewModel.responder() },
+                            enabled = selectedPokemon != null
                         )
                     } else {
-                        LoserCard(onButtonClick = {
-                            navController.navigate("home") {
-                                popUpTo(Screen.EightGame.route) { inclusive = true }
-                            }
-                        }
-                        )
-                    }
 
-                    LaunchedEffect(Unit) {
-                        if (verificarRespuestaEightGame(
-                                correctPokemon = state.impostor!!.name,
-                                choisePokemon = selectedPokemon!!.name
+                        Spacer(Modifier.height(32.dp))
+
+                        Card(
+                            modifier = Modifier
+                                .width(180.dp)
+                                .height(180.dp)
+                                .padding(8.dp),
+                            border = BorderStroke(4.dp, MaterialTheme.colorScheme.onSurface),
+                            shape = MaterialTheme.shapes.large,
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                             )
                         ) {
-                            statsViewModel.registrarVictoria()
-                        } else {
-                            statsViewModel.registrarDerrota()
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                AsyncImage(
+                                    model = state.impostor!!.imageUrl,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .height(150.dp),
+                                    contentScale = ContentScale.Fit
+                                )
+                            }
                         }
-                    }
 
+                        Spacer(Modifier.height(32.dp))
+
+                        HabilityCard(pokemonActual = state.impostor)
+
+                        Spacer(Modifier.height(32.dp))
+
+                        val esCorrecta = remember(gameStateViewModel.respondido){
+                            selectedPokemon != null && verificarRespuestaEightGame(
+                                correctPokemon = state.impostor?.name ?: "",
+                                choisePokemon = selectedPokemon?.name ?: ""
+                            )
+                        }
+
+                        if (esCorrecta) {
+                            WinCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.EightGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        } else {
+                            LoserCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.EightGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        }
+
+                        LaunchedEffect(gameStateViewModel.respondido) {
+                            if (esCorrecta) {
+                                statsViewModel.registrarVictoria()
+                            } else {
+                                statsViewModel.registrarDerrota()
+                            }
+                        }
+
+                    }
                 }
-            } else {
-                Spacer(Modifier.height(300.dp))
-                Loading()
+
             }
         }
-        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
+
+
     }
 }
 

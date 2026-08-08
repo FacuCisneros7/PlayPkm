@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,15 +26,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.electrofire.playpkm.ui.CardItems.MovimientoCard
-import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.Contador
 import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LoserCard
+import com.electrofire.playpkm.ui.Components.PotenciaCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
+import com.electrofire.playpkm.ui.ViewModels.FourthGameState
+import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.MovimientoViewModel
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaPotenciaMovimiento
@@ -43,17 +47,17 @@ fun FourthGame(
     navController: NavController,
     viewModel: MovimientoViewModel = hiltViewModel(),
     statsViewModel: HomeStatsViewModel,
-    contadorViewModel: ContadorViewModel = viewModel()
+    contadorViewModel: ContadorViewModel = viewModel(),
+    gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
     var respuesta by remember { mutableStateOf("") }
-    val movimientoActual = viewModel.movimiento
-    var respondido by remember { mutableStateOf(false) }
+    val state by viewModel.state.collectAsState()
 
     val contador = contadorViewModel.contador
 
     LaunchedEffect(contador) {
         if (contador == 0) {
-            respondido = true
+            gameStateViewModel.responder()
         }
     }
 
@@ -61,125 +65,121 @@ fun FourthGame(
 
         GradientBackground()
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            if (!respondido) {
-
-                Box {
-                    Text(
-                        text = "POWER\nOF MOVE",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 34.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            drawStyle = Stroke(width = 6f)
-                        )
-                    )
-                    Text(
-                        text = "POWER\nOF MOVE",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 34.sp,
-                            lineHeight = 38.sp,
-                            color = MaterialTheme.colorScheme.onSecondary
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                MovimientoCard()
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                UserInputPokemon(
-                    title = "Potencia",
-                    text = respuesta,
-                    onTextChange = { respuesta = it })
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ConfirmButton(onConfirm = { respondido = true })
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Contador(contadorViewModel = contadorViewModel)
-            } else {
-                Spacer(modifier = Modifier.height(80.dp))
-
-                MovimientoCard()
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Row{
-                    Box {
-                        Text(
-                            text = "Potencia: ",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 30.sp,
-                                color = MaterialTheme.colorScheme.primary,
-                                drawStyle = Stroke(width = 2f)
-                            ),
-                        )
-                        Text(
-                            text = "Potencia: ",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 30.sp,
-                                color = MaterialTheme.colorScheme.secondary
-                            ),
-                        )
-                    }
-                    Text(
-                        text = movimientoActual?.p.toString(),
-                        color = MaterialTheme.colorScheme.outline,
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                        textAlign = TextAlign.Center,
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                if (verificarRespuestaPotenciaMovimiento(
-                        respuesta,
-                        movimientoActual
-                    )
+        when (val currentState = state) {
+            is FourthGameState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    WinCard(onButtonClick = {
-                        navController.navigate("home") {
-                            popUpTo(Screen.FourthGame.route) { inclusive = true }
-                        }
-                    }
-                    )
-                } else {
-                    LoserCard(onButtonClick = {
-                        navController.navigate("home") {
-                            popUpTo(Screen.FourthGame.route) { inclusive = true }
-                        }
-                    }
-                    )
+                    Loading()
                 }
-                LaunchedEffect(Unit) {
-                    if (verificarRespuestaPotenciaMovimiento(
-                            respuesta,
-                            movimientoActual
-                        )
-                    ) {
-                        statsViewModel.registrarVictoria()
+            }
+
+            is FourthGameState.Error -> {
+                if (currentState.message.contains("conexión", ignoreCase = true)) {
+                    NotInternetScreen()
+                } else {
+                    ErrorScreen()
+                }
+            }
+
+            is FourthGameState.Success -> {
+                val movimientoActual = currentState.movimiento
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    if (!gameStateViewModel.respondido) {
+
+                        Box {
+                            Text(
+                                text = "POWER\nOF MOVE",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 34.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    drawStyle = Stroke(width = 6f)
+                                )
+                            )
+                            Text(
+                                text = "POWER\nOF MOVE",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 34.sp,
+                                    lineHeight = 38.sp,
+                                    color = MaterialTheme.colorScheme.onSecondary
+                                )
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        MovimientoCard(movimiento = movimientoActual)
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        UserInputPokemon(
+                            title = "Potencia",
+                            text = respuesta,
+                            onTextChange = { respuesta = it })
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        ConfirmButton(onConfirm = { gameStateViewModel.responder() })
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        Contador(contadorViewModel = contadorViewModel)
                     } else {
-                        statsViewModel.registrarDerrota()
+                        Spacer(modifier = Modifier.height(80.dp))
+
+                        MovimientoCard(movimiento = movimientoActual)
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        PotenciaCard(movimiento = movimientoActual)
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        if (verificarRespuestaPotenciaMovimiento(
+                                respuesta,
+                                movimientoActual
+                            )
+                        ) {
+                            WinCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.FourthGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        } else {
+                            LoserCard(onButtonClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.FourthGame.route) { inclusive = true }
+                                }
+                            }
+                            )
+                        }
+                        LaunchedEffect(gameStateViewModel.respondido) {
+                            if (verificarRespuestaPotenciaMovimiento(
+                                    respuesta,
+                                    movimientoActual
+                                )
+                            ) {
+                                statsViewModel.registrarVictoria()
+                            } else {
+                                statsViewModel.registrarDerrota()
+                            }
+                        }
                     }
                 }
             }
         }
-        BannerAdd(Modifier.align(alignment = Alignment.BottomStart))
     }
 
 }
