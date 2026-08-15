@@ -1,7 +1,7 @@
 package com.electrofire.playpkm.ui.Components
 
 import android.media.SoundPool
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -38,34 +38,25 @@ fun ConfirmButtonRegLog(
             soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
             onConfirm()
         },
-        modifier
+        modifier = modifier
             .width(305.dp)
-            .height(40.dp)
-            .fillMaxSize(),
+            .height(45.dp),
         elevation = ButtonDefaults.buttonElevation(5.dp),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.inversePrimary, // Fondo del botón
-            contentColor = MaterialTheme.colorScheme.primary, // Color del texto/icono
+            containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
+            contentColor = MaterialTheme.colorScheme.outline,
             disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
             disabledContentColor = MaterialTheme.colorScheme.primary
         ),
         enabled = enabled
     ) {
-        if (title == "iniciar sesion") {
-            Text(
-                text = stringResource(id = R.string.log),
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        } else {
-            Text(
-                text = stringResource(id = R.string.reg),
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
+        val textId = if (title == "iniciar sesion") R.string.log else R.string.reg
+        Text(
+            text = stringResource(id = textId),
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

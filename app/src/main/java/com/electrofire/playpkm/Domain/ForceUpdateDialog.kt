@@ -31,8 +31,8 @@ fun ForceUpdateDialog(
         },
         title = { Text("Actualización requerida") },
         text = { Text(message) },
-        containerColor = MaterialTheme.colorScheme.onPrimary,
-        titleContentColor = MaterialTheme.colorScheme.secondary,
+        containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.9f),
+        titleContentColor = MaterialTheme.colorScheme.primary,
         textContentColor = MaterialTheme.colorScheme.primary
     )
 }

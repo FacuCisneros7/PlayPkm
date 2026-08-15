@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,20 +26,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.electrofire.playpkm.ui.CardItems.GameResultPokemonCard
 import com.electrofire.playpkm.ui.CardItems.StatsApiCard
-import com.electrofire.playpkm.ui.CardItems.StatsPokemonApiCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Hearts
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
-import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.ViewModels.FiftGameState
 import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.StatsApiViewModel
+import com.electrofire.playpkm.ui.ViewModels.UIState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaStatsApiPokemon
 
 @Composable
@@ -54,11 +55,8 @@ fun FiftGame(
     Box(
         Modifier.fillMaxSize()
     ) {
-
-        GradientBackground()
-
         when (val currentState = state) {
-            is FiftGameState.Loading -> {
+            is UIState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -67,21 +65,23 @@ fun FiftGame(
                 }
             }
 
-            is FiftGameState.Error -> {
+            is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
-                    NotInternetScreen()
+                    NotInternetScreen(onRetry = { viewModel.loadPokemon() })
                 } else {
-                    ErrorScreen()
+                    ErrorScreen(onRetry = { viewModel.loadPokemon() })
                 }
             }
 
-            is FiftGameState.Success -> {
-                val pokemonActual = currentState.pokemon
+            is UIState.Success -> {
+                val pokemonActual = currentState.data
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(32.dp),
+                        .padding(32.dp)
+                        .verticalScroll(rememberScrollState())
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (!gameStateViewModel.respondido) {
@@ -93,8 +93,8 @@ fun FiftGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 34.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 6f)
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    drawStyle = Stroke(width = 4f)
                                 )
                             )
                             Text(
@@ -138,27 +138,18 @@ fun FiftGame(
 
                         Hearts(actuales = intentosRestantes)
                     } else {
-                        Spacer(modifier = Modifier.height(90.dp))
-
-                        StatsPokemonApiCard(pokemon = pokemonActual)
-
-                        Spacer(modifier = Modifier.height(64.dp))
-
-                        if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
-                            WinCard(onButtonClick = {
+                        val esCorrecto = verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)
+                        GameResultDialog(
+                            isWin = esCorrecto,
+                            onHomeClick = {
                                 navController.navigate("home") {
                                     popUpTo(Screen.FiftGame.route) { inclusive = true }
                                 }
+                            },
+                            content = {
+                                GameResultPokemonCard(pokemon = pokemonActual)
                             }
-                            )
-                        } else {
-                            LoserCard(onButtonClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.FiftGame.route) { inclusive = true }
-                                }
-                            }
-                            )
-                        }
+                        )
                         LaunchedEffect(gameStateViewModel.respondido) {
                             if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
                                 statsViewModel.registrarVictoria()

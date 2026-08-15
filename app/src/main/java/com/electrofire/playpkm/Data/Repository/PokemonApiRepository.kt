@@ -9,6 +9,8 @@ import com.electrofire.playpkm.Data.NetworkData.ListPokemonAbilityResponse
 import com.electrofire.playpkm.Data.NetworkData.PokemonResponse
 import com.electrofire.playpkm.Data.PokemonApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.TimeZone
@@ -23,230 +25,126 @@ class PokemonApiRepository @Inject constructor(
 
     private val timeRepository = TimeRepository()
 
-    suspend fun obtenerPokemonConMismaHabilidadDelDia(): ImpostorGameData {
+    // --- Funciones de Utilidad Interna ---
 
-        val horaServidor = timeRepository.obtenerHoraServidor()
+    private fun PokemonResponse.toPokemonApi(translatedAbilities: List<String>? = null): PokemonApi {
+        return PokemonApi(
+            name = name.replaceFirstChar { it.uppercase() },
+            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png",
+            stats = stats.associate { it.stat.name to it.base_stat },
+            abilities = translatedAbilities ?: abilities.map { it.ability.name },
+            id = id
+        )
+    }
+
+    private suspend fun getIdDelDia(seed: Int): Int {
+        val horaServidor = timeRepository.obtenerHoraServidor() ?: return (1..1025).random()
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!
+        calendar.time = horaServidor
         val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
 
-        // la semilla asegura que todos vean lo mismo
-        val allIds = (1..1025).shuffled(Random(1230))
+        val allIds = (1..1025).toList().shuffled(Random(seed))
+        return allIds[diaDelAnio % allIds.size]
+    }
 
-        // Selecciono el ID según el día del año
-        val idDelDia = allIds[diaDelAnio % allIds.size]
+    private suspend fun translateAbilities(pokemon: PokemonResponse): List<String> {
+        return pokemon.abilities.map { slot ->
+            val abilityResponse = api.getAbilityByUrl(slot.ability.url)
+            abilityResponse.names
+                .firstOrNull { it.language.name == "es" }
+                ?.name ?: slot.ability.name
+        }
+    }
 
-        //Variable que tendra pokemon con dicha habilidad.
+    // --- Funciones Públicas ---
+
+    suspend fun obtenerPokemonConMismaHabilidadDelDia(): ImpostorGameData {
+        val idDelDia = getIdDelDia(1230)
+
         var pokemonList: ListPokemonAbilityResponse
-        var abilityName: String
         var ability: Ability
 
-        //Selecciono una habilidad random
+        // Selecciono una habilidad random con suficientes pokémon
         do {
-            // Elegir una habilidad al azar de la lista
             val listaAbilitys = api.getAllAbilities().results.orEmpty()
             ability = listaAbilitys.random()
-            abilityName = ability.name
-            // Traer los detalles de esa habilidad (incluye lista de Pokémon)
             pokemonList = api.getPokemonByAbility(ability.name)
-
         } while (pokemonList.pokemon.size < 6)
 
-        //Selecciono los 4 pokemon
+        // Traer detalles de los Pokémon con esa habilidad en paralelo para mejorar performance
         val pokemonsConHabilidad = pokemonList.pokemon.orEmpty()
             .shuffled()
             .take(4)
             .map { it.pokemon }
 
-        val pokemonConHabilidadCompletos = pokemonsConHabilidad.map { p ->
-            api.getPokemonByUrl(p.url)
+        val pokemonConHabilidadCompletos = withContext(Dispatchers.IO) {
+            pokemonsConHabilidad.map { p ->
+                async { api.getPokemonByUrl(p.url) }
+            }.awaitAll()
         }
 
-        //Selecciono al pokemon SIN la habilidad
-        var pokemonSinHabilidad: PokemonResponse?
+        // Selecciono al pokemon SIN la habilidad (impostor)
+        var pokemonSinHabilidad: PokemonResponse
         do {
             val p = api.getPokemon(idDelDia)
-            // verificamos que NO tenga la habilidad
-            pokemonSinHabilidad =
-                if (p.abilities.none { it.ability.name == abilityName }) p else null
-        } while (pokemonSinHabilidad == null)
+            pokemonSinHabilidad = p
+        } while (p.abilities.any { it.ability.name == ability.name })
 
-        val listPokemonResponse = (pokemonConHabilidadCompletos + pokemonSinHabilidad).shuffled()
-
-        //Traducir habilidad
+        // Traducir habilidad principal
         val translatedAbility = api.getAbilityByUrl(ability.url)
-        val spanishName =
-            translatedAbility.names?.firstOrNull { it.language.name == "es" }?.name ?: ability.name
+        val spanishName = translatedAbility.names?.firstOrNull { it.language.name == "es" }?.name ?: ability.name
 
-        //Traducir habilidades del pokemon impostor
-        val translatedAbilities = pokemonSinHabilidad.abilities.map { slot ->
-            val abilityResponse = api.getAbilityByUrl(slot.ability.url)
-            val spanishNames = abilityResponse.names
-                .firstOrNull { it.language.name == "es" }
-                ?.name ?: slot.ability.name  // si no hay traducción, usa el nombre original
-            spanishNames
-        }
+        // Preparar Impostor y Lista
+        val impostorAbilities = translateAbilities(pokemonSinHabilidad)
+        val impostor = pokemonSinHabilidad.toPokemonApi(impostorAbilities)
 
-        val impostor = PokemonApi(
-            name = pokemonSinHabilidad.name,
-            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonSinHabilidad.id}.png",
-            stats = pokemonSinHabilidad.stats.associate { it.stat.name to it.base_stat },
-            abilities = translatedAbilities,
-            id = pokemonSinHabilidad.id
-        )
-
-        val listaPokemonCompleta: List<PokemonApi> = listPokemonResponse.map { pokemon ->
-            PokemonApi(
-                name = pokemon.name,
-                imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png",
-                stats = pokemon.stats.associate { it.stat.name to it.base_stat },
-                abilities = pokemon.abilities.map { it.ability.name },
-                id = pokemon.id
-            )
-        }
+        val shuffledResponses = (pokemonConHabilidadCompletos + pokemonSinHabilidad).shuffled()
+        val listaPokemonCompleta = shuffledResponses.map { it.toPokemonApi() }
 
         return ImpostorGameData(
             abilityName = spanishName,
             pokemons = listaPokemonCompleta,
             impostor = impostor
         )
-
     }
-
 
     suspend fun obtenerPokemonRandom(): PokemonApi? {
         val randomId = (1..1025).random()
-        val response = api.getPokemon(randomId)
-        return PokemonApi(
-            name = response.name.replaceFirstChar { it.uppercase() },
-            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$randomId.png",
-            stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = response.abilities.map { it.ability.name },
-            id = response.id
-        )
+        return api.getPokemon(randomId).toPokemonApi()
     }
 
     suspend fun obtenerPokemonDelDia(): PokemonApi? {
-
-        val horaServidor = timeRepository.obtenerHoraServidor()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!
-        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
-
-        val allIds = (1..1025).shuffled(Random(1234))
-
-        val idDelDia = allIds[diaDelAnio % allIds.size]
-
-        val response = api.getPokemon(idDelDia)
-
-        return PokemonApi(
-            name = response.name.replaceFirstChar { it.uppercase() },
-            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
-            stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = response.abilities.map { it.ability.name },
-            id = response.id
-        )
-
+        val id = getIdDelDia(1234)
+        return api.getPokemon(id).toPokemonApi()
     }
 
     suspend fun obtenerPokemonDelDiaConZoom(): PokemonApi? {
-
-        val horaServidor = timeRepository.obtenerHoraServidor()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!
-        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
-
-        val allIds = (1..1025).shuffled(Random(1534))
-
-        val idDelDia = allIds[diaDelAnio % allIds.size]
-
-        val response = api.getPokemon(idDelDia)
-
-        return PokemonApi(
-            name = response.name.replaceFirstChar { it.uppercase() },
-            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
-            stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = response.abilities.map { it.ability.name },
-            id = response.id
-        )
-
+        val id = getIdDelDia(1534)
+        return api.getPokemon(id).toPokemonApi()
     }
 
     suspend fun obtenerStatPokemonDelDia(): PokemonApi? {
-
-        val horaServidor = timeRepository.obtenerHoraServidor()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
-        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
-
-        val allIds = (1..1025).shuffled(Random(1242))
-
-        val idDelDia = allIds[diaDelAnio % allIds.size]
-
-        val response = api.getPokemon(idDelDia)
-
-        return PokemonApi(
-            name = response.name.replaceFirstChar { it.uppercase() },
-            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
-            stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = response.abilities.map { it.ability.name },
-            id = response.id
-        )
-
+        val id = getIdDelDia(1242)
+        return api.getPokemon(id).toPokemonApi()
     }
 
     suspend fun obtenerHabilidadPokemonDelDia(): PokemonApi? {
-
-        val horaServidor = timeRepository.obtenerHoraServidor()
-        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.time = horaServidor!!  // ✅ horaServidor es no-null aquí
-        val diaDelAnio = calendar.get(Calendar.DAY_OF_YEAR)
-
-        val allIds = (1..1025).shuffled(Random(1237)) // la semilla asegura que todos vean lo mismo
-
-        // Selecciono el ID según el día del año
-        val idDelDia = allIds[diaDelAnio % allIds.size]
-
-        val response = api.getPokemon(idDelDia)
-
-        val translatedAbilities = response.abilities.map { slot ->
-            val abilityResponse = api.getAbilityByUrl(slot.ability.url)
-            val spanishName = abilityResponse.names
-                .firstOrNull { it.language.name == "es" }
-                ?.name ?: slot.ability.name  // si no hay traducción, usa el nombre original
-            spanishName
-        }
-
-        return PokemonApi(
-            name = response.name.replaceFirstChar { it.uppercase() },
-            imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$idDelDia.png",
-            stats = response.stats.associate { it.stat.name to it.base_stat },
-            abilities = translatedAbilities,
-            id = response.id
-        )
+        val id = getIdDelDia(1237)
+        val response = api.getPokemon(id)
+        val translated = translateAbilities(response)
+        return response.toPokemonApi(translated)
     }
 
     suspend fun getRandomPokemons(): List<PokemonApi> = withContext(Dispatchers.IO) {
         val randomIds = (1..1025).shuffled().take(3)
-
         randomIds.map { id ->
-
-            val response = api.getPokemon(id)
-
-            PokemonApi(
-                name = response.name.replaceFirstChar { it.uppercase() },
-                imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png",
-                stats = response.stats.associate { it.stat.name to it.base_stat },
-                abilities = response.abilities.map { it.ability.name },
-                id = response.id
-            )
-        }
+            async { api.getPokemon(id).toPokemonApi() }
+        }.awaitAll()
     }
 
     suspend fun syncPokemon() {
         val response = api.getAllPokemon(limit = 1025, offset = 0)
         val allPokemonEntities = response.results.map { PokemonEntity(nombre = it.name) }
-
         dao.insertAll(allPokemonEntities)
     }
 
@@ -254,9 +152,7 @@ class PokemonApiRepository @Inject constructor(
         return dao.searchPokemon(query)
     }
 
-    //Verificar si la base local está vacía
     suspend fun isEmptyQuestion(): Boolean {
         return dao.count() == 0
     }
-
 }

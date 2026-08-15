@@ -153,6 +153,7 @@
 
     <!-- ConfirmButton -->
     <string name="confirm">CONFIRMAR</string>
+    <string name="retry">REINTENTAR</string>
     <string name="game_again">JUGAR DE NUEVO</string>
 
     <!-- ConfirmButtonRegLog -->

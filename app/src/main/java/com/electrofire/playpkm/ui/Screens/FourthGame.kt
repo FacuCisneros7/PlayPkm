@@ -2,11 +2,13 @@ package com.electrofire.playpkm.ui.Screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,18 +30,16 @@ import androidx.navigation.NavController
 import com.electrofire.playpkm.ui.CardItems.MovimientoCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.Contador
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.PotenciaCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
-import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
-import com.electrofire.playpkm.ui.ViewModels.FourthGameState
 import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.MovimientoViewModel
+import com.electrofire.playpkm.ui.ViewModels.UIState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaPotenciaMovimiento
 
 @Composable
@@ -63,10 +63,8 @@ fun FourthGame(
 
     Box(Modifier.fillMaxSize()) {
 
-        GradientBackground()
-
         when (val currentState = state) {
-            is FourthGameState.Loading -> {
+            is UIState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -75,21 +73,23 @@ fun FourthGame(
                 }
             }
 
-            is FourthGameState.Error -> {
+            is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
-                    NotInternetScreen()
+                    NotInternetScreen(onRetry = { viewModel.loadMovimiento() })
                 } else {
-                    ErrorScreen()
+                    ErrorScreen(onRetry = { viewModel.loadMovimiento() })
                 }
             }
 
-            is FourthGameState.Success -> {
-                val movimientoActual = currentState.movimiento
+            is UIState.Success -> {
+                val movimientoActual = currentState.data
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(32.dp),
+                        .padding(32.dp)
+                        .verticalScroll(rememberScrollState())
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -102,8 +102,8 @@ fun FourthGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 34.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 6f)
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    drawStyle = Stroke(width = 4f)
                                 )
                             )
                             Text(
@@ -136,35 +136,22 @@ fun FourthGame(
 
                         Contador(contadorViewModel = contadorViewModel)
                     } else {
-                        Spacer(modifier = Modifier.height(80.dp))
-
-                        MovimientoCard(movimiento = movimientoActual)
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        PotenciaCard(movimiento = movimientoActual)
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        if (verificarRespuestaPotenciaMovimiento(
-                                respuesta,
-                                movimientoActual
-                            )
-                        ) {
-                            WinCard(onButtonClick = {
+                        val esCorrecto = verificarRespuestaPotenciaMovimiento(respuesta, movimientoActual)
+                        GameResultDialog(
+                            isWin = esCorrecto,
+                            onHomeClick = {
                                 navController.navigate("home") {
                                     popUpTo(Screen.FourthGame.route) { inclusive = true }
                                 }
-                            }
-                            )
-                        } else {
-                            LoserCard(onButtonClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.FourthGame.route) { inclusive = true }
+                            },
+                            content = {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    MovimientoCard(movimiento = movimientoActual)
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    PotenciaCard(movimiento = movimientoActual)
                                 }
                             }
-                            )
-                        }
+                        )
                         LaunchedEffect(gameStateViewModel.respondido) {
                             if (verificarRespuestaPotenciaMovimiento(
                                     respuesta,

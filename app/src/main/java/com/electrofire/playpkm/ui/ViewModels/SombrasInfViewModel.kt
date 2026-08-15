@@ -15,23 +15,19 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface ElevenGameState {
-    data object Loading : ElevenGameState
-    data class Success(
-        val pokemon: PokemonApi,
-        val puntaje: Int,
-        val isGameOver: Boolean = false
-    ) : ElevenGameState
-    data class Error(val message: String) : ElevenGameState
-}
+data class ElevenGameData(
+    val pokemon: PokemonApi,
+    val puntaje: Int,
+    val isGameOver: Boolean = false
+)
 
 @HiltViewModel
 class SombrasInfViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<ElevenGameState>(ElevenGameState.Loading)
-    val state: StateFlow<ElevenGameState> = _state
+    private val _state = MutableStateFlow<UIState<ElevenGameData>>(UIState.Loading)
+    val state: StateFlow<UIState<ElevenGameData>> = _state
 
     private val _contador = MutableStateFlow<Int>(18)
     val contador = _contador.asStateFlow()
@@ -44,48 +40,52 @@ class SombrasInfViewModel @Inject constructor(
 
     fun iniciarJuego() {
         viewModelScope.launch {
-            _state.value = ElevenGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val p = repo.obtenerPokemonRandom()
                 if (p != null) {
-                    _state.value = ElevenGameState.Success(
-                        pokemon = p,
-                        puntaje = 0
+                    _state.value = UIState.Success(
+                        ElevenGameData(
+                            pokemon = p,
+                            puntaje = 0
+                        )
                     )
                     iniciarContador()
                 } else {
-                    _state.value = ElevenGameState.Error("No se pudo cargar el Pokémon.")
+                    _state.value = UIState.Error("No se pudo cargar el Pokémon.")
                 }
             } catch (e: IOException) {
-                _state.value = ElevenGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("SOMBRAS_VM", "Error: ${e.message}")
-                _state.value = ElevenGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }
 
     fun escribirPokemon(pokemonElegido: String) {
         val currentState = _state.value
-        if (currentState is ElevenGameState.Success && !currentState.isGameOver) {
+        if (currentState is UIState.Success && !currentState.data.isGameOver) {
             viewModelScope.launch {
-                val pokemonCorrecto = currentState.pokemon
+                val pokemonCorrecto = currentState.data.pokemon
 
                 if (pokemonElegido.trim().equals(pokemonCorrecto.name.trim(), ignoreCase = true)) {
                     // Cancelamos el contador actual mientras se carga el siguiente
                     contadorJob?.cancel()
                     val nextP = repo.obtenerPokemonRandom()
                     if (nextP != null) {
-                        _state.value = currentState.copy(
-                            pokemon = nextP,
-                            puntaje = currentState.puntaje + 1
+                        _state.value = UIState.Success(
+                            currentState.data.copy(
+                                pokemon = nextP,
+                                puntaje = currentState.data.puntaje + 1
+                            )
                         )
                         reiniciarContador()
                     } else {
-                        _state.value = ElevenGameState.Error("Error al cargar el siguiente oponente.")
+                        _state.value = UIState.Error("Error al cargar el siguiente oponente.")
                     }
                 } else {
-                    _state.value = currentState.copy(isGameOver = true)
+                    _state.value = UIState.Success(currentState.data.copy(isGameOver = true))
                     contadorJob?.cancel()
                 }
             }
@@ -111,8 +111,8 @@ class SombrasInfViewModel @Inject constructor(
 
     fun tiempoAgotado() {
         val currentState = _state.value
-        if (currentState is ElevenGameState.Success) {
-            _state.value = currentState.copy(isGameOver = true)
+        if (currentState is UIState.Success) {
+            _state.value = UIState.Success(currentState.data.copy(isGameOver = true))
         }
     }
 

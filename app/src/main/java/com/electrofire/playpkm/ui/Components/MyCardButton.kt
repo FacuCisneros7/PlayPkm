@@ -6,9 +6,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CatchingPokemon
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,41 +34,57 @@ fun MyCardButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     title: String,
-    @DrawableRes imageRes: Int
+    @DrawableRes imageRes: Int,
+    showBadge: Boolean = false
 ) {
-    Card(
-        modifier = modifier
-            .width(234.dp)
-            .height(68.dp)
-            .clickable { onClick() },
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary
-        )
-    ) {
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = null,
-            )
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.primary,
-                style = if (title == "THOUSAND SHADOWS") {
-                    MaterialTheme.typography.titleLarge.copy(fontSize = 14.sp)
-                } else {
-                    MaterialTheme.typography.titleLarge
+    BadgedBox(
+        modifier = modifier,
+        badge = {
+            if (showBadge) {
+                Badge(
+                    containerColor = MaterialTheme.colorScheme.outline,
+                    contentColor = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(20.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CatchingPokemon,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
                 }
-            )
-
+            }
         }
-
+    ) {
+        Card(
+            modifier = Modifier
+                .width(234.dp)
+                .height(68.dp)
+                .clickable { onClick() },
+            shape = MaterialTheme.shapes.large,
+            elevation = CardDefaults.cardElevation(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondary
+            )
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = imageRes),
+                    contentDescription = null,
+                )
+                Text(
+                    text = title,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = if (title == "THOUSAND SHADOWS") {
+                        MaterialTheme.typography.titleLarge.copy(fontSize = 14.sp)
+                    } else {
+                        MaterialTheme.typography.titleLarge
+                    }
+                )
+            }
+        }
     }
 }
 

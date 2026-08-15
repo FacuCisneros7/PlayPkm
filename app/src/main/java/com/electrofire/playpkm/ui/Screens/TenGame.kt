@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,21 +27,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.electrofire.playpkm.ui.CardItems.GameResultPokemonCard
 import com.electrofire.playpkm.ui.CardItems.PokemonZoom
-import com.electrofire.playpkm.ui.CardItems.PokemonZoomTrue
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.Contador
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
-import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.TenGameState
 import com.electrofire.playpkm.ui.ViewModels.TenGameViewModel
+import com.electrofire.playpkm.ui.ViewModels.UIState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaPokemonConZoom
 
 @Composable
@@ -65,10 +66,8 @@ fun TenGame(
         Modifier.fillMaxSize()
     ) {
 
-        GradientBackground()
-
         when (val currentState = state) {
-            is TenGameState.Loading -> {
+            is UIState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -77,21 +76,23 @@ fun TenGame(
                 }
             }
 
-            is TenGameState.Error -> {
+            is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
-                    NotInternetScreen()
+                    NotInternetScreen(onRetry = { viewModel.loadPokemon() })
                 } else {
-                    ErrorScreen()
+                    ErrorScreen(onRetry = { viewModel.loadPokemon() })
                 }
             }
 
-            is TenGameState.Success -> {
-                val pokemonActual = currentState.pokemon
+            is UIState.Success -> {
+                val pokemonActual = currentState.data
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 32.dp),
+                        .padding(top = 32.dp)
+                        .verticalScroll(rememberScrollState())
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -104,8 +105,8 @@ fun TenGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 36.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 6f)
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    drawStyle = Stroke(width = 4f)
                                 )
                             )
                             Text(
@@ -139,28 +140,18 @@ fun TenGame(
 
                         Contador(contadorViewModel = contadorViewModel)
                     } else {
-
-                        Spacer(modifier = Modifier.height(90.dp))
-
-                        PokemonZoomTrue(pokemon = pokemonActual)
-
-                        Spacer(modifier = Modifier.height(64.dp))
-
-                        if (verificarRespuestaPokemonConZoom(pokemonActual, respuesta)) {
-                            WinCard(onButtonClick = {
+                        val esCorrecto = verificarRespuestaPokemonConZoom(pokemonActual, respuesta)
+                        GameResultDialog(
+                            isWin = esCorrecto,
+                            onHomeClick = {
                                 navController.navigate("home") {
                                     popUpTo(Screen.FirstGame.route) { inclusive = true }
                                 }
+                            },
+                            content = {
+                                GameResultPokemonCard(pokemon = pokemonActual)
                             }
-                            )
-                        } else {
-                            LoserCard(onButtonClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.FirstGame.route) { inclusive = true }
-                                }
-                            }
-                            )
-                        }
+                        )
 
                         LaunchedEffect(gameStateViewModel.respondido) {
                             if (verificarRespuestaPokemonConZoom(pokemonActual, respuesta)) {

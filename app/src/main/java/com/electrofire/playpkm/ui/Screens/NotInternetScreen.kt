@@ -21,22 +21,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.GradientBackground
 
 @Composable
-fun NotInternetScreen() {
+fun NotInternetScreen(onRetry: (() -> Unit)? = null, showBackground: Boolean = false) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        GradientBackground(
-            listOf(
-                Color.Red,
-                MaterialTheme.colorScheme.primary,
-                Color.Red,
+        if (showBackground) {
+            GradientBackground(
+                listOf(
+                    Color.Red,
+                    MaterialTheme.colorScheme.primary,
+                    Color.Red,
+                )
             )
-        )
+        }
 
         Column(
             Modifier
@@ -96,7 +99,13 @@ fun NotInternetScreen() {
                 )
             }
 
-
+            if (onRetry != null) {
+                Spacer(modifier = Modifier.height(32.dp))
+                ConfirmButton(
+                    onConfirm = onRetry,
+                    title = "reintentar"
+                )
+            }
         }
 
     }

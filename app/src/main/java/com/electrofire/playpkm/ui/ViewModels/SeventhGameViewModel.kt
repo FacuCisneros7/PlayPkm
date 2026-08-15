@@ -13,19 +13,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface SeventhGameState {
-    data object Loading : SeventhGameState
-    data class Success(val data: GameState) : SeventhGameState
-    data class Error(val message: String) : SeventhGameState
-}
-
 @HiltViewModel
 class SeventhGameViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<SeventhGameState>(SeventhGameState.Loading)
-    val state: StateFlow<SeventhGameState> = _state
+    private val _state = MutableStateFlow<UIState<GameState>>(UIState.Loading)
+    val state: StateFlow<UIState<GameState>> = _state
 
     init {
         loadGame()
@@ -33,7 +27,7 @@ class SeventhGameViewModel @Inject constructor(
 
     fun loadGame() {
         viewModelScope.launch {
-            _state.value = SeventhGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val pokemons = repo.getRandomPokemons()
                 if (pokemons.isNotEmpty()) {
@@ -59,7 +53,7 @@ class SeventhGameViewModel @Inject constructor(
                         "hp" -> spanishStat = "PS"
                     }
 
-                    _state.value = SeventhGameState.Success(
+                    _state.value = UIState.Success(
                         GameState(
                             pokemons = pokemons,
                             selectedStat = spanishStat,
@@ -68,13 +62,13 @@ class SeventhGameViewModel @Inject constructor(
                         )
                     )
                 } else {
-                    _state.value = SeventhGameState.Error("No se pudieron cargar los Pokémon.")
+                    _state.value = UIState.Error("No se pudieron cargar los Pokémon.")
                 }
             } catch (e: IOException) {
-                _state.value = SeventhGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("SEVENTH_GAME_VM", "Error: ${e.message}")
-                _state.value = SeventhGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }

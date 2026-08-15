@@ -20,9 +20,11 @@ class MusicViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val player: ExoPlayer = ExoPlayer.Builder(context).build()
-    private val maxVolume = 0.1f
 
-    private val _isMuted = MutableStateFlow(false)
+    private val _volume = MutableStateFlow(0f)
+    val volume: StateFlow<Float> = _volume.asStateFlow()
+
+    private val _isMuted = MutableStateFlow(true)
     val isMuted: StateFlow<Boolean> = _isMuted.asStateFlow()
 
     private val _isPlaying = MutableStateFlow(false)
@@ -52,7 +54,7 @@ class MusicViewModel @Inject constructor(
         val randomIndex = (tracks.indices).random()
         player.seekTo(randomIndex, 0)
 
-        player.volume = maxVolume
+        player.volume = 0f
         player.prepare()
         play()
     }
@@ -64,9 +66,16 @@ class MusicViewModel @Inject constructor(
         }
     }
 
-    fun toggleMute() {
-        _isMuted.value = !_isMuted.value
-        player.volume = if (_isMuted.value) 0f else maxVolume
+    fun pause() {
+        if (player.isPlaying) {
+            player.pause()
+            _isPlaying.value = false
+        }
+    }
+
+    fun setVolume(newVolume: Float) {
+        _volume.value = newVolume
+        player.volume = newVolume
     }
 
     override fun onCleared() {

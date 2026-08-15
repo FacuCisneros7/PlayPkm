@@ -23,12 +23,11 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.RankingList
-import com.electrofire.playpkm.ui.ViewModels.RankingState
 import com.electrofire.playpkm.ui.ViewModels.RankingType
 import com.electrofire.playpkm.ui.ViewModels.RankingViewModel
+import com.electrofire.playpkm.ui.ViewModels.UIState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -39,14 +38,6 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
     val coroutineScope = rememberCoroutineScope()
 
     Box(Modifier.fillMaxSize()) {
-        GradientBackground(
-            listOf(
-                MaterialTheme.colorScheme.onPrimary,
-                MaterialTheme.colorScheme.tertiary,
-                MaterialTheme.colorScheme.onPrimary,
-            )
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -58,7 +49,7 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                     text = "RANKING",
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontSize = 40.sp,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.tertiary,
                         drawStyle = Stroke(width = 6f)
                     )
                 )
@@ -66,7 +57,7 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                     text = "RANKING",
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontSize = 40.sp,
-                        color = MaterialTheme.colorScheme.secondary
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                 )
             }
@@ -83,18 +74,18 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
             ) { page ->
                 val type = tabs[page]
                 when (val state = states[type]) {
-                    is RankingState.Loading -> {
+                    is UIState.Loading -> {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Loading()
                         }
                     }
-                    is RankingState.Error -> {
+                    is UIState.Error -> {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text(text = state.message, color = Color.Red)
                         }
                     }
-                    is RankingState.Success -> {
-                        RankingList(users = state.users, type = type)
+                    is UIState.Success -> {
+                        RankingList(users = state.data, type = type)
                     }
                     else -> {}
                 }
@@ -129,7 +120,7 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                                 },
                                 style = MaterialTheme.typography.titleLarge.copy(
                                     fontSize = 12.sp,
-                                    color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
                                 )
                             )
                         }

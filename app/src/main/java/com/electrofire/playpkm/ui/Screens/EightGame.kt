@@ -1,6 +1,5 @@
 package com.electrofire.playpkm.ui.Screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,27 +23,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.electrofire.playpkm.Data.PokemonApi
+import com.electrofire.playpkm.ui.CardItems.GameResultPokemonCard
 import com.electrofire.playpkm.ui.CardItems.PokemonApiCard
-import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.ConfirmButton
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.HabilityCard
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.Components.LoserCard
-import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.ViewModels.EightGameState
 import com.electrofire.playpkm.ui.ViewModels.EightGameViewModel
 import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
+import com.electrofire.playpkm.ui.ViewModels.UIState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaEightGame
 
 @Composable
@@ -65,10 +58,8 @@ fun EightGame(
         Modifier.fillMaxSize()
     ) {
 
-        GradientBackground()
-
-        when (val currentState = stateEightGame){
-            is EightGameState.Loading -> {
+        when (val currentState = stateEightGame) {
+            is UIState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -76,14 +67,16 @@ fun EightGame(
                     Loading()
                 }
             }
-            is EightGameState.Error -> {
+
+            is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
-                    NotInternetScreen()
+                    NotInternetScreen(onRetry = { viewModel.loadGame() })
                 } else {
-                    ErrorScreen()
+                    ErrorScreen(onRetry = { viewModel.loadGame() })
                 }
             }
-            is EightGameState.Success -> {
+
+            is UIState.Success -> {
                 val state = currentState.data
 
                 Column(
@@ -102,8 +95,8 @@ fun EightGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 40.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 6f)
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    drawStyle = Stroke(width = 4f)
                                 )
                             )
                             Text(
@@ -195,41 +188,6 @@ fun EightGame(
                             enabled = selectedPokemon != null
                         )
                     } else {
-
-                        Spacer(Modifier.height(32.dp))
-
-                        Card(
-                            modifier = Modifier
-                                .width(180.dp)
-                                .height(180.dp)
-                                .padding(8.dp),
-                            border = BorderStroke(4.dp, MaterialTheme.colorScheme.onSurface),
-                            shape = MaterialTheme.shapes.large,
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                            )
-                        ) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                AsyncImage(
-                                    model = state.impostor!!.imageUrl,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(150.dp)
-                                        .height(150.dp),
-                                    contentScale = ContentScale.Fit
-                                )
-                            }
-                        }
-
-                        Spacer(Modifier.height(32.dp))
-
-                        HabilityCard(pokemonActual = state.impostor)
-
-                        Spacer(Modifier.height(32.dp))
-
                         val esCorrecta = remember(gameStateViewModel.respondido){
                             selectedPokemon != null && verificarRespuestaEightGame(
                                 correctPokemon = state.impostor?.name ?: "",
@@ -237,21 +195,23 @@ fun EightGame(
                             )
                         }
 
-                        if (esCorrecta) {
-                            WinCard(onButtonClick = {
+                        GameResultDialog(
+                            isWin = esCorrecta,
+                            onHomeClick = {
                                 navController.navigate("home") {
                                     popUpTo(Screen.EightGame.route) { inclusive = true }
                                 }
-                            }
-                            )
-                        } else {
-                            LoserCard(onButtonClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.EightGame.route) { inclusive = true }
+                            },
+                            content = {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    GameResultPokemonCard(pokemon = state.impostor!!)
+
+                                    Spacer(Modifier.height(16.dp))
+
+                                    HabilityCard(pokemonActual = state.impostor)
                                 }
                             }
-                            )
-                        }
+                        )
 
                         LaunchedEffect(gameStateViewModel.respondido) {
                             if (esCorrecta) {

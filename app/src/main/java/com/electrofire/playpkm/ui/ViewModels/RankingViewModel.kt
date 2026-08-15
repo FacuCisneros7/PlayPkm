@@ -16,10 +16,10 @@ class RankingViewModel @Inject constructor(
     private val repo: UsersRepository
 ) : ViewModel() {
 
-    private val _states = MutableStateFlow<Map<RankingType, RankingState>>(
-        RankingType.entries.associateWith { RankingState.Loading }
+    private val _states = MutableStateFlow<Map<RankingType, UIState<List<UserData>>>>(
+        RankingType.entries.associateWith { UIState.Loading }
     )
-    val states: StateFlow<Map<RankingType, RankingState>> = _states.asStateFlow()
+    val states: StateFlow<Map<RankingType, UIState<List<UserData>>>> = _states.asStateFlow()
 
     private val ultimaCarga = mutableMapOf<RankingType, Long>()
     private val CACHE_TIME = 2 * 60 * 60 * 1000L // 2 horas
@@ -32,14 +32,14 @@ class RankingViewModel @Inject constructor(
         val ahora = System.currentTimeMillis()
         val ultima = ultimaCarga[type] ?: 0L
 
-        if (!force && _states.value[type] is RankingState.Success && (ahora - ultima < CACHE_TIME)) {
+        if (!force && _states.value[type] is UIState.Success && (ahora - ultima < CACHE_TIME)) {
             return
         }
 
         viewModelScope.launch {
             // Solo ponemos Loading si no hay datos previos o es forzado
-            if (_states.value[type] !is RankingState.Success || force) {
-                updateState(type, RankingState.Loading)
+            if (_states.value[type] !is UIState.Success || force) {
+                updateState(type, UIState.Loading)
             }
 
             val users = when (type) {
@@ -50,15 +50,15 @@ class RankingViewModel @Inject constructor(
             }
 
             if (users.isNotEmpty()) {
-                updateState(type, RankingState.Success(users))
+                updateState(type, UIState.Success(users))
                 ultimaCarga[type] = ahora
             } else {
-                updateState(type, RankingState.Error("No se pudieron cargar los datos"))
+                updateState(type, UIState.Error("No se pudieron cargar los datos"))
             }
         }
     }
 
-    private fun updateState(type: RankingType, state: RankingState) {
+    private fun updateState(type: RankingType, state: UIState<List<UserData>>) {
         _states.value = _states.value.toMutableMap().apply {
             put(type, state)
         }

@@ -3,6 +3,7 @@ package com.electrofire.playpkm.ui.Screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +43,7 @@ import androidx.navigation.NavController
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.ConfirmButtonRegLog
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
 
 @Composable
@@ -51,6 +52,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
     var password by remember { mutableStateOf("") }
     var repeatPassword by remember { mutableStateOf("") }
     var respondido by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
     var repeatPasswordVisible by remember { mutableStateOf(false) }
@@ -65,9 +67,6 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-
-            GradientBackground()
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -89,7 +88,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                     Text(
                         text = stringResource(id = R.string.register),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 30.sp,
+                            fontSize = 40.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
                         )
@@ -97,8 +96,8 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                     Text(
                         text = stringResource(id = R.string.register),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 30.sp,
-                            color = MaterialTheme.colorScheme.onSecondary
+                            fontSize = 40.sp,
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     )
                 }
@@ -108,13 +107,12 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(55.dp)
-                        .fillMaxSize(),
-                    elevation = CardDefaults.cardElevation(10.dp),
+                        .height(55.dp),
+                    elevation = CardDefaults.cardElevation(0.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
                     ),
-                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
                 ) {
                     TextField(
                         value = email,
@@ -128,18 +126,17 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                         placeholder = {
                             Text(
                                 text = "Email",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                textAlign = TextAlign.Center
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.onSecondary,    // Fondo cuando está enfocado
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,  // Fondo cuando NO está enfocado
-                            focusedTextColor = Color.White,       // Texto ingresado
-                            unfocusedTextColor = Color.White,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.inversePrimary, // Placeholder enfocado
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                            cursorColor = Color.White,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.primary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            cursorColor = MaterialTheme.colorScheme.tertiary,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
@@ -153,13 +150,12 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(55.dp)
-                        .fillMaxSize(),
-                    elevation = CardDefaults.cardElevation(10.dp),
+                        .height(55.dp),
+                    elevation = CardDefaults.cardElevation(0.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
                     ),
-                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
                 ) {
                     TextField(
                         value = password,
@@ -173,18 +169,17 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.password),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                textAlign = TextAlign.Center
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.onSecondary,    // Fondo cuando está enfocado
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,  // Fondo cuando NO está enfocado
-                            focusedTextColor = Color.White,       // Texto ingresado
-                            unfocusedTextColor = Color.White,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.inversePrimary, // Placeholder enfocado
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                            cursorColor = Color.White,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.primary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            cursorColor = MaterialTheme.colorScheme.tertiary,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
@@ -199,7 +194,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                             val image =
                                 if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = image, contentDescription = null)
+                                Icon(imageVector = image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
@@ -211,13 +206,12 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(55.dp)
-                        .fillMaxSize(),
-                    elevation = CardDefaults.cardElevation(10.dp),
+                        .height(55.dp),
+                    elevation = CardDefaults.cardElevation(0.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
                     ),
-                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
                 ) {
                     TextField(
                         value = repeatPassword,
@@ -231,18 +225,17 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.password_again),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                textAlign = TextAlign.Center
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.onSecondary,    // Fondo cuando está enfocado
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,  // Fondo cuando NO está enfocado
-                            focusedTextColor = Color.White,       // Texto ingresado
-                            unfocusedTextColor = Color.White,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.inversePrimary, // Placeholder enfocado
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                            cursorColor = Color.White,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.primary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            cursorColor = MaterialTheme.colorScheme.tertiary,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
@@ -259,7 +252,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                             IconButton(onClick = {
                                 repeatPasswordVisible = !repeatPasswordVisible
                             }) {
-                                Icon(imageVector = image, contentDescription = null)
+                                Icon(imageVector = image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
@@ -271,7 +264,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                 if (errorMessage != null) {
                     Text(
                         text = errorMessage!!,
-                        color = Color.Red,
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
                         textAlign = TextAlign.Center
                     )
@@ -288,14 +281,17 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                         } else if (password != repeatPassword) {
                             errorMessage = "Verifique que coincidan ambas contraseñas"
                         } else {
+                            isLoading = true
                             authViewModel.register(
                                 email = email,
                                 password = password,
                                 onSuccess = { uid ->
                                     respondido = true
+                                    isLoading = false
                                 },
                                 onError = { error ->
                                     errorMessage = error
+                                    isLoading = false
                                 }
                             )
                         }
@@ -312,6 +308,17 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                     title = "iniciar sesion"
                 )
 
+            }
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.4f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Loading()
+                }
             }
         }
 

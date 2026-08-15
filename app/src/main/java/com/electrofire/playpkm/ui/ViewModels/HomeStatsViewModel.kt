@@ -12,10 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.Source
+import java.time.LocalDate
 import java.time.ZoneOffset
-import java.util.Date
-import javax.inject.Inject
 
 
 class HomeStatsViewModel : ViewModel() {
@@ -151,6 +149,26 @@ class HomeStatsViewModel : ViewModel() {
                 onResult(lastDayUTC != nowUTC)
             }
         }
+    }
+
+    fun canPlayGame(gameId: String): Boolean {
+        val attempts = gameAttempts ?: return true
+        val lastTimestamp = when (gameId) {
+            "first_game" -> attempts.first_game
+            "second_game" -> attempts.second_game
+            "third_game" -> attempts.third_game
+            "fourth_game" -> attempts.fourth_game
+            "sixth_game" -> attempts.sixth_game
+            "seventh_game" -> attempts.seventh_game
+            "fift_game" -> attempts.fift_game
+            "eight_game" -> attempts.eight_game
+            "ten_game" -> attempts.ten_game
+            else -> null
+        } ?: return true
+
+        val lastDay = lastTimestamp.toDate().toInstant().atZone(ZoneOffset.UTC).toLocalDate()
+        val nowDay = LocalDate.now(ZoneOffset.UTC)
+        return lastDay != nowDay
     }
 
     fun registrarIntentoJuego(gameId: String) {

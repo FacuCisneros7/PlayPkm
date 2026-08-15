@@ -82,15 +82,16 @@ fun UserInputPokemonDos(
                 .width(200.dp)
                 .height(55.dp)
                 .fillMaxSize(),
-            elevation = CardDefaults.cardElevation(10.dp),
+            elevation = CardDefaults.cardElevation(0.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = Color.Transparent
             ),
-            border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+            border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
         ) {
             if (title == "Potencia") {
                 TextField(
                     value = text,
+                    textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                     onValueChange = { input ->
                         if (input.all { it.isDigit() }) {
                             onTextChange(input)
@@ -99,17 +100,18 @@ fun UserInputPokemonDos(
                     placeholder = {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                             textAlign = TextAlign.Center
                         )
                     },
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.outline,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
                         focusedTextColor = MaterialTheme.colorScheme.primary,
-                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface,
-                        cursorColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        cursorColor = MaterialTheme.colorScheme.tertiary,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
@@ -130,18 +132,17 @@ fun UserInputPokemonDos(
                         placeholder = {
                             Text(
                                 text = title,
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                textAlign = TextAlign.Center
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,    // Fondo cuando está enfocado
-                            unfocusedContainerColor = MaterialTheme.colorScheme.inversePrimary,  // Fondo cuando NO está enfocado
-                            focusedTextColor = Color.Black,       // Texto ingresado
-                            unfocusedTextColor = Color.Black,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder enfocado
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                            cursorColor = Color.Black,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.primary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            cursorColor = MaterialTheme.colorScheme.tertiary,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
@@ -178,9 +179,9 @@ fun UserInputPokemonDos(
                     .heightIn(max = 100.dp),
                 elevation = CardDefaults.cardElevation(10.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.inverseSurface
+                    containerColor = MaterialTheme.colorScheme.secondary
                 ),
-                border = BorderStroke(3.dp, Color.Black)
+                border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
 
             ) {
                 Box(modifier = Modifier.wrapContentHeight()) {

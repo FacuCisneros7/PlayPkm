@@ -1,7 +1,6 @@
 package com.electrofire.playpkm.ui.Components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Card
@@ -23,44 +22,24 @@ fun Contador(modifier: Modifier = Modifier, contadorViewModel: ContadorViewModel
 
     val contador = contadorViewModel.contador
 
-    val gradientColors = listOf(
-        MaterialTheme.colorScheme.outline,
-        MaterialTheme.colorScheme.onPrimary,
-        MaterialTheme.colorScheme.tertiary
-    )
-
     LaunchedEffect(Unit) {
         contadorViewModel.iniciarContador()
     }
 
     Card(
-        modifier.wrapContentSize(),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        ),
-        elevation = CardDefaults.cardElevation(10.dp),
+        modifier = modifier.wrapContentSize(),
         shape = MaterialTheme.shapes.large,
+        border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary),
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
+        )
     ) {
-        Box(
-            modifier = modifier
-                .background(
-                    brush = Brush.verticalGradient(gradientColors),
-                    shape = MaterialTheme.shapes.large,
-                )
-                .padding(6.dp), // grosor del "trazo"
-        ) {
-            Card(
-                modifier.wrapContentSize(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
-                )
-            ) {
-                Text(
-                    " $contador ",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 40.sp)
-                )
-            }
-        }
+        Text(
+            text = " $contador ",
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 40.sp),
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        )
     }
 }

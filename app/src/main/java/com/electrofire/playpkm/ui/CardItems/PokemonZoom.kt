@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,13 +25,13 @@ fun PokemonZoom(
 ) {
     Card(
         modifier = modifier
-            .width(200.dp)
-            .height(200.dp)
-            .fillMaxSize(),
-        border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary),
+            .width(230.dp)
+            .height(230.dp)
+            .padding(8.dp),
+        border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary
+            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
         )
     ) {
         Box(

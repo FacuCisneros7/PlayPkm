@@ -12,19 +12,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface FourthGameState {
-    data object Loading : FourthGameState
-    data class Success(val movimiento: Movimiento) : FourthGameState
-    data class Error(val message: String) : FourthGameState
-}
-
 @HiltViewModel
 class MovimientoViewModel @Inject constructor(
     private val repo: MovimientosRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<FourthGameState>(FourthGameState.Loading)
-    val state: StateFlow<FourthGameState> = _state
+    private val _state = MutableStateFlow<UIState<Movimiento>>(UIState.Loading)
+    val state: StateFlow<UIState<Movimiento>> = _state
 
     init {
         loadMovimiento()
@@ -32,19 +26,19 @@ class MovimientoViewModel @Inject constructor(
 
     fun loadMovimiento() {
         viewModelScope.launch {
-            _state.value = FourthGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val result = repo.obtenerMovimientoDelDia()
                 if (result != null) {
-                    _state.value = FourthGameState.Success(result)
+                    _state.value = UIState.Success(result)
                 } else {
-                    _state.value = FourthGameState.Error("No se encontró el movimiento del día.")
+                    _state.value = UIState.Error("No se encontró el movimiento del día.")
                 }
             } catch (e: IOException) {
-                _state.value = FourthGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("MOVIMIENTO_VM", "Error: ${e.message}")
-                _state.value = FourthGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }

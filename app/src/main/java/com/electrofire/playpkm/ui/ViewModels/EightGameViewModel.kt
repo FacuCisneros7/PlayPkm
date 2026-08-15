@@ -12,42 +12,31 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface EightGameState {
-    data object Loading : EightGameState
-    data class Success(val data: ImpostorGameData) : EightGameState
-    data class Error(val message: String) : EightGameState
-}
 @HiltViewModel
 class EightGameViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<EightGameState>(EightGameState.Loading)
-    val state: StateFlow<EightGameState> = _state
+    private val _state = MutableStateFlow<UIState<ImpostorGameData>>(UIState.Loading)
+    val state: StateFlow<UIState<ImpostorGameData>> = _state
 
     init {
         loadGame()
     }
 
-    private fun loadGame(){
+    fun loadGame(){
 
         viewModelScope.launch{
-            _state.value = EightGameState.Loading
+            _state.value = UIState.Loading
 
             try {
                 val game = repo.obtenerPokemonConMismaHabilidadDelDia()
-                _state.value = EightGameState.Success(
-                    ImpostorGameData(
-                        abilityName = game.abilityName,
-                        pokemons = game.pokemons,
-                        impostor = game.impostor
-                    )
-                )
+                _state.value = UIState.Success(game)
             } catch (e: IOException) {
-                _state.value = EightGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("EIGHT_GAME_VM", "Error: ${e.message}")
-                _state.value = EightGameState.Error("No se pudo cargar el juego.")
+                _state.value = UIState.Error("No se pudo cargar el juego.")
             }
 
         }

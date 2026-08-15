@@ -12,19 +12,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface FirstGameState {
-    data object Loading : FirstGameState
-    data class Success(val pokemon: PokemonApi) : FirstGameState
-    data class Error(val message: String) : FirstGameState
-}
-
 @HiltViewModel
 class PokemonViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<FirstGameState>(FirstGameState.Loading)
-    val state: StateFlow<FirstGameState> = _state
+    private val _state = MutableStateFlow<UIState<PokemonApi>>(UIState.Loading)
+    val state: StateFlow<UIState<PokemonApi>> = _state
 
     init {
         loadPokemon()
@@ -32,19 +26,19 @@ class PokemonViewModel @Inject constructor(
 
     fun loadPokemon() {
         viewModelScope.launch {
-            _state.value = FirstGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val result = repo.obtenerPokemonDelDia()
                 if (result != null) {
-                    _state.value = FirstGameState.Success(result)
+                    _state.value = UIState.Success(result)
                 } else {
-                    _state.value = FirstGameState.Error("No se encontró el Pokémon del día.")
+                    _state.value = UIState.Error("No se encontró el Pokémon del día.")
                 }
             } catch (e: IOException) {
-                _state.value = FirstGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("POKEMON_VM", "Error: ${e.message}")
-                _state.value = FirstGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }

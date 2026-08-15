@@ -12,19 +12,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface SixthGameState {
-    data object Loading : SixthGameState
-    data class Success(val fusion: Fusion) : SixthGameState
-    data class Error(val message: String) : SixthGameState
-}
-
 @HiltViewModel
 class FusionViewModel @Inject constructor(
     private val repo: FusionRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<SixthGameState>(SixthGameState.Loading)
-    val state: StateFlow<SixthGameState> = _state
+    private val _state = MutableStateFlow<UIState<Fusion>>(UIState.Loading)
+    val state: StateFlow<UIState<Fusion>> = _state
 
     init {
         loadFusion()
@@ -32,19 +26,19 @@ class FusionViewModel @Inject constructor(
 
     fun loadFusion() {
         viewModelScope.launch {
-            _state.value = SixthGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val result = repo.obtenerFusionDelDia()
                 if (result != null) {
-                    _state.value = SixthGameState.Success(result)
+                    _state.value = UIState.Success(result)
                 } else {
-                    _state.value = SixthGameState.Error("No se encontró la fusión del día.")
+                    _state.value = UIState.Error("No se encontró la fusión del día.")
                 }
             } catch (e: IOException) {
-                _state.value = SixthGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("FUSION_VM", "Error: ${e.message}")
-                _state.value = SixthGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }

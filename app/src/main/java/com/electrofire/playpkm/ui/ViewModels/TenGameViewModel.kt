@@ -12,19 +12,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface TenGameState {
-    data object Loading : TenGameState
-    data class Success(val pokemon: PokemonApi) : TenGameState
-    data class Error(val message: String) : TenGameState
-}
-
 @HiltViewModel
 class TenGameViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<TenGameState>(TenGameState.Loading)
-    val state: StateFlow<TenGameState> = _state
+    private val _state = MutableStateFlow<UIState<PokemonApi>>(UIState.Loading)
+    val state: StateFlow<UIState<PokemonApi>> = _state
 
     init {
         loadPokemon()
@@ -32,19 +26,19 @@ class TenGameViewModel @Inject constructor(
 
     fun loadPokemon() {
         viewModelScope.launch {
-            _state.value = TenGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val result = repo.obtenerPokemonDelDiaConZoom()
                 if (result != null) {
-                    _state.value = TenGameState.Success(result)
+                    _state.value = UIState.Success(result)
                 } else {
-                    _state.value = TenGameState.Error("No se encontró el Pokémon del día.")
+                    _state.value = UIState.Error("No se encontró el Pokémon del día.")
                 }
             } catch (e: IOException) {
-                _state.value = TenGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("TEN_GAME_VM", "Error: ${e.message}")
-                _state.value = TenGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }

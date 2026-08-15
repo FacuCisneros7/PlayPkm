@@ -12,24 +12,20 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface TwelveGameState {
-    data object Loading : TwelveGameState
-    data class Success(
-        val pokemonA: PokemonApi,
-        val pokemonB: PokemonApi,
-        val puntaje: Int,
-        val isGameOver: Boolean = false
-    ) : TwelveGameState
-    data class Error(val message: String) : TwelveGameState
-}
+data class TwelveGameData(
+    val pokemonA: PokemonApi,
+    val pokemonB: PokemonApi,
+    val puntaje: Int,
+    val isGameOver: Boolean = false
+)
 
 @HiltViewModel
 class TwelveViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<TwelveGameState>(TwelveGameState.Loading)
-    val state: StateFlow<TwelveGameState> = _state
+    private val _state = MutableStateFlow<UIState<TwelveGameData>>(UIState.Loading)
+    val state: StateFlow<UIState<TwelveGameData>> = _state
 
     init {
         iniciarJuego()
@@ -37,34 +33,36 @@ class TwelveViewModel @Inject constructor(
 
     fun iniciarJuego() {
         viewModelScope.launch {
-            _state.value = TwelveGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val a = repo.obtenerPokemonRandom()
                 val b = repo.obtenerPokemonRandom()
                 if (a != null && b != null) {
-                    _state.value = TwelveGameState.Success(
-                        pokemonA = a,
-                        pokemonB = b,
-                        puntaje = 0
+                    _state.value = UIState.Success(
+                        TwelveGameData(
+                            pokemonA = a,
+                            pokemonB = b,
+                            puntaje = 0
+                        )
                     )
                 } else {
-                    _state.value = TwelveGameState.Error("No se pudieron cargar los Pokémon.")
+                    _state.value = UIState.Error("No se pudieron cargar los Pokémon.")
                 }
             } catch (e: IOException) {
-                _state.value = TwelveGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("TWELVE_VM", "Error: ${e.message}")
-                _state.value = TwelveGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }
 
     fun elegirPokemon(pokemonElegido: PokemonApi) {
         val currentState = _state.value
-        if (currentState is TwelveGameState.Success && !currentState.isGameOver) {
+        if (currentState is UIState.Success && !currentState.data.isGameOver) {
             viewModelScope.launch {
-                val a = currentState.pokemonA
-                val b = currentState.pokemonB
+                val a = currentState.data.pokemonA
+                val b = currentState.data.pokemonB
 
                 val ida = a.id
                 val idb = b.id
@@ -79,16 +77,18 @@ class TwelveViewModel @Inject constructor(
                 if (respuestaCorrecta) {
                     val nextB = repo.obtenerPokemonRandom()
                     if (nextB != null) {
-                        _state.value = currentState.copy(
-                            pokemonA = b,
-                            pokemonB = nextB,
-                            puntaje = currentState.puntaje + 1
+                        _state.value = UIState.Success(
+                            currentState.data.copy(
+                                pokemonA = b,
+                                pokemonB = nextB,
+                                puntaje = currentState.data.puntaje + 1
+                            )
                         )
                     } else {
-                        _state.value = TwelveGameState.Error("Error al cargar el siguiente oponente.")
+                        _state.value = UIState.Error("Error al cargar el siguiente oponente.")
                     }
                 } else {
-                    _state.value = currentState.copy(isGameOver = true)
+                    _state.value = UIState.Success(currentState.data.copy(isGameOver = true))
                 }
             }
         }

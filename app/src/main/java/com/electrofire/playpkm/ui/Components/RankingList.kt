@@ -2,10 +2,12 @@ package com.electrofire.playpkm.ui.Components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,8 +17,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,12 +32,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.Data.UserData
-import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.ViewModels.RankingType
 import com.google.firebase.auth.FirebaseAuth
 
@@ -42,19 +49,130 @@ fun RankingList(
 ) {
     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
+    val podiumUsers = users.take(3)
+    val remainingUsers = users.drop(3)
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        itemsIndexed(users) { index, user ->
+        item {
+            RankingPodium(users = podiumUsers, type = type)
+        }
+
+        itemsIndexed(remainingUsers) { index, user ->
             val isCurrentUser = user.id == currentUserId
             RankingUserItem(
                 user = user,
-                position = index + 1,
+                position = index + 4,
                 isCurrentUser = isCurrentUser,
                 type = type
             )
+        }
+        
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+fun RankingPodium(users: List<UserData>, type: RankingType) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, bottom = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom
+    ) {
+        // 2do Puesto
+        if (users.size >= 2) {
+            PodiumItem(user = users[1], position = 2, type = type, modifier = Modifier.weight(1f))
+        }
+
+        // 1er Puesto
+        if (users.size >= 1) {
+            PodiumItem(user = users[0], position = 1, type = type, modifier = Modifier.weight(1.3f))
+        }
+
+        // 3er Puesto
+        if (users.size >= 3) {
+            PodiumItem(user = users[2], position = 3, type = type, modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+fun PodiumItem(user: UserData, position: Int, type: RankingType, modifier: Modifier = Modifier) {
+    val (color, size) = when (position) {
+        1 -> Color(0xFFFFC107) to 85.dp
+        2 -> Color(0xFFBABECF) to 65.dp
+        else -> Color(0xFFCD7F32) to 55.dp
+    }
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Box(contentAlignment = Alignment.BottomCenter) {
+            // Avatar
+            Image(
+                painter = rememberAsyncImagePainter(user.imagen),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(size)
+                    .clip(CircleShape)
+                    .border(3.dp, color, CircleShape)
+                    .padding(3.dp)
+                    .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+            
+            // Medalla / Posición
+            Card(
+                modifier = Modifier.size(24.dp).padding(bottom = 2.dp),
+                shape = CircleShape,
+                colors = CardDefaults.cardColors(containerColor = color),
+                elevation = CardDefaults.cardElevation(4.dp)
+            ) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "$position",
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        Text(
+            text = user.userName.orEmpty().uppercase(),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 12.sp),
+            maxLines = 1,
+            textAlign = TextAlign.Center
+        )
+
+        // Puntaje en podio
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            val icon = if (type == RankingType.GENERAL) Icons.Default.CheckCircle else Icons.Default.Star
+            val tint = if (type == RankingType.GENERAL) MaterialTheme.colorScheme.outline else Color(0xFFFFC107)
+            val score = when (type) {
+                RankingType.GENERAL -> user.victorias
+                RankingType.GC -> user.maxPoints
+                RankingType.TS -> user.maxPointsDos
+                RankingType.BA -> user.maxPointsTres
+            }
+            
+            Icon(imageVector = icon, contentDescription = null, tint = tint, modifier = Modifier.size(14.dp))
+            Spacer(Modifier.width(4.dp))
+            Text(text = "$score", color = MaterialTheme.colorScheme.primary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -76,17 +194,19 @@ fun RankingUserItem(
     val borderColor = if (isCurrentUser) {
         MaterialTheme.colorScheme.primary
     } else {
-        Color.Transparent
+        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f)
     }
 
     Card(
         modifier = Modifier
             .width(320.dp)
-            .height(55.dp),
+            .height(60.dp), // Aumentamos un poco el alto
         shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
-        border = BorderStroke(3.dp, borderColor)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
+        ),
+        border = BorderStroke(if (isCurrentUser) 3.dp else 2.dp, borderColor)
     ) {
         Row(
             modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
@@ -127,23 +247,61 @@ fun RankingUserItem(
             ) {
                 when (type) {
                     RankingType.GENERAL -> {
-                        Text(text = "W:", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.titleMedium)
-                        Text(text = "${user.victorias}", color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(start = 2.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "L:", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleMedium)
-                        Text(text = "${user.derrotas}", color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(start = 2.dp))
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "${user.victorias}",
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(start = 4.dp),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "${user.derrotas}",
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(start = 4.dp),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                     }
                     RankingType.GC -> {
-                        Text(text = "MAX: ", color = MaterialTheme.colorScheme.outline)
-                        Text(text = "${user.maxPoints}", color = MaterialTheme.colorScheme.primary)
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFFFC107),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "${user.maxPoints}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp))
                     }
                     RankingType.TS -> {
-                        Text(text = "MAX: ", color = MaterialTheme.colorScheme.outline)
-                        Text(text = "${user.maxPointsDos}", color = MaterialTheme.colorScheme.primary)
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFFFC107),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "${user.maxPointsDos}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp))
                     }
                     RankingType.BA -> {
-                        Text(text = "MAX: ", color = MaterialTheme.colorScheme.outline)
-                        Text(text = "${user.maxPointsTres}", color = MaterialTheme.colorScheme.primary)
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFFFC107),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "${user.maxPointsTres}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp))
                     }
                 }
             }

@@ -1,10 +1,10 @@
 package com.electrofire.playpkm.ui.Components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -12,8 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.electrofire.playpkm.Data.PokemonApi
@@ -24,52 +22,30 @@ fun HabilityCard(modifier: Modifier = Modifier, pokemonActual: PokemonApi?) {
 
     if (pokemonActual != null) {
 
-        val gradientColors = listOf(
-            MaterialTheme.colorScheme.outline,
-            MaterialTheme.colorScheme.onPrimary,
-            MaterialTheme.colorScheme.tertiary
-        )
-
         Card(
-            modifier.wrapContentSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            ),
-            elevation = CardDefaults.cardElevation(10.dp),
+            modifier = modifier
+                .width(230.dp)
+                .padding(8.dp),
             shape = MaterialTheme.shapes.large,
+            border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
+            )
         ) {
-            Box(
-                modifier = modifier
-                    .background(
-                        brush = Brush.verticalGradient(gradientColors),
-                        shape = MaterialTheme.shapes.large,
-                    )
-                    .padding(2.dp), // grosor del "trazo"
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Card(
-                    modifier
-                        .wrapContentSize()
-                        .padding(3.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondary
-                    ),
-                    shape = MaterialTheme.shapes.large,
-                ) {
-                    Column(
-                        modifier.padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        for (habilidad in pokemonActual.abilities) {
-                            Text(
-                                habilidad.uppercase(),
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp)
-                            )
-                        }
-                    }
+                for (habilidad in pokemonActual.abilities) {
+                    Text(
+                        habilidad.uppercase(),
+                        color = MaterialTheme.colorScheme.outline,
+                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp)
+                    )
                 }
             }
-
         }
     }
 }

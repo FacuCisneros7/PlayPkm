@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,21 +27,20 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.electrofire.playpkm.ui.CardItems.GameResultPokemonCard
 import com.electrofire.playpkm.ui.CardItems.HabilityPokemonCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.Contador
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.HabilityCard
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
-import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HabilityViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.ThirdGameState
+import com.electrofire.playpkm.ui.ViewModels.UIState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaHabilidadPokemon
 
 @Composable
@@ -61,11 +63,8 @@ fun ThirdGame(
     }
 
     Box(Modifier.fillMaxSize()) {
-
-        GradientBackground()
-
         when (val currentState = state) {
-            is ThirdGameState.Loading -> {
+            is UIState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -74,21 +73,23 @@ fun ThirdGame(
                 }
             }
 
-            is ThirdGameState.Error -> {
+            is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
-                    NotInternetScreen()
+                    NotInternetScreen(onRetry = { viewModel.loadPokemon() })
                 } else {
-                    ErrorScreen()
+                    ErrorScreen(onRetry = { viewModel.loadPokemon() })
                 }
             }
 
-            is ThirdGameState.Success -> {
-                val pokemonActual = currentState.pokemon
+            is UIState.Success -> {
+                val pokemonActual = currentState.data
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(32.dp),
+                        .padding(32.dp)
+                        .verticalScroll(rememberScrollState())
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -101,8 +102,8 @@ fun ThirdGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 32.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 6f)
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    drawStyle = Stroke(width = 4f)
                                 )
                             )
                             Text(
@@ -135,35 +136,22 @@ fun ThirdGame(
 
                         Contador(contadorViewModel = contadorViewModel)
                     } else {
-                        Spacer(modifier = Modifier.height(40.dp))
-
-                        HabilityPokemonCard(pokemon = pokemonActual)
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        HabilityCard(pokemonActual = pokemonActual)
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        if (verificarRespuestaHabilidadPokemon(
-                                pokemonActual,
-                                respuesta
-                            )
-                        ) {
-                            WinCard(onButtonClick = {
+                        val esCorrecto = verificarRespuestaHabilidadPokemon(pokemonActual, respuesta)
+                        GameResultDialog(
+                            isWin = esCorrecto,
+                            onHomeClick = {
                                 navController.navigate("home") {
                                     popUpTo(Screen.ThirdGame.route) { inclusive = true }
                                 }
-                            }
-                            )
-                        } else {
-                            LoserCard(onButtonClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.ThirdGame.route) { inclusive = true }
+                            },
+                            content = {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    GameResultPokemonCard(pokemon = pokemonActual)
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    HabilityCard(pokemonActual = pokemonActual)
                                 }
                             }
-                            )
-                        }
+                        )
                         LaunchedEffect(gameStateViewModel.respondido) {
                             if (verificarRespuestaHabilidadPokemon(
                                     pokemonActual,

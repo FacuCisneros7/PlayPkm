@@ -1,7 +1,5 @@
 package com.electrofire.playpkm.ui.Screens
 
-import android.media.MediaPlayer
-import android.media.SoundPool
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,11 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,13 +35,13 @@ import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.CardItems.SombrasInfCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.ContadorCorto
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.ViewModels.ElevenGameState
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.SombrasInfViewModel
+import com.electrofire.playpkm.ui.ViewModels.UIState
 
 @Composable
 fun ElevenGame(
@@ -56,51 +54,43 @@ fun ElevenGame(
     val state by viewModel.state.collectAsState()
     val contador by viewModel.contador.collectAsState()
 
-    val context = LocalContext.current
-
     LaunchedEffect(state) {
-        if (state is ElevenGameState.Success && (state as ElevenGameState.Success).isGameOver) {
-            statsViewModel.registrarMaxScoreElevenGame((state as ElevenGameState.Success).puntaje)
+        if (state is UIState.Success && (state as UIState.Success).data.isGameOver) {
+            statsViewModel.registrarMaxScoreElevenGame((state as UIState.Success).data.puntaje)
         }
-    }
-
-    val soundPool = remember {
-        SoundPool.Builder().setMaxStreams(1).build()
-    }
-    val soundId = remember {
-        soundPool.load(context, R.raw.buttonuisoundeffect, 1)
     }
 
     Box(
         Modifier.fillMaxSize()
     ) {
 
-        GradientBackground()
-
         when (val currentState = state) {
-            is ElevenGameState.Loading -> {
+            is UIState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Loading()
                 }
             }
 
-            is ElevenGameState.Error -> {
+            is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
-                    NotInternetScreen()
+                    NotInternetScreen(onRetry = { viewModel.iniciarJuego() })
                 } else {
-                    ErrorScreen()
+                    ErrorScreen(onRetry = { viewModel.iniciarJuego() })
                 }
             }
 
-            is ElevenGameState.Success -> {
-                val pokemonActual = currentState.pokemon
-                val puntaje = currentState.puntaje
-                val isGameOver = currentState.isGameOver
+            is UIState.Success -> {
+                val gameData = currentState.data
+                val pokemonActual = gameData.pokemon
+                val puntaje = gameData.puntaje
+                val isGameOver = gameData.isGameOver
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 32.dp),
+                        .padding(top = 32.dp)
+                        .verticalScroll(rememberScrollState())
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -138,31 +128,12 @@ fun ElevenGame(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Button(
-                            onClick = {
-                                soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
+                        ConfirmButton(
+                            onConfirm = {
                                 viewModel.escribirPokemon(respuesta)
                                 respuesta = ""
-                            },
-                            Modifier
-                                .width(200.dp)
-                                .height(40.dp),
-                            elevation = ButtonDefaults.buttonElevation(5.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor =
-                                    MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
-                                contentColor = MaterialTheme.colorScheme.primary,
-                                disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                disabledContentColor = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.confirm),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
+                            }
+                        )
 
                         Spacer(modifier = Modifier.height(32.dp))
 
@@ -173,8 +144,8 @@ fun ElevenGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 36.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 6f)
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    drawStyle = Stroke(width = 4f)
                                 )
                             )
                             Text(
@@ -188,159 +159,19 @@ fun ElevenGame(
                             )
                         }
                     } else {
-                        Column(
-                            modifier = Modifier.wrapContentSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Spacer(Modifier.height(100.dp))
-
-                            Box {
-                                Text(
-                                    text = stringResource(id = R.string.ninthgame_derrota),
-                                    textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.headlineLarge.copy(
-                                        fontSize = 45.sp,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        drawStyle = Stroke(width = 6f)
-                                    )
-                                )
-                                Text(
-                                    text = stringResource(id = R.string.ninthgame_derrota),
-                                    textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.headlineLarge.copy(
-                                        fontSize = 45.sp,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                )
-                            }
-
-                            Spacer(Modifier.height(32.dp))
-
-                            Row {
-                                Box {
-                                    Text(
-                                        text = stringResource(id = R.string.ninthgame_puntuation_final),
-                                        color = MaterialTheme.colorScheme.inversePrimary,
-                                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                                        textAlign = TextAlign.Center
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.ninthgame_puntuation_final),
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.headlineLarge.copy(
-                                            fontSize = 30.sp,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            drawStyle = Stroke(width = 2f)
-                                        )
-                                    )
+                        GameResultDialog(
+                            isGameOver = true,
+                            puntaje = puntaje,
+                            maxScore = usuario.maxPointsDos,
+                            onHomeClick = {
+                                navController.navigate("home") {
+                                    popUpTo(Screen.ElevenGame.route) { inclusive = true }
                                 }
-                                Box {
-                                    Text(
-                                        text = " $puntaje",
-                                        color = MaterialTheme.colorScheme.outline,
-                                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                                        textAlign = TextAlign.Center
-                                    )
-                                    Text(
-                                        text = " $puntaje",
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.headlineLarge.copy(
-                                            fontSize = 30.sp,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            drawStyle = Stroke(width = 2f)
-                                        )
-                                    )
-                                }
-
+                            },
+                            onRetryClick = {
+                                viewModel.iniciarJuego()
                             }
-
-                            Spacer(Modifier.height(32.dp))
-
-                            Row {
-                                Box {
-                                    Text(
-                                        text = stringResource(id = R.string.ninthgame_max_puntuacion),
-                                        color = MaterialTheme.colorScheme.onSecondary,
-                                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                                        textAlign = TextAlign.Center
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.ninthgame_max_puntuacion),
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.headlineLarge.copy(
-                                            fontSize = 30.sp,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            drawStyle = Stroke(width = 2f)
-                                        )
-                                    )
-                                }
-                                Box {
-                                    Text(
-                                        text = " ${usuario.maxPointsDos}",
-                                        color = MaterialTheme.colorScheme.outline,
-                                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                                        textAlign = TextAlign.Center
-                                    )
-                                    Text(
-                                        text = " ${usuario.maxPointsDos}",
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.headlineLarge.copy(
-                                            fontSize = 30.sp,
-                                            color = MaterialTheme.colorScheme.primary,
-                                            drawStyle = Stroke(width = 2f)
-                                        )
-                                    )
-                                }
-
-                            }
-
-                            Spacer(Modifier.height(32.dp))
-
-                            ConfirmButton(
-                                onConfirm = {
-                                    val mediaPlayer =
-                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                    mediaPlayer.start()
-                                    mediaPlayer.setOnCompletionListener { it.release() }
-
-                                    viewModel.iniciarJuego()
-                                },
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(50.dp),
-                                title = "jugar otra vez"
-                            )
-
-                            Spacer(Modifier.height(64.dp))
-
-                            Button(
-                                onClick = {
-                                    val mediaPlayer =
-                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                    mediaPlayer.start()
-                                    mediaPlayer.setOnCompletionListener { it.release() }
-
-                                    navController.navigate("home") {
-                                        popUpTo(Screen.ElevenGame.route) { inclusive = true }
-                                    }
-                                },
-                                elevation = ButtonDefaults.buttonElevation(5.dp),
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(50.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
-                                    contentColor = MaterialTheme.colorScheme.primary
-                                )
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.ninthgame_home),
-                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-                        }
+                        )
                     }
                 }
             }

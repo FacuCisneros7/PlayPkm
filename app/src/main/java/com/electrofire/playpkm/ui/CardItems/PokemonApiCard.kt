@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -45,13 +44,13 @@ fun PokemonApiCard(
                 onClick()
             },
         border = if (onSelected) {
-            BorderStroke(4.dp, Color(0xFF00C853))
+            BorderStroke(4.dp, MaterialTheme.colorScheme.outline)
         } else {
-            BorderStroke(4.dp, MaterialTheme.colorScheme.secondary)
+            BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f))
         },
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
         )
     ) {
         Box(

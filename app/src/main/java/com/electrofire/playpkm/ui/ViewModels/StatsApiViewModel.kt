@@ -12,19 +12,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-sealed interface FiftGameState {
-    data object Loading : FiftGameState
-    data class Success(val pokemon: PokemonApi) : FiftGameState
-    data class Error(val message: String) : FiftGameState
-}
-
 @HiltViewModel
 class StatsApiViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<FiftGameState>(FiftGameState.Loading)
-    val state: StateFlow<FiftGameState> = _state
+    private val _state = MutableStateFlow<UIState<PokemonApi>>(UIState.Loading)
+    val state: StateFlow<UIState<PokemonApi>> = _state
 
     init {
         loadPokemon()
@@ -32,19 +26,19 @@ class StatsApiViewModel @Inject constructor(
 
     fun loadPokemon() {
         viewModelScope.launch {
-            _state.value = FiftGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val result = repo.obtenerStatPokemonDelDia()
                 if (result != null) {
-                    _state.value = FiftGameState.Success(result)
+                    _state.value = UIState.Success(result)
                 } else {
-                    _state.value = FiftGameState.Error("No se encontró el Pokémon del día.")
+                    _state.value = UIState.Error("No se encontró el Pokémon del día.")
                 }
             } catch (e: IOException) {
-                _state.value = FiftGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("STATS_API_VM", "Error: ${e.message}")
-                _state.value = FiftGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }

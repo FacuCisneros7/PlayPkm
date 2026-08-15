@@ -1,6 +1,8 @@
 package com.electrofire.playpkm.ui.Components
 
+
 import android.media.MediaPlayer
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,12 +15,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,30 +35,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.electrofire.playpkm.Data.Avatar
-import com.electrofire.playpkm.R
-import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.tasks.await
-
-
 import com.electrofire.playpkm.Data.AvatarData
+import com.electrofire.playpkm.R
 
 @Composable
 fun ChoiseImage(
-    statsViewModel: HomeStatsViewModel,
-    onImageSelected: (Boolean) -> Unit
+    selectedImage: String?,
+    onImageSelected: (String) -> Unit
 ) {
 
     val context = LocalContext.current
 
     val imageList = remember { AvatarData.avatars }
-    var selectedImage by remember { mutableStateOf<String?>(null) }
     var searchText by remember { mutableStateOf("") }
 
     val filteredList = imageList.filter {
@@ -63,32 +60,48 @@ fun ChoiseImage(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(start = 14.dp, end = 14.dp)
     ) {
-        TextField(
-            value = searchText,
-            textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-            onValueChange = { searchText = it },
-            placeholder = {
-                Text(
-                    text = "Buscar Pokemon...",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                    textAlign = TextAlign.Center
-                )
-            },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                focusedTextColor = MaterialTheme.colorScheme.inverseSurface,
-                unfocusedTextColor = MaterialTheme.colorScheme.inverseSurface,
-                focusedPlaceholderColor = MaterialTheme.colorScheme.inversePrimary,
-                unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface,
-                cursorColor = MaterialTheme.colorScheme.inverseSurface,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            ),
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-        )
+                .height(55.dp),
+            elevation = CardDefaults.cardElevation(0.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            ),
+            border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
+        ) {
+            TextField(
+                value = searchText,
+                textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                onValueChange = { searchText = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                },
+                placeholder = {
+                    Text(
+                        text = "Buscar Pokemon insignia...",
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                    cursorColor = MaterialTheme.colorScheme.tertiary,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,7 +118,7 @@ fun ChoiseImage(
                         .clip(CircleShape)
                         .border(
                             width = if (selectedImage == avatar.url) 4.dp else 2.dp,
-                            color = if (selectedImage == avatar.url) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.onSecondary,
+                            color = if (selectedImage == avatar.url) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                             shape = CircleShape
                         )
                         .clickable {
@@ -113,10 +126,7 @@ fun ChoiseImage(
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
-                            selectedImage = avatar.url
-                            statsViewModel.registrarFoto(avatar.url)
-
-                            onImageSelected(true)
+                            onImageSelected(avatar.url)
                         },
                     contentScale = ContentScale.Crop
                 )

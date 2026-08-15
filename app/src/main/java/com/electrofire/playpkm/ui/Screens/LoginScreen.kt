@@ -3,6 +3,7 @@ package com.electrofire.playpkm.ui.Screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,14 +16,12 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -45,7 +44,7 @@ import androidx.navigation.NavController
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.ConfirmButtonRegLog
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
 
@@ -59,6 +58,7 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var respondido by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -72,9 +72,6 @@ fun LoginScreen(
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-
-            GradientBackground()
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -96,7 +93,7 @@ fun LoginScreen(
                     Text(
                         text = stringResource(id = R.string.log_in),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 30.sp,
+                            fontSize = 40.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
                         )
@@ -104,8 +101,8 @@ fun LoginScreen(
                     Text(
                         text = stringResource(id = R.string.log_in),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 30.sp,
-                            color = MaterialTheme.colorScheme.onSecondary
+                            fontSize = 40.sp,
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     )
                 }
@@ -115,13 +112,12 @@ fun LoginScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(55.dp)
-                        .fillMaxSize(),
-                    elevation = CardDefaults.cardElevation(10.dp),
+                        .height(55.dp),
+                    elevation = CardDefaults.cardElevation(0.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
                     ),
-                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
                 ) {
                     TextField(
                         value = email,
@@ -132,18 +128,17 @@ fun LoginScreen(
                         placeholder = {
                             Text(
                                 text = "Email",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                textAlign = TextAlign.Center
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.onSecondary,    // Fondo cuando está enfocado
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,  // Fondo cuando NO está enfocado
-                            focusedTextColor = Color.White,       // Texto ingresado
-                            unfocusedTextColor = Color.White,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.inversePrimary, // Placeholder enfocado
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                            cursorColor = Color.White,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.primary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            cursorColor = MaterialTheme.colorScheme.tertiary,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
@@ -157,13 +152,12 @@ fun LoginScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(55.dp)
-                        .fillMaxSize(),
-                    elevation = CardDefaults.cardElevation(10.dp),
+                        .height(55.dp),
+                    elevation = CardDefaults.cardElevation(0.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Color.Transparent
                     ),
-                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
                 ) {
                     TextField(
                         value = password,
@@ -174,18 +168,17 @@ fun LoginScreen(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.password),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                textAlign = TextAlign.Center
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.onSecondary,    // Fondo cuando está enfocado
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,  // Fondo cuando NO está enfocado
-                            focusedTextColor = Color.White,       // Texto ingresado
-                            unfocusedTextColor = Color.White,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.inversePrimary, // Placeholder enfocado
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                            cursorColor = Color.White,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.primary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            cursorColor = MaterialTheme.colorScheme.tertiary,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
@@ -200,7 +193,7 @@ fun LoginScreen(
                             val image =
                                 if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = image, contentDescription = null)
+                                Icon(imageVector = image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
@@ -212,7 +205,7 @@ fun LoginScreen(
                 if (errorMessage != null) {
                     Text(
                         text = errorMessage!!,
-                        color = Color.Red,
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
                         textAlign = TextAlign.Center
                     )
@@ -225,15 +218,18 @@ fun LoginScreen(
                         if (email.isBlank() || password.isBlank()) {
                             errorMessage = "Complete todos los campos"
                         } else {
+                            isLoading = true
                             authViewModel.login(
                                 email,
                                 password,
                                 onSuccess = {
                                     statsViewModel.cargarStats()
                                     respondido = true
+                                    isLoading = false
                                 },
                                 onError = { mensaje ->
                                     errorMessage = mensaje
+                                    isLoading = false
                                 }
                             )
                         }
@@ -243,7 +239,7 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(64.dp))
 
-                TextButton(
+                androidx.compose.material3.Button(
                     onClick = {
                         if (email.isNotBlank()) {
                             authViewModel.resetPassword(email) { success, msg ->
@@ -254,18 +250,21 @@ fun LoginScreen(
                         }
                     },
                     Modifier
-                        .width(305.dp)
-                        .height(40.dp)
-                        .fillMaxSize(),
-                    elevation = ButtonDefaults.buttonElevation(5.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.inversePrimary, // Fondo del botón
-                        contentColor = MaterialTheme.colorScheme.primary, // Color del texto/icono
+                        .width(250.dp)
+                        .height(45.dp),
+                    elevation = androidx.compose.material3.ButtonDefaults.buttonElevation(5.dp),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                        contentColor = MaterialTheme.colorScheme.primary,
                         disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                         disabledContentColor = MaterialTheme.colorScheme.primary
                     )
                 ) {
-                    Text("¿Olvidaste tu contraseña?")
+                    Text(
+                        text = "¿Olvidaste tu contraseña?",
+                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 14.sp)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(64.dp))
@@ -277,6 +276,17 @@ fun LoginScreen(
                     title = "registrar"
                 )
 
+            }
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.4f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Loading()
+                }
             }
         }
 

@@ -13,19 +13,13 @@ import java.io.IOException
 import java.text.Normalizer
 import javax.inject.Inject
 
-sealed interface ThirdGameState {
-    data object Loading : ThirdGameState
-    data class Success(val pokemon: PokemonApi) : ThirdGameState
-    data class Error(val message: String) : ThirdGameState
-}
-
 @HiltViewModel
 class HabilityViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
     
-    private val _state = MutableStateFlow<ThirdGameState>(ThirdGameState.Loading)
-    val state: StateFlow<ThirdGameState> = _state
+    private val _state = MutableStateFlow<UIState<PokemonApi>>(UIState.Loading)
+    val state: StateFlow<UIState<PokemonApi>> = _state
 
     init {
         loadPokemon()
@@ -33,19 +27,19 @@ class HabilityViewModel @Inject constructor(
 
     fun loadPokemon() {
         viewModelScope.launch {
-            _state.value = ThirdGameState.Loading
+            _state.value = UIState.Loading
             try {
                 val result = repo.obtenerHabilidadPokemonDelDia()
                 if (result != null) {
-                    _state.value = ThirdGameState.Success(result)
+                    _state.value = UIState.Success(result)
                 } else {
-                    _state.value = ThirdGameState.Error("No se encontró el Pokémon del día.")
+                    _state.value = UIState.Error("No se encontró el Pokémon del día.")
                 }
             } catch (e: IOException) {
-                _state.value = ThirdGameState.Error("Sin conexión a internet.")
+                _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
                 Log.e("HABILITY_VM", "Error: ${e.message}")
-                _state.value = ThirdGameState.Error("Error inesperado al cargar el juego.")
+                _state.value = UIState.Error("Error inesperado al cargar el juego.")
             }
         }
     }

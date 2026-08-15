@@ -4,18 +4,30 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -23,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.electrofire.playpkm.Domain.ForceUpdateGate
+import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.Scaffold.BottomBar
@@ -72,13 +85,29 @@ class MainActivity : ComponentActivity() {
 
                 val musicViewModel: MusicViewModel = hiltViewModel()
 
+                // Gestión del ciclo de vida para la música
+                val lifecycleOwner = LocalLifecycleOwner.current
+                DisposableEffect(lifecycleOwner) {
+                    val observer = LifecycleEventObserver { _, event ->
+                        when (event) {
+                            Lifecycle.Event.ON_RESUME -> musicViewModel.play()
+                            Lifecycle.Event.ON_PAUSE -> musicViewModel.pause()
+                            else -> {}
+                        }
+                    }
+                    lifecycleOwner.lifecycle.addObserver(observer)
+                    onDispose {
+                        lifecycleOwner.lifecycle.removeObserver(observer)
+                    }
+                }
+
                 val isConnected by networkMonitor.isConnected.collectAsState()
                 if (isConnected) {
                     ForceUpdateGate {
                         ViewContainer(musicViewModel)
                     }
                 } else {
-                    NotInternetScreen()
+                    NotInternetScreen(showBackground = true)
                 }
             }
         }
@@ -97,25 +126,31 @@ fun ViewContainer(musicViewModel: MusicViewModel) {
     val isLoading = statsViewModel.userData.userName == null
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             if (!isLoading &&
-                currentRoute != "new_user" &&
-                currentRoute != "register" &&
-                currentRoute != "login"
+                currentRoute != Screen.NewUserScreen.route &&
+                currentRoute != Screen.Register.route &&
+                currentRoute != Screen.Login.route
             )
-                ToolBar(navController, statsViewModel, musicViewModel)
+                ToolBar()
         },
         bottomBar = {
             if (
-                currentRoute == "home" || currentRoute == "ranking" || currentRoute == "user_screen"
-                || currentRoute == "rankingGC"
+                currentRoute == Screen.Home.route || currentRoute == Screen.RankingScreen.route || currentRoute == Screen.UserScreen.route
             ) {
                 BottomBar(navController = navController)
             }
         },
         content = { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                AppNavigation(navController, statsViewModel, authViewModel)
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                GradientBackground()
+
+                Box(modifier = Modifier.padding(innerPadding)) {
+                    AppNavigation(navController, statsViewModel, authViewModel, musicViewModel)
+                }
             }
         }
     )
@@ -125,7 +160,8 @@ fun ViewContainer(musicViewModel: MusicViewModel) {
 fun AppNavigation(
     navController: NavHostController,
     statsViewModel: HomeStatsViewModel,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    musicViewModel: MusicViewModel
 ) {
 
     val auth = FirebaseAuth.getInstance()
@@ -145,14 +181,33 @@ fun AppNavigation(
         NavHost(
             navController = navController,
             startDestination =
-                if (auth.currentUser == null) {
-                    "register"
-                } else if (statsViewModel.userData.userName.isNullOrEmpty()) {
-                    "new_user"
-                } else "home"
+            if (auth.currentUser == null) {
+                Screen.Register.route
+            } else if (statsViewModel.userData.userName.isNullOrEmpty()) {
+                Screen.NewUserScreen.route
+            } else Screen.Home.route,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None }
 
         ) {
-            composable("home") { HomeScreen(navController, statsViewModel, authViewModel) }
+            composable(
+                route = Screen.Home.route,
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                }
+            ) { HomeScreen(navController, statsViewModel, authViewModel) }
+            
             composable(Screen.FirstGame.route) {
                 FirstGame(
                     navController,
@@ -225,30 +280,61 @@ fun AppNavigation(
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.RankingScreen.route) {
+            
+            composable(
+                route = Screen.RankingScreen.route,
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                }
+            ) {
                 RankingScreen()
             }
-            composable("new_user") {
+            
+            composable(Screen.NewUserScreen.route) {
                 NewUserScreen(
                     navController,
                     statsViewModel
                 )
             }
-            composable("register") {
+            composable(Screen.Register.route) {
                 RegisterScreen(
                     navController,
                     authViewModel = authViewModel
                 )
             }
-            composable("login") {
+            composable(Screen.Login.route) {
                 LoginScreen(
                     navController,
                     authViewModel = authViewModel,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.UserScreen.route) {
-                UserScreen(statsViewModel)
+            
+            composable(
+                route = Screen.UserScreen.route,
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                }
+            ) {
+                UserScreen(navController, statsViewModel, musicViewModel)
             }
         }
     }

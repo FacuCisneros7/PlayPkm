@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,9 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.AdReward
-import com.electrofire.playpkm.ui.Components.BannerAdd
 import com.electrofire.playpkm.ui.Components.GifAnimation
-import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.HomeStatsCard
 import com.electrofire.playpkm.ui.Components.MyCardButton
 import com.electrofire.playpkm.ui.Navegation.Screen
@@ -103,33 +102,31 @@ fun HomeScreen(
 
     Box(Modifier.fillMaxSize()) {
 
-        GradientBackground()
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 12.dp, bottom = 12.dp),
+                .padding(top = 24.dp, bottom = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logohomecopia),
                 contentDescription = null,
                 modifier = Modifier
-                    .height(100.dp)
+                    .height(80.dp)
                     .wrapContentWidth()
             )
 
-            Spacer(modifier = Modifier.height(17.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             HomeStatsCard(statsViewModel = statsViewModel)
 
-            Spacer(modifier = Modifier.height(18.dp))
-
+            Spacer(modifier = Modifier.height(24.dp))
 
             Box {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier.height(370.dp),
+                    modifier = Modifier.height(380.dp),
+                    contentPadding = PaddingValues(top = 6.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -138,6 +135,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "BEFORE OR AFTER",
                             imageRes = R.drawable.beforeorafter,
+                            showBadge = true,
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -153,6 +151,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "THOUSAND SHADOWS",
                             imageRes = R.drawable.thousandshadows,
+                            showBadge = true,
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -160,17 +159,6 @@ fun HomeScreen(
                                 mediaPlayer.setOnCompletionListener { it.release() }
 
                                 navController.navigate(Screen.ElevenGame.route)
-//                                if (rewardedAdManager.isLoaded()) {
-//                                    rewardedAdManager.showAd(activity) {
-//
-//                                    }
-//                                } else {
-//                                    Toast.makeText(
-//                                        context,
-//                                        "Anuncio no disponible, intentá de nuevo",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                }
                             }
                         )
                     }
@@ -179,6 +167,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "GOOD CHOICE",
                             imageRes = R.drawable.goodchoisenew,
+                            showBadge = true,
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -194,6 +183,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "ZOOM GAME",
                             imageRes = R.drawable.adasdss,
+                            showBadge = statsViewModel.canPlayGame("ten_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -221,6 +211,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "EASY GAME",
                             imageRes = R.drawable.asfasfasfa,
+                            showBadge = statsViewModel.canPlayGame("first_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -248,6 +239,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "BLURRED CARD",
                             imageRes = R.drawable.carta,
+                            showBadge = statsViewModel.canPlayGame("second_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -275,6 +267,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "ONE ABILITY",
                             imageRes = R.drawable.habilidad,
+                            showBadge = statsViewModel.canPlayGame("third_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -301,6 +294,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "POWER OF MOVE",
                             imageRes = R.drawable.movimiento,
+                            showBadge = statsViewModel.canPlayGame("fourth_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -327,6 +321,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "MYSTERIOUS STATS",
                             imageRes = R.drawable.movimientodos,
+                            showBadge = statsViewModel.canPlayGame("fift_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -352,6 +347,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "FUSION!",
                             imageRes = R.drawable.fision,
+                            showBadge = statsViewModel.canPlayGame("sixth_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -378,6 +374,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "THE BEST",
                             imageRes = R.drawable.adasdad,
+                            showBadge = statsViewModel.canPlayGame("seventh_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -404,6 +401,7 @@ fun HomeScreen(
                         MyCardButton(
                             title = "IMPOSTOR",
                             imageRes = R.drawable.dfsfsdf,
+                            showBadge = statsViewModel.canPlayGame("eight_game"),
                             onClick = {
                                 val mediaPlayer =
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
@@ -438,7 +436,6 @@ fun HomeScreen(
                 }
 
             }
-
 
             Spacer(modifier = Modifier.height(16.dp))
 

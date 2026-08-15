@@ -61,10 +61,12 @@ fun UserInputPokemon(
 
     val listState = rememberLazyListState()
 
-    val scrollFraction by remember {
+    val scrollFraction by remember(sugerencias.size) {
         derivedStateOf {
-            val totalItems = listState.layoutInfo.totalItemsCount
-            val visibleItems = listState.layoutInfo.visibleItemsInfo.size
+            if (sugerencias.isEmpty()) return@derivedStateOf 0f
+            val layoutInfo = listState.layoutInfo
+            val totalItems = layoutInfo.totalItemsCount
+            val visibleItems = layoutInfo.visibleItemsInfo.size
             val firstIndex = listState.firstVisibleItemIndex
             if (totalItems <= visibleItems) 0f else firstIndex.toFloat() / (totalItems - visibleItems)
         }
@@ -82,11 +84,11 @@ fun UserInputPokemon(
                 .width(200.dp)
                 .height(55.dp)
                 .fillMaxSize(),
-            elevation = CardDefaults.cardElevation(10.dp),
+            elevation = CardDefaults.cardElevation(0.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.Transparent
             ),
-            border = BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
+            border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
         ) {
             if (title == "Potencia") {
                 TextField(
@@ -100,18 +102,18 @@ fun UserInputPokemon(
                     placeholder = {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                             textAlign = TextAlign.Center
                         )
                     },
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,    // Fondo cuando está enfocado
-                        unfocusedContainerColor = MaterialTheme.colorScheme.inversePrimary,  // Fondo cuando NO está enfocado
-                        focusedTextColor = Color.Black,       // Texto ingresado
-                        unfocusedTextColor = Color.Black,
-                        focusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder enfocado
-                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                        cursorColor = Color.Black,
+                        focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        cursorColor = MaterialTheme.colorScheme.tertiary,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
@@ -129,23 +131,25 @@ fun UserInputPokemon(
                         textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                         onValueChange = {
                             onTextChange(it)
-                            viewModel.onQueryChanged(it)
+                            // Solo buscamos sugerencias de Pokemon si no es un campo de Habilidad
+                            if (title != "Habilidad" && title != "Potencia") {
+                                viewModel.onQueryChanged(it)
+                            }
                         },
                         placeholder = {
                             Text(
                                 text = title,
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                textAlign = TextAlign.Center
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
                             )
                         },
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,    // Fondo cuando está enfocado
-                            unfocusedContainerColor = MaterialTheme.colorScheme.inversePrimary,  // Fondo cuando NO está enfocado
-                            focusedTextColor = Color.Black,       // Texto ingresado
-                            unfocusedTextColor = Color.Black,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder enfocado
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.inverseSurface, // Placeholder desenfocado
-                            cursorColor = Color.Black,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                            focusedTextColor = MaterialTheme.colorScheme.primary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                            cursorColor = MaterialTheme.colorScheme.tertiary,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
@@ -184,9 +188,9 @@ fun UserInputPokemon(
                         .heightIn(max = 100.dp),
                     elevation = CardDefaults.cardElevation(10.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.inverseSurface
+                        containerColor = MaterialTheme.colorScheme.secondary
                     ),
-                    border = BorderStroke(3.dp, Color.Black)
+                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
 
                 ) {
                     Box(modifier = Modifier.wrapContentHeight()) {

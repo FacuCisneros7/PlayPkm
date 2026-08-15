@@ -1,7 +1,6 @@
 package com.electrofire.playpkm.ui.CardItems
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,15 +30,14 @@ fun StatsApiCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
         ),
-        border = BorderStroke(3.dp, MaterialTheme.colorScheme.secondary.copy(0.8f)),
+        border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
-                .background(Color.Transparent)
                 .padding(16.dp)
         ) {
             pokemon.stats.forEach { (statName, statValue) ->
@@ -81,13 +79,13 @@ fun StatRow(statName: String, statValue: Int, maxStat: Int = 200) {
         Text(
             text = statNameRecorted,
             modifier = Modifier.width(40.dp),
-            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp)
+            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp, color = MaterialTheme.colorScheme.primary)
         )
 
         Text(
             text = statValue.toString(),
             modifier = Modifier.width(40.dp),
-            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp)
+            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp, color = MaterialTheme.colorScheme.primary)
         )
 
         LinearProgressIndicator(

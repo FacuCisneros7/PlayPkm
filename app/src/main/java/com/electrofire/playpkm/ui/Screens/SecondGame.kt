@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,17 +31,15 @@ import com.electrofire.playpkm.ui.CardItems.BlurredCard
 import com.electrofire.playpkm.ui.CardItems.RealCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.Contador
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.Components.LoserCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
-import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.CartaViewModel
 import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.SecondGameState
+import com.electrofire.playpkm.ui.ViewModels.UIState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaCartaBorrosa
 
 @Composable
@@ -63,11 +64,8 @@ fun SecondGame(
     Box(
         Modifier.fillMaxSize()
     ) {
-
-        GradientBackground()
-
         when (val currentState = state) {
-            is SecondGameState.Loading -> {
+            is UIState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -76,21 +74,23 @@ fun SecondGame(
                 }
             }
 
-            is SecondGameState.Error -> {
+            is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
-                    NotInternetScreen()
+                    NotInternetScreen(onRetry = { viewModel.loadCarta() })
                 } else {
-                    ErrorScreen()
+                    ErrorScreen(onRetry = { viewModel.loadCarta() })
                 }
             }
 
-            is SecondGameState.Success -> {
-                val cartaActual = currentState.carta
+            is UIState.Success -> {
+                val cartaActual = currentState.data
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState())
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -103,8 +103,8 @@ fun SecondGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 36.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 6f)
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    drawStyle = Stroke(width = 4f)
                                 )
                             )
                             Text(
@@ -137,32 +137,18 @@ fun SecondGame(
 
                         Contador(contadorViewModel = contadorViewModel)
                     } else {
-
-                        Spacer(modifier = Modifier.height(50.dp))
-
-                        RealCard(carta = cartaActual)
-
-                        Spacer(modifier = Modifier.height(64.dp))
-
-                        if (verificarRespuestaCartaBorrosa(
-                                cartaActual,
-                                respuesta
-                            )
-                        ) {
-                            WinCard(onButtonClick = {
+                        val esCorrecto = verificarRespuestaCartaBorrosa(cartaActual, respuesta)
+                        GameResultDialog(
+                            isWin = esCorrecto,
+                            onHomeClick = {
                                 navController.navigate("home") {
                                     popUpTo(Screen.SecondGame.route) { inclusive = true }
                                 }
+                            },
+                            content = {
+                                RealCard(carta = cartaActual)
                             }
-                            )
-                        } else {
-                            LoserCard(onButtonClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.SecondGame.route) { inclusive = true }
-                                }
-                            }
-                            )
-                        }
+                        )
                         LaunchedEffect(gameStateViewModel.respondido) {
                             if (verificarRespuestaCartaBorrosa(
                                     cartaActual,

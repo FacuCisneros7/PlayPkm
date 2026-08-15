@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,21 +27,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.electrofire.playpkm.ui.CardItems.FusionCard
+import com.electrofire.playpkm.ui.CardItems.PokemonesFusionCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
-import com.electrofire.playpkm.ui.Components.GradientBackground
+import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.Components.LoserCard
-import com.electrofire.playpkm.ui.Components.PokemonesFusionCard
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.UserInputPokemonDos
-import com.electrofire.playpkm.ui.Components.WinCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModel
 import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModelDos
 import com.electrofire.playpkm.ui.ViewModels.FusionViewModel
 import com.electrofire.playpkm.ui.ViewModels.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.SixthGameState
+import com.electrofire.playpkm.ui.ViewModels.UIState
 import com.electrofire.playpkm.ui.ViewModels.verificarRespuestaFusion
 
 @Composable
@@ -56,10 +57,8 @@ fun SixthGame(
 
     Box(Modifier.fillMaxSize()) {
 
-        GradientBackground()
-
         when (val currentState = state) {
-            is SixthGameState.Loading -> {
+            is UIState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -68,21 +67,23 @@ fun SixthGame(
                 }
             }
 
-            is SixthGameState.Error -> {
+            is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
-                    NotInternetScreen()
+                    NotInternetScreen(onRetry = { viewModel.loadFusion() })
                 } else {
-                    ErrorScreen()
+                    ErrorScreen(onRetry = { viewModel.loadFusion() })
                 }
             }
 
-            is SixthGameState.Success -> {
-                val fusionActual = currentState.fusion
+            is UIState.Success -> {
+                val fusionActual = currentState.data
 
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(32.dp),
+                        .padding(32.dp)
+                        .verticalScroll(rememberScrollState())
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (!gameStateViewModel.respondido) {
@@ -94,8 +95,8 @@ fun SixthGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 32.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 6f)
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    drawStyle = Stroke(width = 4f)
                                 )
                             )
                             Text(
@@ -135,31 +136,22 @@ fun SixthGame(
 
                         ConfirmButton(onConfirm = { gameStateViewModel.responder() })
                     } else {
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        FusionCard(fusion = fusionActual)
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        PokemonesFusionCard(fusionActual = fusionActual)
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        if (verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)) {
-                            WinCard(onButtonClick = {
+                        val esCorrecto = verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)
+                        GameResultDialog(
+                            isWin = esCorrecto,
+                            onHomeClick = {
                                 navController.navigate("home") {
                                     popUpTo(Screen.SixthGame.route) { inclusive = true }
                                 }
-                            }
-                            )
-                        } else {
-                            LoserCard(onButtonClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.SixthGame.route) { inclusive = true }
+                            },
+                            content = {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    FusionCard(fusion = fusionActual)
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    PokemonesFusionCard(fusionActual = fusionActual)
                                 }
                             }
-                            )
-                        }
+                        )
                         LaunchedEffect(gameStateViewModel.respondido) {
                             if (verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)) {
                                 statsViewModel.registrarVictoria()

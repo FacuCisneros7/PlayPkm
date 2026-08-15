@@ -2,9 +2,11 @@ package com.electrofire.playpkm.ui.CardItems
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -17,19 +19,20 @@ import coil.compose.AsyncImage
 import com.electrofire.playpkm.Data.PokemonApi
 
 @Composable
-fun PokemonZoomTrue(
+fun GameResultPokemonCard(
     pokemon: PokemonApi,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
-            .width(200.dp)
-            .height(200.dp)
-            .fillMaxSize(),
-        border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary),
+            .fillMaxWidth(0.55f)
+            .widthIn(max = 200.dp)
+            .aspectRatio(1f)
+            .padding(8.dp),
+        border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary
+            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
         )
     ) {
         Box(
@@ -39,9 +42,9 @@ fun PokemonZoomTrue(
             AsyncImage(
                 model = pokemon.imageUrl,
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize(0.85f),
+                contentScale = ContentScale.Fit
             )
         }
     }
