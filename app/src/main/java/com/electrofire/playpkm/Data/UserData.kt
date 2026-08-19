@@ -10,4 +10,7 @@ data class UserData(
     val maxPointsTres: Int = 0,
     val profileImages: List<String> = emptyList(),
     val maxPointsDos: Int = 0,
+    val instagram: String? = null,
+    val rachaActual: Int = 0,
+    val ultimaConexionRacha: com.google.firebase.Timestamp? = null
 )

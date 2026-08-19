@@ -36,7 +36,7 @@ fun SilhouettePokemonCard(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            SilhouetteImage(pokemon.imageUrl!!)
+            SilhouetteImage(pokemon.imageUrl ?: "")
         }
     }
 }

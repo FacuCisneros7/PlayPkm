@@ -41,29 +41,29 @@ import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.Scaffold.BottomBar
 import com.electrofire.playpkm.ui.Scaffold.NetworkMonitor
 import com.electrofire.playpkm.ui.Scaffold.ToolBar
-import com.electrofire.playpkm.ui.Screens.EightGame
-import com.electrofire.playpkm.ui.Screens.ElevenGame
-import com.electrofire.playpkm.ui.Screens.FiftGame
-import com.electrofire.playpkm.ui.Screens.FirstGame
-import com.electrofire.playpkm.ui.Screens.FourthGame
-import com.electrofire.playpkm.ui.Screens.HomeScreen
-import com.electrofire.playpkm.ui.Screens.LoginScreen
-import com.electrofire.playpkm.ui.Screens.NewUserScreen
-import com.electrofire.playpkm.ui.Screens.NinthGame
-import com.electrofire.playpkm.ui.Screens.NotInternetScreen
-import com.electrofire.playpkm.ui.Screens.RankingScreen
-import com.electrofire.playpkm.ui.Screens.RegisterScreen
-import com.electrofire.playpkm.ui.Screens.SecondGame
-import com.electrofire.playpkm.ui.Screens.SeventhGame
-import com.electrofire.playpkm.ui.Screens.SixthGame
-import com.electrofire.playpkm.ui.Screens.TenGame
-import com.electrofire.playpkm.ui.Screens.ThirdGame
-import com.electrofire.playpkm.ui.Screens.TwelveGame
-import com.electrofire.playpkm.ui.Screens.UserScreen
+import com.electrofire.playpkm.ui.Screens.games.ImpostorGame
+import com.electrofire.playpkm.ui.Screens.games.ThousandShadowsGame
+import com.electrofire.playpkm.ui.Screens.games.StatsMysteryGame
+import com.electrofire.playpkm.ui.Screens.games.SilhouetteGame
+import com.electrofire.playpkm.ui.Screens.games.MovePowerGame
+import com.electrofire.playpkm.ui.Screens.main.HomeScreen
+import com.electrofire.playpkm.ui.Screens.auth.LoginScreen
+import com.electrofire.playpkm.ui.Screens.auth.NewUserScreen
+import com.electrofire.playpkm.ui.Screens.games.GoodChoiceGame
+import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
+import com.electrofire.playpkm.ui.Screens.main.RankingScreen
+import com.electrofire.playpkm.ui.Screens.auth.RegisterScreen
+import com.electrofire.playpkm.ui.Screens.games.BlurredCardGame
+import com.electrofire.playpkm.ui.Screens.games.TheBestGame
+import com.electrofire.playpkm.ui.Screens.games.FusionGame
+import com.electrofire.playpkm.ui.Screens.games.ZoomGame
+import com.electrofire.playpkm.ui.Screens.games.AbilityGame
+import com.electrofire.playpkm.ui.Screens.games.BeforeAfterGame
+import com.electrofire.playpkm.ui.Screens.main.UserScreen
 import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
-import com.electrofire.playpkm.ui.ViewModels.AuthViewModel
-import com.electrofire.playpkm.ui.ViewModels.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.MusicViewModel
+import com.electrofire.playpkm.ui.ViewModels.main.AuthViewModel
+import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
+import com.electrofire.playpkm.ui.ViewModels.main.MusicViewModel
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -208,74 +208,74 @@ fun AppNavigation(
                 }
             ) { HomeScreen(navController, statsViewModel, authViewModel) }
             
-            composable(Screen.FirstGame.route) {
-                FirstGame(
+            composable(Screen.SilhouetteGame.route) {
+                SilhouetteGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.SecondGame.route) {
-                SecondGame(
+            composable(Screen.BlurredCardGame.route) {
+                BlurredCardGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.ThirdGame.route) {
-                ThirdGame(
+            composable(Screen.AbilityGame.route) {
+                AbilityGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.FourthGame.route) {
-                FourthGame(
+            composable(Screen.MovePowerGame.route) {
+                MovePowerGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.FiftGame.route) {
-                FiftGame(
+            composable(Screen.StatsMysteryGame.route) {
+                StatsMysteryGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.SixthGame.route) {
-                SixthGame(
+            composable(Screen.FusionGame.route) {
+                FusionGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.SeventhGame.route) {
-                SeventhGame(
+            composable(Screen.TheBestGame.route) {
+                TheBestGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.EightGame.route) {
-                EightGame(
+            composable(Screen.ImpostorGame.route) {
+                ImpostorGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.NinthGame.route) {
-                NinthGame(
+            composable(Screen.GoodChoiceGame.route) {
+                GoodChoiceGame(
                     navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.TenGame.route) {
-                TenGame(
+            composable(Screen.ZoomGame.route) {
+                ZoomGame(
                     navController = navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.ElevenGame.route) {
-                ElevenGame(
+            composable(Screen.ThousandShadowsGame.route) {
+                ThousandShadowsGame(
                     navController = navController,
                     statsViewModel = statsViewModel
                 )
             }
-            composable(Screen.TwelveGame.route) {
-                TwelveGame(
+            composable(Screen.BeforeAfterGame.route) {
+                BeforeAfterGame(
                     navController = navController,
                     statsViewModel = statsViewModel
                 )

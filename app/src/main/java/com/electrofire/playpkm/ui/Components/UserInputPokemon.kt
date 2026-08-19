@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.electrofire.playpkm.R
-import com.electrofire.playpkm.ui.ViewModels.AutoPokeViewModel
+import com.electrofire.playpkm.ui.ViewModels.common.AutoPokeViewModel
 
 @Composable
 fun UserInputPokemon(

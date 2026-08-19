@@ -21,7 +21,7 @@ fun ContadorCorto(modifier: Modifier = Modifier, contador: Int) {
         modifier = modifier.wrapContentSize(),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary),
-        elevation = CardDefaults.cardElevation(8.dp),
+        elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
         )

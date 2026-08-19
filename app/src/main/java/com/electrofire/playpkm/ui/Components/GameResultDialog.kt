@@ -71,7 +71,7 @@ fun GameResultDialog(
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
-                elevation = CardDefaults.cardElevation(12.dp),
+                elevation = CardDefaults.cardElevation(0.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
                 )

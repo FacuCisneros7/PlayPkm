@@ -27,9 +27,7 @@ fun PokemonesFusionCard(
             .padding(8.dp),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f))
     ) {
         Column(
             modifier = Modifier

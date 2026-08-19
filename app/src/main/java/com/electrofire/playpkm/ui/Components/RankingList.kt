@@ -3,6 +3,7 @@ package com.electrofire.playpkm.ui.Components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.Data.UserData
-import com.electrofire.playpkm.ui.ViewModels.RankingType
+import com.electrofire.playpkm.ui.ViewModels.common.RankingType
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -48,9 +53,14 @@ fun RankingList(
     modifier: Modifier = Modifier
 ) {
     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+    var selectedUser by remember { mutableStateOf<UserData?>(null) }
 
     val podiumUsers = users.take(3)
     val remainingUsers = users.drop(3)
+
+    if (selectedUser != null) {
+        UserDetailDialog(user = selectedUser!!, onDismiss = { selectedUser = null })
+    }
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -58,7 +68,7 @@ fun RankingList(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            RankingPodium(users = podiumUsers, type = type)
+            RankingPodium(users = podiumUsers, type = type, onUserClick = { selectedUser = it })
         }
 
         itemsIndexed(remainingUsers) { index, user ->
@@ -67,7 +77,8 @@ fun RankingList(
                 user = user,
                 position = index + 4,
                 isCurrentUser = isCurrentUser,
-                type = type
+                type = type,
+                onClick = { selectedUser = user }
             )
         }
         
@@ -78,7 +89,7 @@ fun RankingList(
 }
 
 @Composable
-fun RankingPodium(users: List<UserData>, type: RankingType) {
+fun RankingPodium(users: List<UserData>, type: RankingType, onUserClick: (UserData) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -88,17 +99,17 @@ fun RankingPodium(users: List<UserData>, type: RankingType) {
     ) {
         // 2do Puesto
         if (users.size >= 2) {
-            PodiumItem(user = users[1], position = 2, type = type, modifier = Modifier.weight(1f))
+            PodiumItem(user = users[1], position = 2, type = type, modifier = Modifier.weight(1f).clickable { onUserClick(users[1]) })
         }
 
         // 1er Puesto
         if (users.size >= 1) {
-            PodiumItem(user = users[0], position = 1, type = type, modifier = Modifier.weight(1.3f))
+            PodiumItem(user = users[0], position = 1, type = type, modifier = Modifier.weight(1.3f).clickable { onUserClick(users[0]) })
         }
 
         // 3er Puesto
         if (users.size >= 3) {
-            PodiumItem(user = users[2], position = 3, type = type, modifier = Modifier.weight(1f))
+            PodiumItem(user = users[2], position = 3, type = type, modifier = Modifier.weight(1f).clickable { onUserClick(users[2]) })
         }
     }
 }
@@ -182,7 +193,8 @@ fun RankingUserItem(
     user: UserData,
     position: Int,
     type: RankingType,
-    isCurrentUser: Boolean = false
+    isCurrentUser: Boolean = false,
+    onClick: () -> Unit = {}
 ) {
     val positionColor = when {
         position == 1 -> Color(0xFFFFC107)
@@ -200,7 +212,8 @@ fun RankingUserItem(
     Card(
         modifier = Modifier
             .width(320.dp)
-            .height(60.dp), // Aumentamos un poco el alto
+            .height(60.dp)
+            .clickable { onClick() },
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(
@@ -209,7 +222,7 @@ fun RankingUserItem(
         border = BorderStroke(if (isCurrentUser) 3.dp else 2.dp, borderColor)
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Posición

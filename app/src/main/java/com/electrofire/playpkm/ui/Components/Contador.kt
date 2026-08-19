@@ -10,12 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.electrofire.playpkm.ui.ViewModels.ContadorViewModel
+import com.electrofire.playpkm.ui.ViewModels.common.ContadorViewModel
 
 @Composable
 fun Contador(modifier: Modifier = Modifier, contadorViewModel: ContadorViewModel = viewModel()) {
@@ -30,7 +28,7 @@ fun Contador(modifier: Modifier = Modifier, contadorViewModel: ContadorViewModel
         modifier = modifier.wrapContentSize(),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary),
-        elevation = CardDefaults.cardElevation(8.dp),
+        elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
         )
