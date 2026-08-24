@@ -12,10 +12,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,9 +28,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -79,98 +79,83 @@ fun UserInputPokemon(
 
     Column(modifier = Modifier.width(200.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Card(
-            modifier = modifier
-                .width(200.dp)
-                .height(55.dp)
-                .fillMaxSize(),
-            elevation = CardDefaults.cardElevation(0.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            ),
-            border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
-        ) {
-            if (title == "Potencia") {
-                TextField(
-                    value = text,
-                    textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                    onValueChange = { input ->
-                        if (input.all { it.isDigit() }) {
-                            onTextChange(input)
+        if (title == "Potencia") {
+            OutlinedTextField(
+                value = text,
+                onValueChange = { input ->
+                    if (input.all { it.isDigit() }) {
+                        onTextChange(input)
+                    }
+                },
+                placeholder = {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
+                },
+                textStyle = MaterialTheme.typography.bodyLarge,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.primary.copy(0.6f),
+                    cursorColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(0.5f),
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.primary
+                ),
+                modifier = Modifier.width(200.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+
+        } else {
+            Box(modifier = Modifier.width(200.dp)) {
+                OutlinedTextField(
+                    value = text.uppercase(),
+                    onValueChange = {
+                        onTextChange(it)
+                        // Solo buscamos sugerencias de Pokemon si no es un campo de Habilidad
+                        if (title != "Habilidad" && title != "Potencia") {
+                            viewModel.onQueryChanged(it)
                         }
                     },
                     placeholder = {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                            style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center
                         )
                     },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
                         unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                         focusedTextColor = MaterialTheme.colorScheme.primary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary.copy(0.6f),
                         cursorColor = MaterialTheme.colorScheme.tertiary,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(0.5f),
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary
+                        ),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-            } else {
-
-                Box(modifier = Modifier.fillMaxSize()) {
-
-                    TextField(
-                        value = text.uppercase(),
-                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                        onValueChange = {
-                            onTextChange(it)
-                            // Solo buscamos sugerencias de Pokemon si no es un campo de Habilidad
-                            if (title != "Habilidad" && title != "Potencia") {
-                                viewModel.onQueryChanged(it)
-                            }
-                        },
-                        placeholder = {
-                            Text(
-                                text = title,
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                            focusedTextColor = MaterialTheme.colorScheme.primary,
-                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                            cursorColor = MaterialTheme.colorScheme.tertiary,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        ),
-                        modifier = Modifier.fillMaxWidth()
+                if (sugerencias.isNotEmpty() && title != "Habilidad") {
+                    Icon(
+                        painter = painterResource(id = R.drawable.caretabajo),
+                        contentDescription = "Más sugerencias",
+                        tint = Color(0xFF00C853),
+                        modifier = Modifier
+                            .size(30.dp)
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 8.dp)
+                            .offset(y = 4.dp)
                     )
-
-                    if (sugerencias.isNotEmpty() && title != "Habilidad") {
-                        Icon(
-                            painter = painterResource(id = R.drawable.caretabajo), // o Icons.Default.ArrowDropDown
-                            contentDescription = "Más sugerencias",
-                            tint = Color(0xFF00C853), // verde
-                            modifier = Modifier
-                                .size(30.dp)
-                                .align(Alignment.CenterEnd)
-                                .padding(end = 8.dp)
-                        )
-                    }
                 }
             }
-
         }
 
         if (title != "Habilidad") {

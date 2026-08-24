@@ -1,7 +1,6 @@
 package com.electrofire.playpkm.ui.Screens.auth
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,14 +14,12 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -104,160 +101,124 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    elevation = CardDefaults.cardElevation(0.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.Transparent
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = {
+                        email = it
+                        if (email.length < 30) {
+                            errorMessage = null
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = "Email",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                        cursorColor = MaterialTheme.colorScheme.tertiary
                     ),
-                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
-                ) {
-                    TextField(
-                        value = email,
-                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                        onValueChange = {
-                            email = it
-                            if (email.length < 30) {
-                                errorMessage = null
-                            }
-                        },
-                        placeholder = {
-                            Text(
-                                text = "Email",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                            focusedTextColor = MaterialTheme.colorScheme.primary,
-                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                            cursorColor = MaterialTheme.colorScheme.tertiary,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    elevation = CardDefaults.cardElevation(0.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.Transparent
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        if (password.length >= 6) {
+                            errorMessage = null
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.password),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                        cursorColor = MaterialTheme.colorScheme.tertiary
                     ),
-                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
-                ) {
-                    TextField(
-                        value = password,
-                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                        onValueChange = {
-                            password = it
-                            if (password.length >= 6) {
-                                errorMessage = null
-                            }
+                    visualTransformation =
+                        if (passwordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
                         },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.password),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                            focusedTextColor = MaterialTheme.colorScheme.primary,
-                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                            cursorColor = MaterialTheme.colorScheme.tertiary,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        ),
-                        visualTransformation =
-                            if (passwordVisible) {
-                                VisualTransformation.None
-                            } else {
-                                PasswordVisualTransformation()
-                            },
-                        trailingIcon = {
-                            val image =
-                                if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                    trailingIcon = {
+                        val image =
+                            if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(imageVector = image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    elevation = CardDefaults.cardElevation(0.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.Transparent
+                OutlinedTextField(
+                    value = repeatPassword,
+                    onValueChange = {
+                        repeatPassword = it
+                        if (repeatPassword.length >= 6) {
+                            errorMessage = null
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.password_again),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                        cursorColor = MaterialTheme.colorScheme.tertiary
                     ),
-                    border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
-                ) {
-                    TextField(
-                        value = repeatPassword,
-                        textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                        onValueChange = {
-                            repeatPassword = it
-                            if (repeatPassword.length >= 6) {
-                                errorMessage = null
-                            }
+                    visualTransformation =
+                        if (repeatPasswordVisible) {
+                            VisualTransformation.None
+                        } else {
+                            PasswordVisualTransformation()
                         },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.password_again),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                            focusedTextColor = MaterialTheme.colorScheme.primary,
-                            unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                            focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                            cursorColor = MaterialTheme.colorScheme.tertiary,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        ),
-                        visualTransformation =
-                            if (repeatPasswordVisible) {
-                                VisualTransformation.None
-                            } else {
-                                PasswordVisualTransformation()
-                            },
-                        trailingIcon = {
-                            val image =
-                                if (repeatPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                            IconButton(onClick = {
-                                repeatPasswordVisible = !repeatPasswordVisible
-                            }) {
-                                Icon(imageVector = image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+                    trailingIcon = {
+                        val image =
+                            if (repeatPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                        IconButton(onClick = {
+                            repeatPasswordVisible = !repeatPasswordVisible
+                        }) {
+                            Icon(imageVector = image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 

@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -28,9 +27,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +51,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.ChoiseImage
 import com.electrofire.playpkm.ui.Components.ConfirmButton
+import com.electrofire.playpkm.ui.Components.NationalityDropdown
+import com.electrofire.playpkm.ui.Components.PokemonWithFlag
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 
 @Composable
@@ -60,10 +61,17 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
     var respondido by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var selectedImage by remember { mutableStateOf<String?>(null) }
+    var selectedNationality by remember { mutableStateOf<String?>(null) }
     var isVisible by remember { mutableStateOf(false) }
 
     androidx.compose.runtime.LaunchedEffect(Unit) {
         isVisible = true
+    }
+
+    androidx.compose.runtime.LaunchedEffect(statsViewModel.isUserLoaded) {
+        if (!statsViewModel.isUserLoaded) {
+            statsViewModel.cargarStats()
+        }
     }
 
     BackHandler(enabled = true) {
@@ -118,85 +126,53 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
 
                             Spacer(modifier = Modifier.height(24.dp))
 
-                            Card(
-                                modifier = Modifier
-                                    .width(220.dp)
-                                    .height(55.dp),
-                                elevation = CardDefaults.cardElevation(0.dp),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color.Transparent
+                            OutlinedTextField(
+                                value = userName,
+                                onValueChange = {
+                                    userName = it
+                                    val normalized = it.trim().replace("\\s+".toRegex(), " ")
+                                    if (normalized.length < 10) {
+                                        errorMessage = null
+                                    }
+                                },
+                                label = {
+                                    Text(
+                                        text = "Nombre de usuario",
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                },
+                                textStyle = MaterialTheme.typography.bodyLarge,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                                    unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                                    focusedTextColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                                    cursorColor = MaterialTheme.colorScheme.tertiary
                                 ),
-                                border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
-                            ) {
-                                TextField(
-                                    value = userName,
-                                    textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                    onValueChange = {
-                                        userName = it
-                                        val normalized = it.trim().replace("\\s+".toRegex(), " ")
-                                        if (normalized.length < 10) {
-                                            errorMessage = null
-                                        }
-                                    },
-                                    placeholder = {
-                                        Text(
-                                            text = "Nombre de usuario",
-                                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp)
-                                        )
-                                    },
-                                    colors = TextFieldDefaults.colors(
-                                        focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                                        focusedTextColor = MaterialTheme.colorScheme.primary,
-                                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                                        cursorColor = MaterialTheme.colorScheme.tertiary,
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent,
-                                        disabledIndicatorColor = Color.Transparent
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                            )
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            NationalityDropdown(
+                                selectedNationality = selectedNationality,
+                                onNationalitySelected = { selectedNationality = it },
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
 
                             Spacer(modifier = Modifier.height(24.dp))
 
                             // Previsualización del Avatar seleccionado
-                            Box(
-                                modifier = Modifier
-                                    .size(110.dp)
-                                    .border(
-                                        width = 3.dp,
-                                        color = MaterialTheme.colorScheme.tertiary,
-                                        shape = CircleShape
-                                    )
-                                    .padding(4.dp)
-                                    .border(
-                                        width = 2.dp,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        shape = CircleShape
-                                    )
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.5f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                if (selectedImage != null) {
-                                    Image(
-                                        painter = rememberAsyncImagePainter(selectedImage),
-                                        contentDescription = null,
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                } else {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.pokeball),
-                                        contentDescription = null,
-                                        modifier = Modifier.fillMaxSize(),
-                                        alpha = 0.5f
-                                    )
-                                }
-                            }
+                            PokemonWithFlag(
+                                painter = selectedImage ?: R.drawable.pokeball,
+                                nationality = selectedNationality,
+                                imageSize = 110.dp,
+                                borderColor = MaterialTheme.colorScheme.tertiary
+                            )
 
                             Spacer(modifier = Modifier.height(24.dp))
 
@@ -223,11 +199,13 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
                                     normalized.length >= 10 -> errorMessage =
                                         "Debe tener menos de 10 caracteres"
 
+                                    selectedNationality == null -> errorMessage = "Debes elegir una nacionalidad"
                                     selectedImage == null -> errorMessage = "Debes elegir un Pokémon"
                                     else -> {
                                         selectedImage?.let { 
                                             statsViewModel.registrarFoto(it)
                                             statsViewModel.registrarUserName(normalized)
+                                            selectedNationality?.let { nat -> statsViewModel.registrarNationality(nat) }
                                             respondido = true
                                         }
                                     }
@@ -265,22 +243,12 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
 
                 Spacer(Modifier.height(32.dp))
 
-                Box(
-                    modifier = Modifier
-                        .size(150.dp)
-                        .border(4.dp, MaterialTheme.colorScheme.tertiary, CircleShape)
-                        .padding(6.dp)
-                        .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                        .clip(CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(selectedImage),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                PokemonWithFlag(
+                    painter = selectedImage,
+                    nationality = selectedNationality,
+                    imageSize = 150.dp,
+                    borderColor = MaterialTheme.colorScheme.tertiary
+                )
 
                 Spacer(Modifier.height(24.dp))
 

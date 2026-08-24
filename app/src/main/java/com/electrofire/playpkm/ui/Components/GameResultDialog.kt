@@ -128,7 +128,7 @@ fun GameResultDialog(
                         )
                         Text(
                             text = " $puntaje",
-                            color = MaterialTheme.colorScheme.outline,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp)
                         )
                     }

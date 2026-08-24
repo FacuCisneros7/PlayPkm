@@ -44,6 +44,7 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.Data.UserData
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.PokemonWithFlag
 
 @Composable
 fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
@@ -68,16 +69,12 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Avatar
-                Image(
-                    painter = rememberAsyncImagePainter(user.imagen),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
-                        .padding(3.dp)
-                        .border(3.dp, MaterialTheme.colorScheme.onSecondary, CircleShape)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
+                PokemonWithFlag(
+                    painter = user.imagen,
+                    nationality = user.nationality,
+                    imageSize = 100.dp,
+                    borderColor = MaterialTheme.colorScheme.onSecondary,
+                    borderWidth = 3.dp
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -116,13 +113,13 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
                         Icon(
                             imageVector = Icons.Default.Whatshot,
                             contentDescription = null,
-                            tint = if (user.rachaActual > 0) Color(0xFFFF9800) else Color.Gray,
+                            tint = if (user.rachaActual > 0) MaterialTheme.colorScheme.surfaceVariant else Color.Gray,
                             modifier = Modifier.size(30.dp)
                         )
                         Text(
                             text = "${user.rachaActual} DÍAS",
                             style = MaterialTheme.typography.labelSmall,
-                            color = if (user.rachaActual > 0) Color(0xFFFF9800) else Color.Gray
+                            color = if (user.rachaActual > 0) MaterialTheme.colorScheme.surfaceVariant else Color.Gray
                         )
                     }
 
@@ -191,7 +188,7 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
 @Composable
 fun StatItem(label: String, value: String, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+        Text(text = label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
         Text(text = value, style = MaterialTheme.typography.headlineMedium, color = color)
     }
 }
@@ -199,7 +196,7 @@ fun StatItem(label: String, value: String, color: Color) {
 @Composable
 fun MiniGameStat(label: String, value: Int) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.tertiary)
-        Text(text = value.toString(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+        Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+        Text(text = value.toString(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

@@ -95,28 +95,28 @@ fun FusionGame(
                                 text = "FUSION!",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
-                                    fontSize = 32.sp,
+                                    fontSize = 36.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.tertiary,
-                                    drawStyle = Stroke(width = 4f)
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    drawStyle = Stroke(width = 7f)
                                 )
                             )
                             Text(
                                 text = "FUSION!",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
-                                    fontSize = 32.sp,
+                                    fontSize = 36.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.onSecondary
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
 
                         FusionCard(fusion = fusionActual)
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
 
                         UserInputPokemon(
                             title = "Pokemon 1",

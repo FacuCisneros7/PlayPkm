@@ -88,6 +88,12 @@ fun HomeScreen(
         }
     }
 
+    LaunchedEffect(statsViewModel.isUserLoaded) {
+        if (!statsViewModel.isUserLoaded) {
+            statsViewModel.cargarStats()
+        }
+    }
+
     LaunchedEffect(Unit) {
         rewardedAdManager.loadAd()
     }
@@ -245,19 +251,20 @@ fun HomeScreen(
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                 mediaPlayer.start()
                                 mediaPlayer.setOnCompletionListener { it.release() }
+                                navController.navigate("second_game")
 
-                                statsViewModel.verificarAccesoJuego("second_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("second_game")
-                                        navController.navigate("second_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+//                                statsViewModel.verificarAccesoJuego("second_game") { canPlay ->
+//                                    if (canPlay) {
+//                                        statsViewModel.registrarIntentoJuego("second_game")
+//                                        navController.navigate("second_game")
+//                                    } else {
+//                                        Toast.makeText(
+//                                            context,
+//                                            "Ya jugaste hoy! Espera a mañana",
+//                                            Toast.LENGTH_SHORT
+//                                        ).show()
+//                                    }
+//                                }
 
                             }
                         )
@@ -353,19 +360,20 @@ fun HomeScreen(
                                     MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                 mediaPlayer.start()
                                 mediaPlayer.setOnCompletionListener { it.release() }
+                                navController.navigate("sixth_game")
 
-                                statsViewModel.verificarAccesoJuego("sixth_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("sixth_game")
-                                        navController.navigate("sixth_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+//                                statsViewModel.verificarAccesoJuego("sixth_game") { canPlay ->
+//                                    if (canPlay) {
+//                                        statsViewModel.registrarIntentoJuego("sixth_game")
+//                                        navController.navigate("sixth_game")
+//                                    } else {
+//                                        Toast.makeText(
+//                                            context,
+//                                            "Ya jugaste hoy! Espera a mañana",
+//                                            Toast.LENGTH_SHORT
+//                                        ).show()
+//                                    }
+//                                }
                             }
                         )
                     }

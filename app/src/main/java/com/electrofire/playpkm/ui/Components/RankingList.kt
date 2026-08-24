@@ -1,7 +1,6 @@
 package com.electrofire.playpkm.ui.Components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.Data.UserData
+import com.electrofire.playpkm.ui.Components.PokemonWithFlag
 import com.electrofire.playpkm.ui.ViewModels.common.RankingType
 import com.google.firebase.auth.FirebaseAuth
 
@@ -129,17 +129,12 @@ fun PodiumItem(user: UserData, position: Int, type: RankingType, modifier: Modif
     ) {
         Box(contentAlignment = Alignment.BottomCenter) {
             // Avatar
-            Image(
-                painter = rememberAsyncImagePainter(user.imagen),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(size)
-                    .clip(CircleShape)
-                    .border(3.dp, color, CircleShape)
-                    .padding(3.dp)
-                    .border(2.dp, MaterialTheme.colorScheme.secondary, CircleShape)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
+            PokemonWithFlag(
+                painter = user.imagen,
+                nationality = user.nationality,
+                imageSize = size,
+                borderColor = color,
+                borderWidth = 3.dp
             )
             
             // Medalla / Posición
@@ -204,7 +199,7 @@ fun RankingUserItem(
     }
 
     val borderColor = if (isCurrentUser) {
-        MaterialTheme.colorScheme.primary
+        MaterialTheme.colorScheme.onSurfaceVariant
     } else {
         MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f)
     }
@@ -217,7 +212,7 @@ fun RankingUserItem(
         shape = MaterialTheme.shapes.large,
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
+            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
         ),
         border = BorderStroke(if (isCurrentUser) 3.dp else 2.dp, borderColor)
     ) {
@@ -234,14 +229,12 @@ fun RankingUserItem(
             )
 
             // Avatar
-            Image(
-                painter = rememberAsyncImagePainter(user.imagen),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(35.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+                PokemonWithFlag(
+                    painter = user.imagen,
+                    nationality = user.nationality,
+                    imageSize = 35.dp,
+                    borderWidth = 0.dp
+                )
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -290,7 +283,7 @@ fun RankingUserItem(
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
-                            tint = Color(0xFFFFC107),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))

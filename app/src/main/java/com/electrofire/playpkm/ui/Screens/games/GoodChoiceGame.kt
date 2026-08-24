@@ -97,7 +97,7 @@ fun GoodChoiceGame(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 24.dp, bottom = 32.dp),
+                        .padding(top = 32.dp, bottom = 32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -113,8 +113,8 @@ fun GoodChoiceGame(
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 40.sp,
-                                        color = MaterialTheme.colorScheme.tertiary,
-                                        drawStyle = Stroke(width = 4f)
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        drawStyle = Stroke(width = 7f)
                                     )
                                 )
                                 Text(
@@ -122,7 +122,7 @@ fun GoodChoiceGame(
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 40.sp,
-                                        color = MaterialTheme.colorScheme.onSecondary
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 )
                             }
@@ -133,8 +133,8 @@ fun GoodChoiceGame(
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 40.sp,
-                                        color = MaterialTheme.colorScheme.tertiary,
-                                        drawStyle = Stroke(width = 4f)
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        drawStyle = Stroke(width = 7f)
                                     )
                                 )
                                 Text(
@@ -142,23 +142,22 @@ fun GoodChoiceGame(
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineLarge.copy(
                                         fontSize = 40.sp,
-                                        color = MaterialTheme.colorScheme.onSecondary
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 )
                             }
                         }
 
-
-                        Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(20.dp))
 
                         Text(
                             text = stringResource(id = R.string.ninthgame_description),
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSecondary,
                             style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
                             textAlign = TextAlign.Center
                         )
 
-                        Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(20.dp))
 
                         Card(
                             modifier = Modifier
@@ -174,10 +173,10 @@ fun GoodChoiceGame(
 
                                     viewModel.elegirPokemon(pokemonA)
                                 },
-                            border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
+                            border = BorderStroke(4.dp, MaterialTheme.colorScheme.outline),
                             shape = MaterialTheme.shapes.large,
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
+                                containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                             )
                         ) {
                             Box(
@@ -225,10 +224,10 @@ fun GoodChoiceGame(
 
                                     viewModel.elegirPokemon(pokemonB)
                                 },
-                            border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
+                            border = BorderStroke(4.dp, MaterialTheme.colorScheme.onSurface),
                             shape = MaterialTheme.shapes.large,
                             colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
+                                containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                             )
                         ) {
                             Box(
@@ -248,17 +247,17 @@ fun GoodChoiceGame(
                             }
                         }
 
-                        Spacer(Modifier.height(12.dp))
+                        Spacer(Modifier.height(20.dp))
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = stringResource(id = R.string.ninthgame_puntuation),
-                                color = MaterialTheme.colorScheme.primary,
+                                color = MaterialTheme.colorScheme.onSecondary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                text = " $puntaje", color = MaterialTheme.colorScheme.outline,
+                                text = " $puntaje", color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
                                 textAlign = TextAlign.Center
                             )

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.Carta
-import com.electrofire.playpkm.Data.Repository.CartasRepository
+import com.electrofire.playpkm.Data.Repository.GameCacheRepository
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BlurredCardViewModel @Inject constructor(
-    private val repo: CartasRepository
+    private val repo: GameCacheRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<UIState<Carta>>(UIState.Loading)
@@ -29,7 +29,8 @@ class BlurredCardViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = UIState.Loading
             try {
-                val result = repo.obtenerCartaDelDia()
+                val bundle = repo.getValidatedBundle()
+                val result = bundle?.carta
                 if (result != null) {
                     _state.value = UIState.Success(result)
                 } else {

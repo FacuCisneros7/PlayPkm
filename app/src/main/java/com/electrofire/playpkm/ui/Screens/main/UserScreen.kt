@@ -40,10 +40,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -70,6 +70,8 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.Domain.openNotificationSettings
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.NationalityDropdown
+import com.electrofire.playpkm.ui.Components.PokemonWithFlag
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.MusicViewModel
@@ -84,6 +86,7 @@ fun UserScreen(
     val user = statsViewModel.userData
     val context = LocalContext.current
     var selectedImage by remember { mutableStateOf<String?>(null) }
+    var selectedNationality by remember { mutableStateOf(user.nationality) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var instagramText by remember { mutableStateOf(user.instagram ?: "") }
 
@@ -94,48 +97,35 @@ fun UserScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 24.dp, bottom = 24.dp)
+                .padding(top = 20.dp, bottom = 20.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(selectedImage ?: user.imagen),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(130.dp)
-                    .border(
-                        width = 2.dp,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CircleShape
-                    )
-                    .padding(3.dp)
-                    .border(
-                        width = 3.dp,
-                        color = MaterialTheme.colorScheme.onSecondary,
-                        shape = CircleShape
-                    )
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
+            PokemonWithFlag(
+                painter = selectedImage ?: user.imagen,
+                nationality = user.nationality,
+                imageSize = 130.dp,
+                borderColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Box {
                 // Contorno
-                Text(
-                    text = user.userName ?: "Entrenador",
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontSize = 32.sp,
-                        color = MaterialTheme.colorScheme.primary,
-                        drawStyle = Stroke(width = 4f)
-                    )
-                )
+//                Text(
+//                    text = user.userName ?: "Entrenador",
+//                    style = MaterialTheme.typography.headlineLarge.copy(
+//                        fontSize = 32.sp,
+//                        color = MaterialTheme.colorScheme.onSecondary,
+//                        drawStyle = Stroke(width = 9f)
+//                    )
+//                )
                 // Relleno
                 Text(
                     text = user.userName ?: "Entrenador",
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontSize = 32.sp,
-                        color = MaterialTheme.colorScheme.onSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
             }
@@ -146,9 +136,8 @@ fun UserScreen(
                 modifier = Modifier.wrapContentSize(),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
-                elevation = CardDefaults.cardElevation(8.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
+                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.9f)
                 )
             ) {
 
@@ -188,8 +177,8 @@ fun UserScreen(
                         ) {
                             Text(
                                 text = "VICTORIAS",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.primary
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                             )
                             Text(
                                 text = user.victorias.toString(),
@@ -240,19 +229,27 @@ fun UserScreen(
                         ) {
                             Text(
                                 text = "DERROTAS",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.primary
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                             )
                             Text(
                                 text = user.derrotas.toString(),
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.outline
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
 
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "RECORDS MÁXIMOS",
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
                         modifier = Modifier.wrapContentSize(),
@@ -264,50 +261,50 @@ fun UserScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "PTS GC",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
+                                text = "GC",
+                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 14.sp),
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Text(
                                 text = user.maxPoints.toString(),
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.outline
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(20.dp))
+                        Spacer(modifier = Modifier.width(32.dp))
 
                         Column(
                             modifier = Modifier,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "PTS TS",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
+                                text = "TS",
+                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 14.sp),
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Text(
                                 text = user.maxPointsDos.toString(),
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.outline
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(20.dp))
+                        Spacer(modifier = Modifier.width(32.dp))
 
                         Column(
                             modifier = Modifier,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "PTS BA",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
+                                text = "BA",
+                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 14.sp),
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Text(
                                 text = user.maxPointsTres.toString(),
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.outline
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
@@ -380,7 +377,7 @@ fun UserScreen(
                 Text(
                     text = "Selecciona una insignia para cambiar",
                     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 15.sp),
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                 )
             }
 
@@ -396,7 +393,7 @@ fun UserScreen(
                 ),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
                 modifier = Modifier
-                    .width(250.dp)
+                    .width(150.dp)
                     .height(40.dp)
             ) {
                 Icon(
@@ -405,7 +402,7 @@ fun UserScreen(
                     modifier = Modifier.size(30.dp).padding(end = 6.dp)
                 )
                 Text(
-                    text = "CONFIGURACIÓN",
+                    text = "Ajustes",
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = 13.sp
                     )
@@ -435,7 +432,7 @@ fun UserScreen(
                     ) {
                         Box {
                             Text(
-                                text = "CONFIGURACIÓN",
+                                text = "AJUSTES",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 26.sp,
@@ -444,7 +441,7 @@ fun UserScreen(
                                 )
                             )
                             Text(
-                                text = "CONFIGURACIÓN",
+                                text = "AJUSTES",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 26.sp,
@@ -474,51 +471,46 @@ fun UserScreen(
                         }
 
                         // Instagram
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "TU INSTAGRAM (OPCIONAL)",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(55.dp),
-                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
-                                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-                            ) {
-                                TextField(
-                                    value = instagramText,
-                                    onValueChange = { instagramText = it.trim().replace("@", "") },
-                                    leadingIcon = {
-                                        Image(
-                                            painter = painterResource(id = R.drawable.instagram),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(22.dp),
-                                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-                                        )
-                                    },
-                                    placeholder = { 
-                                        Text(
-                                            "usuario_ig", 
-                                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                                            style = MaterialTheme.typography.bodyLarge
-                                        ) 
-                                    },
-                                    singleLine = true,
-                                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
-                                    colors = TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.Transparent,
-                                        unfocusedContainerColor = Color.Transparent,
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent,
-                                        cursorColor = MaterialTheme.colorScheme.tertiary
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
+                        OutlinedTextField(
+                            value = instagramText,
+                            onValueChange = { instagramText = it.trim().replace("@", "") },
+                            label = { Text("Tu Instagram (Opcional)", style = MaterialTheme.typography.bodyLarge) },
+                            leadingIcon = {
+                                Image(
+                                    painter = painterResource(id = R.drawable.instagram),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(22.dp),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                                 )
-                            }
-                        }
+                            },
+                            placeholder = { 
+                                Text(
+                                    "usuario_ig", 
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                    style = MaterialTheme.typography.bodyLarge
+                                ) 
+                            },
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                                focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                                focusedTextColor = MaterialTheme.colorScheme.primary,
+                                unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                                cursorColor = MaterialTheme.colorScheme.tertiary
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Nacionalidad
+                        NationalityDropdown(
+                            selectedNationality = selectedNationality,
+                            onNationalitySelected = { selectedNationality = it }
+                        )
 
                         // Notificaciones
                         Button(
@@ -564,6 +556,7 @@ fun UserScreen(
                         Button(
                             onClick = { 
                                 statsViewModel.registrarInstagram(instagramText)
+                                selectedNationality?.let { statsViewModel.registrarNationality(it) }
                                 showSettingsDialog = false 
                             },
                             modifier = Modifier.width(150.dp).height(40.dp),

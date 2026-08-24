@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.Fusion
-import com.electrofire.playpkm.Data.Repository.FusionRepository
+import com.electrofire.playpkm.Data.Repository.GameCacheRepository
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FusionViewModel @Inject constructor(
-    private val repo: FusionRepository
+    private val repo: GameCacheRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<UIState<Fusion>>(UIState.Loading)
@@ -29,7 +29,8 @@ class FusionViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = UIState.Loading
             try {
-                val result = repo.obtenerFusionDelDia()
+                val bundle = repo.getValidatedBundle()
+                val result = bundle?.fusion
                 if (result != null) {
                     _state.value = UIState.Success(result)
                 } else {

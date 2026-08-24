@@ -1,0 +1,8 @@
+- [x] Add `nationality` field to `UserData`
+- [x] Update `HomeStatsViewModel` to handle nationality
+- [x] Create `NationalityUtils.kt` with flag resource mappings
+- [x] Create `PokemonWithFlag` reusable component
+- [x] Create `NationalityDropdown` reusable component
+- [x] Integrate nationality selection in `NewUserScreen`
+- [x] Integrate nationality selection in `UserScreen` settings
+- [x] Update `RankingList` and `UserDetailDialog` to show flags

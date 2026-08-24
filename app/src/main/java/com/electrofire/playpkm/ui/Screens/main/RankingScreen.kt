@@ -45,19 +45,19 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box {
+//                Text(
+//                    text = "RANKING",
+//                    style = MaterialTheme.typography.headlineLarge.copy(
+//                        fontSize = 40.sp,
+//                        color = MaterialTheme.colorScheme.onSecondary,
+//                        drawStyle = Stroke(width = 9f)
+//                    )
+//                )
                 Text(
                     text = "RANKING",
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontSize = 40.sp,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        drawStyle = Stroke(width = 6f)
-                    )
-                )
-                Text(
-                    text = "RANKING",
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontSize = 40.sp,
-                        color = MaterialTheme.colorScheme.onSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
             }

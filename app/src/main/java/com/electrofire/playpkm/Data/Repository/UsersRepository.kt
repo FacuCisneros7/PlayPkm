@@ -42,7 +42,6 @@ class UsersRepository @Inject constructor() {
 
         val docRef = db.collection("rankings_cache").document("global")
         
-        // Creamos un Map para enviar todo en una sola petición atómica
         val data = mapOf(
             "general" to general,
             "goodChoice" to gc,

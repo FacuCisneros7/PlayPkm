@@ -12,5 +12,6 @@ data class UserData(
     val maxPointsDos: Int = 0,
     val instagram: String? = null,
     val rachaActual: Int = 0,
-    val ultimaConexionRacha: com.google.firebase.Timestamp? = null
+    val ultimaConexionRacha: com.google.firebase.Timestamp? = null,
+    val nationality: String? = null
 )

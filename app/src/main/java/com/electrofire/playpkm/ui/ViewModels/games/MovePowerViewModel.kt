@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.Movimiento
-import com.electrofire.playpkm.Data.Repository.MovimientosRepository
+import com.electrofire.playpkm.Data.Repository.GameCacheRepository
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovePowerViewModel @Inject constructor(
-    private val repo: MovimientosRepository
+    private val repo: GameCacheRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<UIState<Movimiento>>(UIState.Loading)
@@ -29,7 +29,8 @@ class MovePowerViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = UIState.Loading
             try {
-                val result = repo.obtenerMovimientoDelDia()
+                val bundle = repo.getValidatedBundle()
+                val result = bundle?.movimiento
                 if (result != null) {
                     _state.value = UIState.Success(result)
                 } else {

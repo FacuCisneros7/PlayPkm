@@ -19,6 +19,8 @@ private val colorScheme = lightColorScheme(
     outline = verdeAgua,
     surface = Blanco,
     onSurface = rojo,
+    onSurfaceVariant = amarillo,
+    surfaceVariant = amarilloAnaranjado,
 
     inversePrimary = grisNuevo,
     inverseSurface = grisOscuro

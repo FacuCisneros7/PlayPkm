@@ -105,8 +105,8 @@ fun SilhouetteGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 36.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.tertiary,
-                                    drawStyle = Stroke(width = 4f)
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    drawStyle = Stroke(width = 7f)
                                 )
                             )
                             Text(
@@ -115,7 +115,7 @@ fun SilhouetteGame(
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 36.sp,
                                     lineHeight = 38.sp,
-                                    color = MaterialTheme.colorScheme.onSecondary
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             )
                         }

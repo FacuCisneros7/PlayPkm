@@ -169,7 +169,7 @@
     <string name="ninthgame_home">INICIO</string>
 
     <!-- TwelveGame -->
-    <string name="twelvegame_description">SELECCIONA AL POKEMON CON MAYOR NRO DE LA POKEDEX</string>
+    <string name="twelvegame_description">SELECCIONA AL POKEMON CON MAYOR NRO DE POKEDEX</string>
 
     <!-- Wincard -->
     <string name="win">VICTORIA</string>

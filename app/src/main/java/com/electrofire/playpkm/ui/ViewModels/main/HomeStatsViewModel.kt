@@ -66,6 +66,11 @@ class HomeStatsViewModel : ViewModel() {
         guardarStats()
     }
 
+    fun registrarNationality(nationality: String) {
+        userData = userData.copy(nationality = nationality)
+        guardarStats()
+    }
+
     private fun verificarYActualizarRacha() {
         timeRepository.obtenerHoraServidorDos { serverDate ->
             if (serverDate == null) return@obtenerHoraServidorDos
@@ -115,7 +120,8 @@ class HomeStatsViewModel : ViewModel() {
                         "maxPointsTres" to userData.maxPointsTres,
                         "instagram" to userData.instagram,
                         "rachaActual" to userData.rachaActual,
-                        "ultimaConexionRacha" to userData.ultimaConexionRacha
+                        "ultimaConexionRacha" to userData.ultimaConexionRacha,
+                        "nationality" to userData.nationality
                     ),
                     SetOptions.merge()
                 )
@@ -152,7 +158,8 @@ class HomeStatsViewModel : ViewModel() {
                             maxPointsTres = document.getLong("maxPointsTres")?.toInt() ?: 0,
                             instagram = document.getString("instagram"),
                             rachaActual = document.getLong("rachaActual")?.toInt() ?: 0,
-                            ultimaConexionRacha = document.getTimestamp("ultimaConexionRacha")
+                            ultimaConexionRacha = document.getTimestamp("ultimaConexionRacha"),
+                            nationality = document.getString("nationality")
                         )
                         verificarYActualizarRacha()
                     }
@@ -257,11 +264,9 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun reset() {
-        userData = userData.copy(
-            victorias = 0,
-            derrotas = 0,
-            maxPoints = 0
-        )
+        userData = UserData()
+        gameAttempts = null
+        isUserLoaded = false
     }
 
 }
