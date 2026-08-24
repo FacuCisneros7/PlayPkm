@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import com.electrofire.playpkm.Domain.ForceUpdateGate
 import com.electrofire.playpkm.ui.Components.GradientBackground
 import com.electrofire.playpkm.ui.Components.Loading
+import com.electrofire.playpkm.ui.Components.TutorialOverlay
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.Scaffold.BottomBar
 import com.electrofire.playpkm.ui.Scaffold.NetworkMonitor
@@ -235,6 +236,17 @@ fun ViewContainer(musicViewModel: MusicViewModel) {
                 Box(modifier = Modifier.padding(innerPadding)) {
                     AppNavigation(navController, statsViewModel, authViewModel, musicViewModel)
                 }
+
+                // Tutorial Overlay
+                val showTutorial = !statsViewModel.userData.hasSeenTutorial && 
+                                  currentRoute == Screen.Home.route && 
+                                  statsViewModel.isUserLoaded &&
+                                  !statsViewModel.userData.userName.isNullOrEmpty()
+
+                TutorialOverlay(
+                    show = showTutorial,
+                    onComplete = { statsViewModel.completarTutorial() }
+                )
             }
         }
     )
@@ -252,6 +264,12 @@ fun AppNavigation(
 
     // Creamos un estado de carga
     val isUserLoaded by remember { derivedStateOf { statsViewModel.isUserLoaded } }
+
+    androidx.compose.runtime.LaunchedEffect(isUserLoaded) {
+        if (!isUserLoaded) {
+            statsViewModel.cargarStats()
+        }
+    }
 
     if (!isUserLoaded) {
         // Pantalla de loading mientras se carga el username

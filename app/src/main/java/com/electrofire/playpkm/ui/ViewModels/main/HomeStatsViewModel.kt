@@ -71,6 +71,11 @@ class HomeStatsViewModel : ViewModel() {
         guardarStats()
     }
 
+    fun completarTutorial() {
+        userData = userData.copy(hasSeenTutorial = true)
+        guardarStats()
+    }
+
     private fun verificarYActualizarRacha() {
         timeRepository.obtenerHoraServidorDos { serverDate ->
             if (serverDate == null) return@obtenerHoraServidorDos
@@ -121,7 +126,8 @@ class HomeStatsViewModel : ViewModel() {
                         "instagram" to userData.instagram,
                         "rachaActual" to userData.rachaActual,
                         "ultimaConexionRacha" to userData.ultimaConexionRacha,
-                        "nationality" to userData.nationality
+                        "nationality" to userData.nationality,
+                        "hasSeenTutorial" to userData.hasSeenTutorial
                     ),
                     SetOptions.merge()
                 )
@@ -159,7 +165,8 @@ class HomeStatsViewModel : ViewModel() {
                             instagram = document.getString("instagram"),
                             rachaActual = document.getLong("rachaActual")?.toInt() ?: 0,
                             ultimaConexionRacha = document.getTimestamp("ultimaConexionRacha"),
-                            nationality = document.getString("nationality")
+                            nationality = document.getString("nationality"),
+                            hasSeenTutorial = document.getBoolean("hasSeenTutorial") ?: false
                         )
                         verificarYActualizarRacha()
                     }

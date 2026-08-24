@@ -68,12 +68,6 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
         isVisible = true
     }
 
-    androidx.compose.runtime.LaunchedEffect(statsViewModel.isUserLoaded) {
-        if (!statsViewModel.isUserLoaded) {
-            statsViewModel.cargarStats()
-        }
-    }
-
     BackHandler(enabled = true) {
         // No hace nada → el botón atrás queda bloqueado
     }

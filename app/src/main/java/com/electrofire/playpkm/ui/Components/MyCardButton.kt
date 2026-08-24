@@ -61,9 +61,8 @@ fun MyCardButton(
                 .height(68.dp)
                 .clickable { onClick() },
             shape = MaterialTheme.shapes.large,
-            elevation = CardDefaults.cardElevation(10.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondary
+                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
             )
         ) {
             Column(

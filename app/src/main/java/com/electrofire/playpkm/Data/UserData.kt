@@ -13,5 +13,6 @@ data class UserData(
     val instagram: String? = null,
     val rachaActual: Int = 0,
     val ultimaConexionRacha: com.google.firebase.Timestamp? = null,
-    val nationality: String? = null
+    val nationality: String? = null,
+    val hasSeenTutorial: Boolean = false
 )

@@ -85,7 +85,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                     Text(
                         text = stringResource(id = R.string.register),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 36.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
                         )
@@ -93,7 +93,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                     Text(
                         text = stringResource(id = R.string.register),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 36.sp,
                             color = MaterialTheme.colorScheme.tertiary
                         )
                     )
@@ -231,7 +231,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 ConfirmButton(
                     onConfirm = {
@@ -260,7 +260,7 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 ConfirmButtonRegLog(
                     onConfirm = {

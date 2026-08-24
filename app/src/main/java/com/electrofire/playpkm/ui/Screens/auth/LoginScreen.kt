@@ -91,7 +91,7 @@ fun LoginScreen(
                     Text(
                         text = stringResource(id = R.string.log_in),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 36.sp,
                             color = MaterialTheme.colorScheme.primary,
                             drawStyle = Stroke(width = 6f)
                         )
@@ -99,7 +99,7 @@ fun LoginScreen(
                     Text(
                         text = stringResource(id = R.string.log_in),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 40.sp,
+                            fontSize = 36.sp,
                             color = MaterialTheme.colorScheme.tertiary
                         )
                     )
@@ -187,7 +187,7 @@ fun LoginScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 ConfirmButton(
                     onConfirm = {
@@ -213,7 +213,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 androidx.compose.material3.Button(
                     onClick = {
@@ -243,7 +243,7 @@ fun LoginScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 ConfirmButtonRegLog(
                     onConfirm = {
