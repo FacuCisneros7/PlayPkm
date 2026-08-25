@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Whatshot
@@ -101,43 +102,49 @@ fun UserScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Text(
+                text = user.userName ?: "Entrenador",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 32.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             PokemonWithFlag(
                 painter = selectedImage ?: user.imagen,
                 nationality = user.nationality,
-                imageSize = 130.dp,
+                imageSize = 100.dp,
                 borderColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Box {
-                // Contorno
-//                Text(
-//                    text = user.userName ?: "Entrenador",
-//                    style = MaterialTheme.typography.headlineLarge.copy(
-//                        fontSize = 32.sp,
-//                        color = MaterialTheme.colorScheme.onSecondary,
-//                        drawStyle = Stroke(width = 9f)
-//                    )
-//                )
-                // Relleno
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.MonetizationOn,
+                    contentDescription = null,
+                    tint = Color(0xFFFFC107),
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.width(6.dp))
                 Text(
-                    text = user.userName ?: "Entrenador",
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontSize = 32.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    text = "${user.coins} COINS",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Card(
                 modifier = Modifier.wrapContentSize(),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.9f)
+                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
                 )
             ) {
 
@@ -388,10 +395,9 @@ fun UserScreen(
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
+                    containerColor = MaterialTheme.colorScheme.secondary.copy(0.9f),
                     contentColor = MaterialTheme.colorScheme.primary
                 ),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
                 modifier = Modifier
                     .width(150.dp)
                     .height(40.dp)

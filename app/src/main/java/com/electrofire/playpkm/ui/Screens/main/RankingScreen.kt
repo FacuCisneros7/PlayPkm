@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +30,8 @@ import com.electrofire.playpkm.ui.ViewModels.common.RankingType
 import com.electrofire.playpkm.ui.ViewModels.main.RankingViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.TimeZone
 
 @Composable
 fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
@@ -61,6 +64,21 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                     )
                 )
             }
+
+            // Temporizador de Temporada
+            val daysLeft = remember {
+                val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                val lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+                val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+                lastDay - currentDay
+            }
+
+            Text(
+                text = "FIN DE TEMPORADA EN: $daysLeft DÍAS",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier.padding(top = 4.dp)
+            )
 
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(8.dp))
 

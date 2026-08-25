@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import java.time.LocalDate
 import java.time.ZoneOffset
+import java.util.Calendar
 
 
 class HomeStatsViewModel : ViewModel() {
@@ -42,7 +43,10 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun registrarVictoria() {
-        userData = userData.copy(victorias = userData.victorias + 1)
+        userData = userData.copy(
+            victorias = userData.victorias + 1,
+            seasonWins = userData.seasonWins + 1
+        )
         guardarStats()
     }
 
@@ -74,6 +78,43 @@ class HomeStatsViewModel : ViewModel() {
     fun completarTutorial() {
         userData = userData.copy(hasSeenTutorial = true)
         guardarStats()
+    }
+
+    fun registrarCompra(newInsignia: String, cost: Int) {
+        if (userData.coins >= cost) {
+            val updatedProfileImages = userData.profileImages.toMutableList().apply {
+                if (!contains(newInsignia)) add(newInsignia)
+            }
+            userData = userData.copy(
+                coins = userData.coins - cost,
+                profileImages = updatedProfileImages
+            )
+            guardarStats()
+        }
+    }
+
+    private fun verificarReinicioTemporada() {
+        timeRepository.obtenerHoraServidorDos { serverDate ->
+            if (serverDate == null) return@obtenerHoraServidorDos
+
+            val calendar = Calendar.getInstance()
+            calendar.time = serverDate
+            val currentSeasonId = "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}"
+
+            if (userData.lastSeasonParticipated != null && userData.lastSeasonParticipated != currentSeasonId) {
+                // Nueva temporada detectada: Otorgar monedas por la temporada pasada
+                val reward = userData.seasonWins * 10
+                userData = userData.copy(
+                    seasonWins = 0,
+                    coins = userData.coins + reward,
+                    lastSeasonParticipated = currentSeasonId
+                )
+                guardarStats()
+            } else if (userData.lastSeasonParticipated == null) {
+                userData = userData.copy(lastSeasonParticipated = currentSeasonId)
+                guardarStats()
+            }
+        }
     }
 
     private fun verificarYActualizarRacha() {
@@ -123,11 +164,15 @@ class HomeStatsViewModel : ViewModel() {
                         "maxPoints" to userData.maxPoints,
                         "maxPointsDos" to userData.maxPointsDos,
                         "maxPointsTres" to userData.maxPointsTres,
+                        "profileImages" to userData.profileImages,
                         "instagram" to userData.instagram,
                         "rachaActual" to userData.rachaActual,
                         "ultimaConexionRacha" to userData.ultimaConexionRacha,
                         "nationality" to userData.nationality,
-                        "hasSeenTutorial" to userData.hasSeenTutorial
+                        "hasSeenTutorial" to userData.hasSeenTutorial,
+                        "coins" to userData.coins,
+                        "seasonWins" to userData.seasonWins,
+                        "lastSeasonParticipated" to userData.lastSeasonParticipated
                     ),
                     SetOptions.merge()
                 )
@@ -166,9 +211,13 @@ class HomeStatsViewModel : ViewModel() {
                             rachaActual = document.getLong("rachaActual")?.toInt() ?: 0,
                             ultimaConexionRacha = document.getTimestamp("ultimaConexionRacha"),
                             nationality = document.getString("nationality"),
-                            hasSeenTutorial = document.getBoolean("hasSeenTutorial") ?: false
+                            hasSeenTutorial = document.getBoolean("hasSeenTutorial") ?: false,
+                            coins = document.getLong("coins")?.toInt() ?: 0,
+                            seasonWins = document.getLong("seasonWins")?.toInt() ?: 0,
+                            lastSeasonParticipated = document.getString("lastSeasonParticipated")
                         )
                         verificarYActualizarRacha()
+                        verificarReinicioTemporada()
                     }
                     isUserLoaded = true
                 }
@@ -200,6 +249,7 @@ class HomeStatsViewModel : ViewModel() {
             "fift_game" -> attempts.fift_game
             "eight_game" -> attempts.eight_game
             "ten_game" -> attempts.ten_game
+            "thirteen_game" -> attempts.thirteen_game
             else -> null
         }
 
@@ -226,6 +276,7 @@ class HomeStatsViewModel : ViewModel() {
             "fift_game" -> attempts.fift_game
             "eight_game" -> attempts.eight_game
             "ten_game" -> attempts.ten_game
+            "thirteen_game" -> attempts.thirteen_game
             else -> null
         } ?: return true
 

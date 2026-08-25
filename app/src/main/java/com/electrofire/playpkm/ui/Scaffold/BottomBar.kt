@@ -24,6 +24,7 @@ fun BottomBar(navController: NavController, modifier: Modifier = Modifier) {
     val items = listOf(
         BottomNavItem("Juegos", R.drawable.palancademando, Screen.Home.route),
         BottomNavItem("Ranking", R.drawable.podiodos, Screen.RankingScreen.route),
+        BottomNavItem("Tienda", R.drawable.tienda, Screen.Shop.route),
         BottomNavItem("User_screen", R.drawable.perfil, Screen.UserScreen.route)
     )
 

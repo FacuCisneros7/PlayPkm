@@ -45,7 +45,7 @@ fun HomeStatsCard(modifier: Modifier = Modifier, statsViewModel: HomeStatsViewMo
         border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary),
         elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f)
+            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
         )
     ) {
         Row(

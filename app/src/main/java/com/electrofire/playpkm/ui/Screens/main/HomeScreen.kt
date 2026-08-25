@@ -181,6 +181,33 @@ fun HomeScreen(
 
                     item {
                         MyCardButton(
+                            title = "TIPOS POKÉMON",
+                            imageRes = R.drawable.fision,
+                            showBadge = statsViewModel.canPlayGame("thirteen_game"),
+                            onClick = {
+                                val mediaPlayer =
+                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                mediaPlayer.start()
+                                mediaPlayer.setOnCompletionListener { it.release() }
+
+                                statsViewModel.verificarAccesoJuego("thirteen_game") { canPlay ->
+                                    if (canPlay) {
+                                        statsViewModel.registrarIntentoJuego("thirteen_game")
+                                        navController.navigate("type_game")
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Ya jugaste hoy! Espera a mañana",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    item {
+                        MyCardButton(
                             title = "ZOOM GAME",
                             imageRes = R.drawable.adasdss,
                             showBadge = statsViewModel.canPlayGame("ten_game"),

@@ -5,7 +5,17 @@ data class PokemonResponse(
     val stats: List<Stat>,
     val abilities: List<AbilitySlot>,
     val id: Int,
-    val url: String
+    val url: String,
+    val types: List<Type>
+)
+
+data class Type(
+    val type: TypeName,
+    val slot: Int
+)
+
+data class TypeName(
+    val name: String
 )
 
 data class Stat(

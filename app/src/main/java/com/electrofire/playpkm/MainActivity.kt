@@ -60,6 +60,8 @@ import com.electrofire.playpkm.ui.Screens.games.FusionGame
 import com.electrofire.playpkm.ui.Screens.games.ZoomGame
 import com.electrofire.playpkm.ui.Screens.games.AbilityGame
 import com.electrofire.playpkm.ui.Screens.games.BeforeAfterGame
+import com.electrofire.playpkm.ui.Screens.games.TypeGameScreen
+import com.electrofire.playpkm.ui.Screens.main.ShopScreen
 import com.electrofire.playpkm.ui.Screens.main.UserScreen
 import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
 import com.electrofire.playpkm.ui.ViewModels.main.AuthViewModel
@@ -222,7 +224,10 @@ fun ViewContainer(musicViewModel: MusicViewModel) {
         },
         bottomBar = {
             if (
-                currentRoute == Screen.Home.route || currentRoute == Screen.RankingScreen.route || currentRoute == Screen.UserScreen.route
+                currentRoute == Screen.Home.route || 
+                currentRoute == Screen.RankingScreen.route || 
+                currentRoute == Screen.UserScreen.route ||
+                currentRoute == Screen.Shop.route
             ) {
                 BottomBar(navController = navController)
             }
@@ -381,6 +386,29 @@ fun AppNavigation(
                     navController = navController,
                     statsViewModel = statsViewModel
                 )
+            }
+            composable(Screen.TypeGame.route) {
+                TypeGameScreen(
+                    navController = navController,
+                    statsViewModel = statsViewModel
+                )
+            }
+            composable(
+                route = Screen.Shop.route,
+                enterTransition = {
+                    slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                },
+                exitTransition = {
+                    slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                }
+            ) {
+                ShopScreen(statsViewModel = statsViewModel)
             }
             
             composable(

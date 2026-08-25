@@ -35,7 +35,7 @@ fun Hearts(
             for (i in 1..total) {
                 Card(
                     modifier
-                        .size(74.dp)
+                        .size(64.dp)
                         .clip(CircleShape), // 🔹 Hace que la sombra también sea circular
                     shape = CircleShape,
                     elevation = CardDefaults.cardElevation(15.dp),
@@ -46,7 +46,7 @@ fun Hearts(
                     Image(
                         painter = if (i <= actuales) iconoLleno else iconoVacio,
                         contentDescription = null,
-                        modifier = Modifier.size(74.dp)
+                        modifier = Modifier.size(64.dp)
                     )
                 }
 

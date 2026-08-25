@@ -24,43 +24,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.electrofire.playpkm.Data.PokemonTypeUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NationalityDropdown(
-    selectedNationality: String?,
-    onNationalitySelected: (String) -> Unit,
+fun TypeDropdown(
+    label: String,
+    selectedType: String?,
+    onTypeSelected: (String) -> Unit,
+    showEmpty: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val nationalities = NationalityUtils.nationalities
+    val types = if (showEmpty) PokemonTypeUtils.typesWithEmpty else PokemonTypeUtils.types
 
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.width(200.dp)
     ) {
         OutlinedTextField(
-            value = selectedNationality ?: "",
+            value = selectedType ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text("Nacionalidad", style = MaterialTheme.typography.bodyLarge) },
-            trailingIcon = { 
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) 
-            },
+            label = { Text(label, style = MaterialTheme.typography.bodyLarge) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-                focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
-                focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
                 unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                 focusedTextColor = MaterialTheme.colorScheme.primary,
                 unfocusedTextColor = MaterialTheme.colorScheme.primary,
                 cursorColor = MaterialTheme.colorScheme.tertiary,
-                focusedTrailingIconColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedTrailingIconColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.7f)
+                focusedTrailingIconColor = MaterialTheme.colorScheme.primary,
+                unfocusedTrailingIconColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
             ),
             modifier = Modifier
                 .menuAnchor()
@@ -71,27 +71,27 @@ fun NationalityDropdown(
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            containerColor = MaterialTheme.colorScheme.tertiary.copy(0.9f) // Color de fondo de la lista
+            containerColor = MaterialTheme.colorScheme.tertiary.copy(0.9f)
         ) {
-            nationalities.forEach { nationality ->
+            types.forEach { type ->
                 DropdownMenuItem(
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(
-                                painter = painterResource(id = nationality.flagRes),
+                                painter = painterResource(id = type.typeRes),
                                 contentDescription = null,
                                 modifier = Modifier.size(24.dp)
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
-                                text = nationality.name,
+                                text = type.spanishName,
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
                     },
                     onClick = {
-                        onNationalitySelected(nationality.name)
+                        onTypeSelected(type.spanishName)
                         expanded = false
                     }
                 )

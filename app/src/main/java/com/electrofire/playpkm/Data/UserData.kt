@@ -14,5 +14,8 @@ data class UserData(
     val rachaActual: Int = 0,
     val ultimaConexionRacha: com.google.firebase.Timestamp? = null,
     val nationality: String? = null,
-    val hasSeenTutorial: Boolean = false
+    val hasSeenTutorial: Boolean = false,
+    val coins: Int = 0,
+    val seasonWins: Int = 0,
+    val lastSeasonParticipated: String? = null
 )

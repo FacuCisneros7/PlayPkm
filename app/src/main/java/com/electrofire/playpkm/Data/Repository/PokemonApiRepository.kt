@@ -33,7 +33,8 @@ class PokemonApiRepository @Inject constructor(
             imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png",
             stats = stats.associate { it.stat.name to it.base_stat },
             abilities = translatedAbilities ?: abilities.map { it.ability.name },
-            id = id
+            id = id,
+            types = types.associate { it.type.name to it.slot }
         )
     }
 
