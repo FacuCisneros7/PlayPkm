@@ -45,7 +45,7 @@ class HomeStatsViewModel : ViewModel() {
     fun registrarVictoria() {
         userData = userData.copy(
             victorias = userData.victorias + 1,
-            seasonWins = userData.seasonWins + 1
+            weeklyWins = userData.weeklyWins + 1
         )
         guardarStats()
     }
@@ -103,9 +103,10 @@ class HomeStatsViewModel : ViewModel() {
 
             if (userData.lastSeasonParticipated != null && userData.lastSeasonParticipated != currentSeasonId) {
                 // Nueva temporada detectada: Otorgar monedas por la temporada pasada
-                val reward = userData.seasonWins * 10
+                val reward = userData.victorias * 4
                 userData = userData.copy(
-                    seasonWins = 0,
+                    victorias = 0,
+                    derrotas = 0,
                     coins = userData.coins + reward,
                     lastSeasonParticipated = currentSeasonId
                 )
@@ -114,6 +115,27 @@ class HomeStatsViewModel : ViewModel() {
                 userData = userData.copy(lastSeasonParticipated = currentSeasonId)
                 guardarStats()
             }
+            verificarReinicioSemanal(serverDate)
+        }
+    }
+
+    private fun verificarReinicioSemanal(serverDate: java.util.Date) {
+        val calendar = Calendar.getInstance()
+        calendar.time = serverDate
+        val currentWeek = calendar.get(Calendar.WEEK_OF_YEAR)
+
+        if (userData.lastWeekParticipated != null && userData.lastWeekParticipated != currentWeek) {
+            // Reinicio semanal: Otorgar recompensa menor
+            val reward = userData.weeklyWins * 3
+            userData = userData.copy(
+                weeklyWins = 0,
+                coins = userData.coins + reward,
+                lastWeekParticipated = currentWeek
+            )
+            guardarStats()
+        } else if (userData.lastWeekParticipated == null) {
+            userData = userData.copy(lastWeekParticipated = currentWeek)
+            guardarStats()
         }
     }
 
@@ -171,8 +193,9 @@ class HomeStatsViewModel : ViewModel() {
                         "nationality" to userData.nationality,
                         "hasSeenTutorial" to userData.hasSeenTutorial,
                         "coins" to userData.coins,
-                        "seasonWins" to userData.seasonWins,
-                        "lastSeasonParticipated" to userData.lastSeasonParticipated
+                        "weeklyWins" to userData.weeklyWins,
+                        "lastSeasonParticipated" to userData.lastSeasonParticipated,
+                        "lastWeekParticipated" to userData.lastWeekParticipated
                     ),
                     SetOptions.merge()
                 )
@@ -213,8 +236,9 @@ class HomeStatsViewModel : ViewModel() {
                             nationality = document.getString("nationality"),
                             hasSeenTutorial = document.getBoolean("hasSeenTutorial") ?: false,
                             coins = document.getLong("coins")?.toInt() ?: 0,
-                            seasonWins = document.getLong("seasonWins")?.toInt() ?: 0,
-                            lastSeasonParticipated = document.getString("lastSeasonParticipated")
+                            weeklyWins = document.getLong("weeklyWins")?.toInt() ?: 0,
+                            lastSeasonParticipated = document.getString("lastSeasonParticipated"),
+                            lastWeekParticipated = document.getLong("lastWeekParticipated")?.toInt()
                         )
                         verificarYActualizarRacha()
                         verificarReinicioTemporada()
@@ -250,6 +274,7 @@ class HomeStatsViewModel : ViewModel() {
             "eight_game" -> attempts.eight_game
             "ten_game" -> attempts.ten_game
             "thirteen_game" -> attempts.thirteen_game
+            "forteen_game" -> attempts.forteen_game
             else -> null
         }
 
@@ -277,6 +302,7 @@ class HomeStatsViewModel : ViewModel() {
             "eight_game" -> attempts.eight_game
             "ten_game" -> attempts.ten_game
             "thirteen_game" -> attempts.thirteen_game
+            "forteen_game" -> attempts.forteen_game
             else -> null
         } ?: return true
 

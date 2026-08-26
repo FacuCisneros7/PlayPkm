@@ -1,10 +1,13 @@
 package com.electrofire.playpkm.Data.Repository
 
+import android.util.Log
 import com.electrofire.playpkm.Data.ImpostorGameData
+import com.electrofire.playpkm.Data.ItemApi
 import com.electrofire.playpkm.Data.LocalData.PokemonDao
 import com.electrofire.playpkm.Data.LocalData.PokemonEntity
 import com.electrofire.playpkm.Data.NetworkData.Ability
 import com.electrofire.playpkm.Data.NetworkData.ApiPokemon
+import com.electrofire.playpkm.Data.NetworkData.ItemResponse
 import com.electrofire.playpkm.Data.NetworkData.ListPokemonAbilityResponse
 import com.electrofire.playpkm.Data.NetworkData.PokemonResponse
 import com.electrofire.playpkm.Data.PokemonApi
@@ -55,6 +58,14 @@ class PokemonApiRepository @Inject constructor(
                 .firstOrNull { it.language.name == "es" }
                 ?.name ?: slot.ability.name
         }
+    }
+
+    private fun ItemResponse.toItemApi(): ItemApi {
+        val spanishName = names.firstOrNull { it.language.name == "es" }?.name ?: "Objeto Desconocido"
+        return ItemApi(
+            name = spanishName,
+            sprite = sprites.default
+        )
     }
 
     // --- Funciones Públicas ---
@@ -112,6 +123,16 @@ class PokemonApiRepository @Inject constructor(
     suspend fun obtenerPokemonRandom(): PokemonApi? {
         val randomId = (1..1025).random()
         return api.getPokemon(randomId).toPokemonApi()
+    }
+
+    suspend fun obtenerItemRandom(): ItemApi? {
+        return try {
+            val randomId = (1..500).random() // Hay más de 2000 items, pero los primeros 500 son los más comunes
+            api.getItem(randomId).toItemApi()
+        } catch (e: Exception) {
+            Log.e("ITEM_API", "Error al traer item: ${e.message}")
+            null
+        }
     }
 
     suspend fun obtenerPokemonDelDia(): PokemonApi? {

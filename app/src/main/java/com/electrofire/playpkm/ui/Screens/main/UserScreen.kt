@@ -104,7 +104,7 @@ fun UserScreen(
         ) {
 
             Text(
-                text = user.userName ?: "Entrenador",
+                text = user.userName?.uppercase() ?: "Entrenador",
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontSize = 32.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -131,7 +131,7 @@ fun UserScreen(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = "${user.coins} COINS",
+                    text = "${user.coins} PKOINS",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )

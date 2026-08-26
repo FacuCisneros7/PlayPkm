@@ -16,6 +16,7 @@ data class UserData(
     val nationality: String? = null,
     val hasSeenTutorial: Boolean = false,
     val coins: Int = 0,
-    val seasonWins: Int = 0,
-    val lastSeasonParticipated: String? = null
+    val weeklyWins: Int = 0,
+    val lastSeasonParticipated: String? = null,
+    val lastWeekParticipated: Int? = null
 )

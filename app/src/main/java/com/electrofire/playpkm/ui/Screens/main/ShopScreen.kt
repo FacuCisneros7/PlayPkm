@@ -63,44 +63,43 @@ fun ShopScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Encabezado con monedas
-        Card(
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary.copy(0.8f)),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
-            shape = RoundedCornerShape(16.dp)
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "TIENDA POKEMON",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.primary
+            Image(
+                painter = painterResource(R.drawable.tiendapokemon),
+                contentDescription = null,
+                modifier = Modifier.size(50.dp)
+            )
+            Text(
+                text = "TIENDA",
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 32.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.MonetizationOn,
-                        contentDescription = null,
-                        tint = Color(0xFFFFC107),
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        text = user.coins.toString(),
-                        style = MaterialTheme.typography.headlineSmall,
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.MonetizationOn,
+                    contentDescription = null,
+                    tint = Color(0xFFFFC107),
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(
+                    text = user.coins.toString(),
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.primary
                     )
-                }
+                )
             }
         }
 
@@ -148,7 +147,7 @@ fun ShopItemCard(
             .height(200.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)),
-        border = BorderStroke(2.dp, if (isOwned) Color.Gray else MaterialTheme.colorScheme.tertiary)
+        border = BorderStroke(2.dp, if (isOwned) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.tertiary)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally

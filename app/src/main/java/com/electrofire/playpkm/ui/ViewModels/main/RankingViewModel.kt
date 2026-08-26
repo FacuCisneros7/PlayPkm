@@ -87,6 +87,7 @@ class RankingViewModel @Inject constructor(
     private fun updateAllStates(cache: RankingCache) {
         val newMap = mapOf(
             RankingType.GENERAL to UIState.Success(cache.general),
+            RankingType.WEEKLY to UIState.Success(cache.weekly),
             RankingType.GC to UIState.Success(cache.goodChoice),
             RankingType.TS to UIState.Success(cache.thousandShadows),
             RankingType.BA to UIState.Success(cache.beforeAfter)

@@ -171,6 +171,7 @@ fun PodiumItem(user: UserData, position: Int, type: RankingType, modifier: Modif
             val tint = if (type == RankingType.GENERAL) MaterialTheme.colorScheme.outline else Color(0xFFFFC107)
             val score = when (type) {
                 RankingType.GENERAL -> user.victorias
+                RankingType.WEEKLY -> user.weeklyWins
                 RankingType.GC -> user.maxPoints
                 RankingType.TS -> user.maxPointsDos
                 RankingType.BA -> user.maxPointsTres
@@ -252,7 +253,8 @@ fun RankingUserItem(
                 horizontalArrangement = Arrangement.End
             ) {
                 when (type) {
-                    RankingType.GENERAL -> {
+                    RankingType.GENERAL, RankingType.WEEKLY -> {
+                        val score = if (type == RankingType.GENERAL) user.victorias else user.weeklyWins
                         Icon(
                             imageVector = Icons.Default.CheckCircle,
                             contentDescription = null,
@@ -260,24 +262,26 @@ fun RankingUserItem(
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
-                            text = "${user.victorias}",
+                            text = "$score",
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(start = 4.dp),
                             style = MaterialTheme.typography.titleMedium
                         )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Text(
-                            text = "${user.derrotas}",
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(start = 4.dp),
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                        if (type == RankingType.GENERAL) {
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Text(
+                                text = "${user.derrotas}",
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(start = 4.dp),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                     }
                     RankingType.GC -> {
                         Icon(
@@ -317,5 +321,5 @@ fun RankingUserItem(
 
 @Composable
 fun Spacer(modifier: Modifier) {
-    androidx.compose.foundation.layout.Spacer(modifier)
+    Spacer(modifier)
 }

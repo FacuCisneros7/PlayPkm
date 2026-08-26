@@ -90,11 +90,11 @@ fun UserInputPokemon(
                 placeholder = {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.Center
                     )
                 },
-                textStyle = MaterialTheme.typography.bodyLarge,
+                textStyle = MaterialTheme.typography.titleLarge,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
                     unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
@@ -124,11 +124,11 @@ fun UserInputPokemon(
                     placeholder = {
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.titleLarge,
                             textAlign = TextAlign.Center
                         )
                     },
-                    textStyle = MaterialTheme.typography.bodyLarge,
+                    textStyle = MaterialTheme.typography.titleLarge,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
                         unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),

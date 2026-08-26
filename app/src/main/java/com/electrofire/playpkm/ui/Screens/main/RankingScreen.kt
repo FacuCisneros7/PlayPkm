@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.RankingList
+import com.electrofire.playpkm.ui.Components.Spacer
 import com.electrofire.playpkm.ui.ViewModels.common.RankingType
 import com.electrofire.playpkm.ui.ViewModels.main.RankingViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
@@ -48,14 +49,7 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box {
-//                Text(
-//                    text = "RANKING",
-//                    style = MaterialTheme.typography.headlineLarge.copy(
-//                        fontSize = 40.sp,
-//                        color = MaterialTheme.colorScheme.onSecondary,
-//                        drawStyle = Stroke(width = 9f)
-//                    )
-//                )
+
                 Text(
                     text = "RANKING",
                     style = MaterialTheme.typography.headlineLarge.copy(
@@ -65,22 +59,42 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                 )
             }
 
-            // Temporizador de Temporada
-            val daysLeft = remember {
-                val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                val lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-                val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-                lastDay - currentDay
+            // Temporizador de Temporada / Semana
+            val currentType = tabs[pagerState.currentPage]
+            
+            if (currentType == RankingType.GENERAL) {
+                val daysLeft = remember {
+                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    val lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+                    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+                    lastDay - currentDay
+                }
+
+                Text(
+                    text = "FIN DE TEMPORADA EN: $daysLeft DÍAS",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            } else if (currentType == RankingType.WEEKLY) {
+                val daysUntilMonday = remember {
+                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+                    // Calendar.SUNDAY es 1, MONDAY es 2, ..., SATURDAY es 7
+                    // Calculamos cuántos días faltan para el próximo Lunes
+                    val days = (9 - dayOfWeek) % 7
+                    if (days == 0) 7 else days
+                }
+                
+                Text(
+                    text = "RECOMPENSAS SEMANALES EN: $daysUntilMonday DÍAS",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
             }
 
-            Text(
-                text = "FIN DE TEMPORADA EN: $daysLeft DÍAS",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.tertiary,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Contenido Deslizable (Pager)
             HorizontalPager(
@@ -109,7 +123,7 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                 }
             }
 
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             ScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
@@ -132,6 +146,7 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                             Text(
                                 text = when(type) {
                                     RankingType.GENERAL -> "GENERAL"
+                                    RankingType.WEEKLY -> "SEMANAL"
                                     RankingType.GC -> "GOOD CHOICE"
                                     RankingType.TS -> "THOUSAND SHADOWS"
                                     RankingType.BA -> "BEFORE AFTER"
@@ -146,7 +161,7 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                 }
             }
 
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
         }
     }

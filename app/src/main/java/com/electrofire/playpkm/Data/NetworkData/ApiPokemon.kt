@@ -27,5 +27,7 @@ interface ApiPokemon {
     @GET("ability/{abilityName}")
     suspend fun getPokemonByAbility(@Path("abilityName") abilityName: String): ListPokemonAbilityResponse
 
+    @GET("item/{id}")
+    suspend fun getItem(@Path("id") id: Int): ItemResponse
 
 }

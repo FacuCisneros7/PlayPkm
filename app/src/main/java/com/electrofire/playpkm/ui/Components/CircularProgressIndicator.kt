@@ -6,12 +6,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.electrofire.playpkm.R
 
 @Composable
 fun Loading() {
-    CircularProgressIndicator(
-        color = MaterialTheme.colorScheme.secondary,
-        strokeWidth = 8.dp,
-        modifier = Modifier.size(50.dp)// Grosor del círculo
+    LottieAnimationView(
+        resId = R.raw.pokeballloading,
+        modifier = Modifier.size(50.dp)
     )
 }

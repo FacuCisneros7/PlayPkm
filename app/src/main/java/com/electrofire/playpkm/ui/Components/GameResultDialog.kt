@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -34,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +51,7 @@ fun GameResultDialog(
     isGameOver: Boolean = false, // Para juegos infinitos
     puntaje: Int = 0,
     maxScore: Int = 0,
+    showCelebration: Boolean = true,
     onHomeClick: () -> Unit,
     onRetryClick: (() -> Unit)? = null,
     content: @Composable (() -> Unit)? = null
@@ -76,132 +80,142 @@ fun GameResultDialog(
                     containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
                 )
             ) {
-            Column(
-                modifier = Modifier
-                    .padding(top = 24.dp, bottom = 24.dp, start = 16.dp, end = 16.dp)
-                    .fillMaxWidth()
-                    .verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Título
-                val titleText = when {
-                    isGameOver -> stringResource(id = R.string.ninthgame_derrota)
-                    isWin -> stringResource(id = R.string.win)
-                    else -> stringResource(id = R.string.defeat)
-                }
+                Box(contentAlignment = Alignment.Center) {
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 24.dp, bottom = 24.dp, start = 16.dp, end = 16.dp)
+                            .fillMaxWidth()
+                            .verticalScroll(scrollState),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        // Título
+                        val titleText = when {
+                            isGameOver -> stringResource(id = R.string.ninthgame_derrota)
+                            isWin -> stringResource(id = R.string.win)
+                            else -> stringResource(id = R.string.defeat)
+                        }
 
-                Box {
-                    Text(
-                        text = titleText,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 32.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            drawStyle = Stroke(width = 6f)
-                        )
-                    )
-                    Text(
-                        text = titleText,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = 32.sp,
-                            color = if (isWin && !isGameOver) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.onSurface
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Contenido de la respuesta (Si existe)
-                if (content != null) {
-                    content()
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-
-                // Información de Puntos (Solo si es GameOver en juego infinito)
-                if (isGameOver) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = stringResource(id = R.string.ninthgame_puntuation_final),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp)
-                        )
-                        Text(
-                            text = " $puntaje",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = stringResource(id = R.string.ninthgame_max_puntuacion),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp)
-                        )
-                        Text(
-                            text = " $maxScore",
-                            color = MaterialTheme.colorScheme.outline,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-
-                // Botones
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (onRetryClick != null) {
-                        Button(
-                            onClick = {
-                                isVisible = false
-                                playSound(context)
-                                onRetryClick()
-                            },
-                            modifier = Modifier
-                                .width(200.dp)
-                                .height(45.dp),
-                            border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                contentColor = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
+                        Box {
                             Text(
-                                text = if (isGameOver) "JUGAR OTRA VEZ" else "REINTENTAR",
-                                style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp)
+                                text = titleText,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 32.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    drawStyle = Stroke(width = 6f)
+                                )
+                            )
+                            Text(
+                                text = titleText,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontSize = 32.sp,
+                                    color = if (isWin && !isGameOver) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.onSurface
+                                )
                             )
                         }
-                    }
 
-                    Button(
-                        onClick = {
-                            isVisible = false
-                            playSound(context)
-                            onHomeClick()
-                        },
-                        modifier = Modifier
-                            .width(200.dp)
-                            .height(45.dp),
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
-                            contentColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.ninthgame_home),
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp)
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Contenido de la respuesta (Si existe)
+                        if (content != null) {
+                            content()
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        // Información de Puntos (Solo si es GameOver en juego infinito)
+                        if (isGameOver) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = stringResource(id = R.string.ninthgame_puntuation_final),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp)
+                                )
+                                Text(
+                                    text = " $puntaje",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = stringResource(id = R.string.ninthgame_max_puntuacion),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp)
+                                )
+                                Text(
+                                    text = " $maxScore",
+                                    color = MaterialTheme.colorScheme.outline,
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+                        }
+
+                        // Botones
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            if (onRetryClick != null) {
+                                Button(
+                                    onClick = {
+                                        isVisible = false
+                                        playSound(context)
+                                        onRetryClick()
+                                    },
+                                    modifier = Modifier
+                                        .width(200.dp)
+                                        .height(45.dp),
+                                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                        contentColor = MaterialTheme.colorScheme.primary
+                                    )
+                                ) {
+                                    Text(
+                                        text = if (isGameOver) "JUGAR OTRA VEZ" else "REINTENTAR",
+                                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp)
+                                    )
+                                }
+                            }
+
+                            Button(
+                                onClick = {
+                                    isVisible = false
+                                    playSound(context)
+                                    onHomeClick()
+                                },
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .height(45.dp),
+                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                                    contentColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.ninthgame_home),
+                                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp)
+                                )
+                            }
+                        }
+                    }
+                    if (isWin && showCelebration) {
+                        LottieAnimationView(
+                            resId = R.raw.celebration,
+                            modifier = Modifier.matchParentSize(),
+                            iterations = 1,
+                            contentScale = ContentScale.Crop
                         )
                     }
                 }
             }
         }
     }
-}
 }
 
 private fun playSound(context: android.content.Context) {

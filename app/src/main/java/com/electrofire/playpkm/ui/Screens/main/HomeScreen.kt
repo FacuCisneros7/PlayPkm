@@ -181,8 +181,8 @@ fun HomeScreen(
 
                     item {
                         MyCardButton(
-                            title = "TIPOS POKÉMON",
-                            imageRes = R.drawable.fision,
+                            title = "TYPES",
+                            imageRes = R.drawable.typegame,
                             showBadge = statsViewModel.canPlayGame("thirteen_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -194,6 +194,33 @@ fun HomeScreen(
                                     if (canPlay) {
                                         statsViewModel.registrarIntentoJuego("thirteen_game")
                                         navController.navigate("type_game")
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Ya jugaste hoy! Espera a mañana",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    item {
+                        MyCardButton(
+                            title = "ITEM MYSTERY",
+                            imageRes = R.drawable.itemgame,
+                            showBadge = statsViewModel.canPlayGame("forteen_game"),
+                            onClick = {
+                                val mediaPlayer =
+                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                mediaPlayer.start()
+                                mediaPlayer.setOnCompletionListener { it.release() }
+
+                                statsViewModel.verificarAccesoJuego("forteen_game") { canPlay ->
+                                    if (canPlay) {
+                                        statsViewModel.registrarIntentoJuego("forteen_game")
+                                        navController.navigate(Screen.ItemMysteryGame.route)
                                     } else {
                                         Toast.makeText(
                                             context,

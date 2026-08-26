@@ -34,8 +34,9 @@ class UsersRepository @Inject constructor() {
     }
 
     suspend fun refreshAndSaveRankingCache(): RankingCache {
-        Log.d("RankingCache", "Iniciando refresco masivo de rankings (120 lecturas...)")
+        Log.d("RankingCache", "Iniciando refresco masivo de rankings (150 lecturas...)")
         val general = getUsersOrderedByVictories()
+        val weekly = getUsersOrderedByWeeklyWins()
         val gc = getUsersOrderedByVictoriesInGC()
         val ts = getUsersOrderedByVictoriesInTS()
         val ba = getUsersOrderedByVictoriesInBA()
@@ -44,6 +45,7 @@ class UsersRepository @Inject constructor() {
         
         val data = mapOf(
             "general" to general,
+            "weekly" to weekly,
             "goodChoice" to gc,
             "thousandShadows" to ts,
             "beforeAfter" to ba,
@@ -57,7 +59,7 @@ class UsersRepository @Inject constructor() {
             Log.e("RankingCache", "Error al guardar el nuevo caché", e)
         }
 
-        return RankingCache(Timestamp.now(), general, gc, ts, ba)
+        return RankingCache(Timestamp.now(), general, weekly, gc, ts, ba)
     }
 
     suspend fun getUsersOrderedByVictories(): List<UserData> {
@@ -66,6 +68,23 @@ class UsersRepository @Inject constructor() {
             val snapshot = db.collection("Users")
                 .orderBy("victorias", Query.Direction.DESCENDING)
                 .orderBy("derrotas", Query.Direction.ASCENDING)
+                .limit(30)
+                .get()
+                .await()
+
+            snapshot.documents.mapNotNull { doc ->
+                doc.toObject(UserData::class.java)?.copy(id = doc.id)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    suspend fun getUsersOrderedByWeeklyWins(): List<UserData> {
+        Log.e("RANKING_CRITICO", "ALERTA: Se ha llamado a getUsersOrderedByWeeklyWins() - Esto gasta 30 lecturas!")
+        return try {
+            val snapshot = db.collection("Users")
+                .orderBy("weeklyWins", Query.Direction.DESCENDING)
                 .limit(30)
                 .get()
                 .await()

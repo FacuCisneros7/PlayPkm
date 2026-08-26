@@ -103,7 +103,7 @@ fun TypeGameScreen(
 
                         Box {
                             Text(
-                                text = "TIPO POKÉMON",
+                                text = "TYPES",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 32.sp,
@@ -113,7 +113,7 @@ fun TypeGameScreen(
                                 )
                             )
                             Text(
-                                text = "TIPO POKÉMON",
+                                text = "TYPES",
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 32.sp,
