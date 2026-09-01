@@ -45,7 +45,7 @@ fun MyCardButton(
                 .height(68.dp)
                 .clickable { onClick() },
             shape = MaterialTheme.shapes.large,
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+            border = BorderStroke(2.dp, if(showBadge)MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.inversePrimary.copy(0.8f)),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
             )

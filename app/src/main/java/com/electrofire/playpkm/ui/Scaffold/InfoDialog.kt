@@ -62,7 +62,7 @@ fun InfoDialog(onDismiss: () -> Unit) {
             border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
             elevation = CardDefaults.cardElevation(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.95f)
+                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.9f)
             )
         ) {
             Column(modifier = Modifier.fillMaxSize()) {

@@ -23,10 +23,10 @@ import com.electrofire.playpkm.Data.PokemonApi
 
 
 @Composable
-fun HabilityCard(modifier: Modifier = Modifier, pokemonActual: PokemonApi?) {
-
-    if (pokemonActual != null) {
-
+fun HabilityCard(
+    modifier: Modifier = Modifier,
+    pokemonActual: PokemonApi?
+) {
         Card(
             modifier = modifier
                 .wrapContentSize()
@@ -43,7 +43,7 @@ fun HabilityCard(modifier: Modifier = Modifier, pokemonActual: PokemonApi?) {
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                for (habilidad in pokemonActual.abilities) {
+                for (habilidad in pokemonActual?.abilities ?: listOf("")) {
                     Text(
                         habilidad.uppercase(),
                         color = MaterialTheme.colorScheme.primary.copy(0.5f),
@@ -53,5 +53,4 @@ fun HabilityCard(modifier: Modifier = Modifier, pokemonActual: PokemonApi?) {
                 }
             }
         }
-    }
 }

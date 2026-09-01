@@ -8,10 +8,20 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
+import java.util.Calendar
+import java.util.TimeZone
 import javax.inject.Inject
 
 class UsersRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
+
+    // Función auxiliar para obtener el ID de la semana actual (Ej: 202636)
+    private fun getCurrentWeekId(): Int {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        val year = calendar.get(Calendar.YEAR)
+        val week = calendar.get(Calendar.WEEK_OF_YEAR)
+        return year * 100 + week
+    }
 
     suspend fun getRankingCache(): RankingCache? {
         return try {
@@ -63,9 +73,12 @@ class UsersRepository @Inject constructor() {
     suspend fun getUsersOrderedByWeeklyWins(): List<UserData> {
         Log.e("RANKING_CRITICO", "ALERTA: Se ha llamado a getUsersOrderedByWeeklyWins() - Esto gasta 30 lecturas!")
         return try {
+            val currentWeekId = getCurrentWeekId()
+            
             val snapshot = db.collection("Users")
+                .whereEqualTo("lastWeekParticipated", currentWeekId) // FILTRO CLAVE: Solo gente de esta semana activa
                 .orderBy("weeklyWins", Query.Direction.DESCENDING)
-//                .orderBy("weeklyLosses", Query.Direction.ASCENDING)
+                .orderBy("weeklyLosses", Query.Direction.ASCENDING)
                 .limit(30)
                 .get()
                 .await()

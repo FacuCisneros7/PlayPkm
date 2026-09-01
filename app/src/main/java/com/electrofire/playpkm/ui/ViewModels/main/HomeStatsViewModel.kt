@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.electrofire.playpkm.Data.GameAttempts
 import com.electrofire.playpkm.Data.Repository.TimeRepository
 import com.electrofire.playpkm.Data.UserData
+import com.electrofire.playpkm.Data.WeeklyRewardData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,6 +30,12 @@ class HomeStatsViewModel : ViewModel() {
         private set
 
     var rachaIncrementadaHoy by mutableStateOf(false)
+        private set
+
+    var weeklyRewardToShow by mutableStateOf<WeeklyRewardData?>(null)
+        private set
+
+    var isCheckingRewards by mutableStateOf(true)
         private set
 
     private val auth = FirebaseAuth.getInstance()
@@ -114,6 +121,13 @@ class HomeStatsViewModel : ViewModel() {
                 val reward = userData.weeklyWins * 3
                 Log.d("RESET", "Reiniciando semana. Recompensa: $reward monedas.")
                 
+                // Guardamos los datos para mostrar el diálogo
+                weeklyRewardToShow = WeeklyRewardData(
+                    wins = userData.weeklyWins,
+                    losses = userData.weeklyLosses,
+                    coinsEarned = reward
+                )
+
                 userData = userData.copy(
                     weeklyWins = 0,
                     weeklyLosses = 0,
@@ -126,6 +140,7 @@ class HomeStatsViewModel : ViewModel() {
                 userData = userData.copy(lastWeekParticipated = currentWeekId)
                 guardarStats()
             }
+            isCheckingRewards = false
         }
     }
 
@@ -230,6 +245,7 @@ class HomeStatsViewModel : ViewModel() {
         } ?: run {
             userData = UserData()
             isUserLoaded = true
+            isCheckingRewards = false
         }
     }
 
@@ -308,6 +324,10 @@ class HomeStatsViewModel : ViewModel() {
             userData = userData.copy(maxPointsTres = score)
             guardarStats()
         }
+    }
+
+    fun dismissWeeklyReward() {
+        weeklyRewardToShow = null
     }
 
     fun reset() {

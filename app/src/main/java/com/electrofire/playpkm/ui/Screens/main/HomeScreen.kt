@@ -39,7 +39,9 @@ import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.AdReward
 import com.electrofire.playpkm.ui.Components.GifAnimation
 import com.electrofire.playpkm.ui.Components.HomeStatsCard
+import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.MyCardButton
+import com.electrofire.playpkm.ui.Components.WeeklyRewardsDialog
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.main.AuthViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.HomeContadorViewModel
@@ -100,412 +102,426 @@ fun HomeScreen(
         authViewModel.checkUserLoggedIn()
     }
 
-    Box(Modifier.fillMaxSize()) {
+    // Mostrar Diálogo de Recompensas Semanales
+    statsViewModel.weeklyRewardToShow?.let { rewardData ->
+        WeeklyRewardsDialog(
+            rewardData = rewardData,
+            onDismiss = { statsViewModel.dismissWeeklyReward() }
+        )
+    }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 24.dp, bottom = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logohomecopia),
-                contentDescription = null,
+    // Bloquear pantalla hasta que el usuario y las recompensas estén cargadas
+    if (!statsViewModel.isUserLoaded || statsViewModel.isCheckingRewards) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Loading()
+        }
+    } else {
+        Box(Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .height(80.dp)
-                    .wrapContentWidth()
-            )
+                    .fillMaxSize()
+                    .padding(top = 24.dp, bottom = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logohomecopia),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(80.dp)
+                        .wrapContentWidth()
+                )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            HomeStatsCard(statsViewModel = statsViewModel)
+                HomeStatsCard(statsViewModel = statsViewModel)
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            Box {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.height(380.dp),
-                    contentPadding = PaddingValues(top = 6.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Box {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.height(380.dp),
+                        contentPadding = PaddingValues(top = 6.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-                    item {
-                        MyCardButton(
-                            title = "BEFORE OR AFTER",
-                            imageRes = R.drawable.beforeorafter,
-                            showBadge = true,
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
+                        item {
+                            MyCardButton(
+                                title = "BEFORE OR AFTER",
+                                imageRes = R.drawable.beforeorafter,
+                                showBadge = true,
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
 
-                                navController.navigate(Screen.BeforeAfterGame.route)
-                            }
-                        )
-                    }
+                                    navController.navigate(Screen.BeforeAfterGame.route)
+                                }
+                            )
+                        }
 
-                    item {
-                        MyCardButton(
-                            title = "THOUSAND SHADOWS",
-                            imageRes = R.drawable.thousandshadows,
-                            showBadge = true,
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
+                        item {
+                            MyCardButton(
+                                title = "THOUSAND SHADOWS",
+                                imageRes = R.drawable.thousandshadows,
+                                showBadge = true,
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
 
-                                navController.navigate(Screen.ThousandShadowsGame.route)
-                            }
-                        )
-                    }
+                                    navController.navigate(Screen.ThousandShadowsGame.route)
+                                }
+                            )
+                        }
 
-                    item {
-                        MyCardButton(
-                            title = "GOOD CHOICE",
-                            imageRes = R.drawable.goodchoisenew,
-                            showBadge = true,
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
+                        item {
+                            MyCardButton(
+                                title = "GOOD CHOICE",
+                                imageRes = R.drawable.goodchoisenew,
+                                showBadge = true,
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
 
-                                navController.navigate(Screen.GoodChoiceGame.route)
-                            }
-                        )
-                    }
+                                    navController.navigate(Screen.GoodChoiceGame.route)
+                                }
+                            )
+                        }
 
-                    item {
-                        MyCardButton(
-                            title = "TYPES",
-                            imageRes = R.drawable.typegame,
-                            showBadge = statsViewModel.canPlayGame("thirteen_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
+                        item {
+                            MyCardButton(
+                                title = "TYPES",
+                                imageRes = R.drawable.typegame,
+                                showBadge = statsViewModel.canPlayGame("thirteen_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
 
-                                statsViewModel.verificarAccesoJuego("thirteen_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("thirteen_game")
-                                        navController.navigate("type_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                    statsViewModel.verificarAccesoJuego("thirteen_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("thirteen_game")
+                                            navController.navigate("type_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
-                            }
-                        )
-                    }
+                            )
+                        }
 
-                    item {
-                        MyCardButton(
-                            title = "ITEM MYSTERY",
-                            imageRes = R.drawable.itemgame,
-                            showBadge = statsViewModel.canPlayGame("forteen_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
+                        item {
+                            MyCardButton(
+                                title = "ITEM MYSTERY",
+                                imageRes = R.drawable.itemgame,
+                                showBadge = statsViewModel.canPlayGame("forteen_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
 
-                                statsViewModel.verificarAccesoJuego("forteen_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("forteen_game")
-                                        navController.navigate(Screen.ItemMysteryGame.route)
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                    statsViewModel.verificarAccesoJuego("forteen_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("forteen_game")
+                                            navController.navigate(Screen.ItemMysteryGame.route)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
-                            }
-                        )
-                    }
+                            )
+                        }
 
-                    item {
-                        MyCardButton(
-                            title = "ZOOM GAME",
-                            imageRes = R.drawable.zoom,
-                            showBadge = statsViewModel.canPlayGame("ten_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
+                        item {
+                            MyCardButton(
+                                title = "ZOOM GAME",
+                                imageRes = R.drawable.zoom,
+                                showBadge = statsViewModel.canPlayGame("ten_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
 
-                                statsViewModel.verificarAccesoJuego("ten_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("ten_game")
-                                        navController.navigate("ten_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                    statsViewModel.verificarAccesoJuego("ten_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("ten_game")
+                                            navController.navigate("ten_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+
+                                }
+                            )
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = "EASY GAME",
+                                imageRes = R.drawable.easygame,
+                                showBadge = statsViewModel.canPlayGame("first_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                                    statsViewModel.verificarAccesoJuego("first_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("first_game")
+                                            navController.navigate("first_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+
+                                }
+                            )
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = "BLURRED CARD",
+                                imageRes = R.drawable.card,
+                                showBadge = statsViewModel.canPlayGame("second_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                                    statsViewModel.verificarAccesoJuego("second_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("second_game")
+                                            navController.navigate("second_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+
+                                }
+                            )
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = "ONE ABILITY",
+                                imageRes = R.drawable.ability,
+                                showBadge = statsViewModel.canPlayGame("third_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                                    statsViewModel.verificarAccesoJuego("third_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("third_game")
+                                            navController.navigate("third_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
+                            )
+                        }
 
-                            }
-                        )
-                    }
+                        item {
+                            MyCardButton(
+                                title = "POWER OF MOVE",
+                                imageRes = R.drawable.movepower,
+                                showBadge = statsViewModel.canPlayGame("fourth_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
 
-                    item {
-                        MyCardButton(
-                            title = "EASY GAME",
-                            imageRes = R.drawable.easygame,
-                            showBadge = statsViewModel.canPlayGame("first_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
-
-                                statsViewModel.verificarAccesoJuego("first_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("first_game")
-                                        navController.navigate("first_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                    statsViewModel.verificarAccesoJuego("fourth_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("fourth_game")
+                                            navController.navigate("fourth_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
+                            )
+                        }
 
-                            }
-                        )
-                    }
-
-                    item {
-                        MyCardButton(
-                            title = "BLURRED CARD",
-                            imageRes = R.drawable.card,
-                            showBadge = statsViewModel.canPlayGame("second_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
-
-                                statsViewModel.verificarAccesoJuego("second_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("second_game")
-                                        navController.navigate("second_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                        item {
+                            MyCardButton(
+                                title = "MYSTERIOUS STATS",
+                                imageRes = R.drawable.stats,
+                                showBadge = statsViewModel.canPlayGame("fift_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+                                    statsViewModel.verificarAccesoJuego("fift_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("fift_game")
+                                            navController.navigate("fift_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
+                            )
+                        }
 
-                            }
-                        )
-                    }
+                        item {
+                            MyCardButton(
+                                title = "FUSION!",
+                                imageRes = R.drawable.fusion,
+                                showBadge = statsViewModel.canPlayGame("sixth_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
 
-                    item {
-                        MyCardButton(
-                            title = "ONE ABILITY",
-                            imageRes = R.drawable.ability,
-                            showBadge = statsViewModel.canPlayGame("third_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
-
-                                statsViewModel.verificarAccesoJuego("third_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("third_game")
-                                        navController.navigate("third_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                    statsViewModel.verificarAccesoJuego("sixth_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("sixth_game")
+                                            navController.navigate("sixth_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = "THE BEST",
+                                imageRes = R.drawable.thebest,
+                                showBadge = statsViewModel.canPlayGame("seventh_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+                                    statsViewModel.verificarAccesoJuego("seventh_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("seventh_game")
+                                            navController.navigate("seventh_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+
+                                }
+                            )
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = "IMPOSTOR",
+                                imageRes = R.drawable.impostor,
+                                showBadge = statsViewModel.canPlayGame("eight_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                                    statsViewModel.verificarAccesoJuego("eight_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("eight_game")
+                                            navController.navigate("eight_game")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+
+                                }
+                            )
+                        }
+
                     }
 
-                    item {
-                        MyCardButton(
-                            title = "POWER OF MOVE",
-                            imageRes = R.drawable.movepower,
-                            showBadge = statsViewModel.canPlayGame("fourth_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
-
-                                statsViewModel.verificarAccesoJuego("fourth_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("fourth_game")
-                                        navController.navigate("fourth_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                        )
-                    }
-
-                    item {
-                        MyCardButton(
-                            title = "MYSTERIOUS STATS",
-                            imageRes = R.drawable.stats,
-                            showBadge = statsViewModel.canPlayGame("fift_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
-                                statsViewModel.verificarAccesoJuego("fift_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("fift_game")
-                                        navController.navigate("fift_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                        )
-                    }
-
-                    item {
-                        MyCardButton(
-                            title = "FUSION!",
-                            imageRes = R.drawable.fusion,
-                            showBadge = statsViewModel.canPlayGame("sixth_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
-
-                                statsViewModel.verificarAccesoJuego("sixth_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("sixth_game")
-                                        navController.navigate("sixth_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                        )
-                    }
-
-                    item {
-                        MyCardButton(
-                            title = "THE BEST",
-                            imageRes = R.drawable.thebest,
-                            showBadge = statsViewModel.canPlayGame("seventh_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
-                                statsViewModel.verificarAccesoJuego("seventh_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("seventh_game")
-                                        navController.navigate("seventh_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-
-                            }
-                        )
-                    }
-
-                    item {
-                        MyCardButton(
-                            title = "IMPOSTOR",
-                            imageRes = R.drawable.impostor,
-                            showBadge = statsViewModel.canPlayGame("eight_game"),
-                            onClick = {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
-
-                                statsViewModel.verificarAccesoJuego("eight_game") { canPlay ->
-                                    if (canPlay) {
-                                        statsViewModel.registrarIntentoJuego("eight_game")
-                                        navController.navigate("eight_game")
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "Ya jugaste hoy! Espera a mañana",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-
-                            }
+                    if (!isAtBottom) {
+                        GifAnimation(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 8.dp)
                         )
                     }
 
                 }
 
-                if (!isAtBottom) {
-                    GifAnimation(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 8.dp)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row {
+                    Text(
+                        text = stringResource(id = R.string.actualizacion_en) + " ",
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
+                        color = MaterialTheme.colorScheme.inversePrimary
+                    )
+                    Text(
+                        text = timeLeft,
+                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
+                        color = color
                     )
                 }
 
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row {
-                Text(
-                    text = stringResource(id = R.string.actualizacion_en) + " ",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
-                    color = MaterialTheme.colorScheme.inversePrimary
-                )
-                Text(
-                    text = timeLeft,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
-                    color = color
-                )
-            }
-
         }
     }
 
