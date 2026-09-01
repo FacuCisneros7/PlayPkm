@@ -2,10 +2,13 @@ package com.electrofire.playpkm.ui.CardItems
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -24,13 +27,14 @@ fun FusionCard(
 ) {
     Card(
         modifier = modifier
-            .width(230.dp)
-            .height(230.dp)
+            .fillMaxWidth(0.55f)
+            .widthIn(max = 200.dp)
+            .aspectRatio(1f)
             .padding(8.dp),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary.copy(0.3f)),
         shape = MaterialTheme.shapes.large,
-        border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
+            containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
         )
     ) {
         Box(
@@ -40,7 +44,8 @@ fun FusionCard(
             AsyncImage(
                 model = fusion.Imagen,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(0.85f),
                 contentScale = ContentScale.Fit
             )
         }

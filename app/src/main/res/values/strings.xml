@@ -17,8 +17,14 @@
 
     <!-- Descripción minijuegos (general) -->
     <string name="minigames_general_description">
-        Desafía los 12 minijuegos todos los días para llegar al top del ranking.
+        Desafía los 14 minijuegos todos los días para llegar al top del ranking.
         Los minijuegos se reinician a diario a las 00:00 UTC (guiarse con el contador en pantalla).
+    </string>
+
+    <!-- Minijuego: BEFORE OR AFTER -->
+    <string name="before_or_after_title">BEFORE OR AFTER</string>
+    <string name="before_or_after_description">
+        Será revelada una parte recortada del cuerpo, debes saber de qué pokemon se trata.
     </string>
 
     <!-- Minijuego: ZOOM GAME -->
@@ -93,12 +99,67 @@
         No otorga puntos para el ranking global.
     </string>
 
-    <!-- Minijuego: BEFORE OR AFTER -->
-    <string name="before_or_after_title">BEFORE OR AFTER</string>
-    <string name="before_or_after_description">
-        ¡Este minijuego se podrá jugar de manera ILIMITADA!
-        Adivina al pokemon y consigue tu mayor puntuación.
-        No otorga puntos para el ranking global.
+    <!-- Minijuego: TYPES -->
+    <string name="type_game_title">TYPES</string>
+    <string name="type_game_description">
+        ¡Demuestra cuánto sabes sobre las debilidades y fortalezas adivinando el tipo o tipos del Pokémon!
+    </string>
+
+    <!-- Minijuego: ITEM MYSTERY -->
+    <string name="item_game_title">ITEM MYSTERY</string>
+    <string name="item_game_description">
+        ¿Podrás reconocer el objeto Pokémon a través de su sprite oficial?
+    </string>
+
+    <!-- Categorías Info -->
+    <string name="category_games">JUEGOS</string>
+    <string name="category_ranking">RANKING</string>
+    <string name="category_shop">TIENDA</string>
+    <string name="category_user">USUARIO</string>
+
+    <!-- Ranking Info -->
+    <string name="ranking_info_title">SISTEMA DE RANKING</string>
+    <string name="ranking_info_description">
+        Compite contra entrenadores de todo el mundo en nuestras dos modalidades:
+    </string>
+
+    <string name="ranking_seasonal_title">TEMPORADA MENSUAL</string>
+    <string name="ranking_seasonal_desc">
+        Se reinicia el día 1 de cada mes. Al final de la temporada, recibirás 4 monedas por cada victoria obtenida.
+    </string>
+
+    <string name="ranking_weekly_title">RANKING SEMANAL</string>
+    <string name="ranking_weekly_desc">
+        Se reinicia cada Lunes. Recibirás 3 monedas por cada victoria acumulada durante la semana.
+    </string>
+
+    <string name="ranking_good_choice_title">RANKING GOOD CHOICE</string>
+    <string name="ranking_good_choice_desc">
+        Juega y consigue tu máxima puntuación para ascender en el ranking de good choice!
+    </string>
+
+    <string name="ranking_thousand_shadows">RANKING THOUSAND SHADOWS</string>
+    <string name="ranking_thousand_shadows_desc">
+        Juega y consigue tu máxima puntuación para ascender en el ranking de thousand shadows!
+    </string>
+
+    <string name="ranking_before_or_after">RANKING BEFORE OR AFTER</string>
+    <string name="ranking_before_or_after_desc">
+        Juega y consigue tu máxima puntuación para ascender en el ranking de before or after!
+    </string>
+
+    <!-- Shop Info -->
+    <string name="shop_info_title">TIENDA DE INSIGNIAS</string>
+    <string name="shop_info_description">
+        Usa tus monedas ganadas en los rankings para comprar insignias exclusivas.
+        Estas insignias aparecerán en tu perfil y podrán ser vistas por otros usuarios en el ranking.
+    </string>
+
+    <!-- User Info -->
+    <string name="user_info_title">TU USUARIO</string>
+    <string name="user_info_description">
+        En la sección de usuario puedes gestionar tu pokemon insignia, revisar tus estadísticas globales y editar los ajustes.
+        ¡Mantén tu racha entrando todos los días para ganar bonificaciones especiales en el futuro!
     </string>
 
     <!-- Sugerencia -->
@@ -164,8 +225,8 @@
     <string name="ninthgame_description">SELECCIONA AL POKEMON CON MAYOR STAT BASE</string>
     <string name="ninthgame_puntuation">PUNTUACION:</string>
     <string name="ninthgame_derrota">DERROTA</string>
-    <string name="ninthgame_puntuation_final">PUNTUACIÓN FINAL:</string>
-    <string name="ninthgame_max_puntuacion">MAX PUNTUACIÓN:</string>
+    <string name="ninthgame_puntuation_final">PUNTUACIÓN:</string>
+    <string name="ninthgame_max_puntuacion">RECORD MAX:</string>
     <string name="ninthgame_home">INICIO</string>
 
     <!-- TwelveGame -->

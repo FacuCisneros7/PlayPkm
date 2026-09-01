@@ -51,7 +51,10 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun registrarDerrota() {
-        userData = userData.copy(derrotas = userData.derrotas + 1)
+        userData = userData.copy(
+            derrotas = userData.derrotas + 1,
+            weeklyLosses = userData.weeklyLosses + 1
+        )
         guardarStats()
     }
 
@@ -93,49 +96,36 @@ class HomeStatsViewModel : ViewModel() {
         }
     }
 
-    private fun verificarReinicioTemporada() {
+    private fun verificarReinicioSemanal() {
         timeRepository.obtenerHoraServidorDos { serverDate ->
-            if (serverDate == null) return@obtenerHoraServidorDos
+            val dateToUse = serverDate ?: java.util.Date() // Si falla el server, usamos la local como respaldo
 
             val calendar = Calendar.getInstance()
-            calendar.time = serverDate
-            val currentSeasonId = "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}"
+            calendar.time = dateToUse
+            val currentWeek = calendar.get(Calendar.WEEK_OF_YEAR)
+            val currentYear = calendar.get(Calendar.YEAR)
+            val currentWeekId = currentYear * 100 + currentWeek
 
-            if (userData.lastSeasonParticipated != null && userData.lastSeasonParticipated != currentSeasonId) {
-                // Nueva temporada detectada: Otorgar monedas por la temporada pasada
-                val reward = userData.victorias * 4
+            // Si el lastWeekParticipated es de formato viejo (menor a 200000), forzamos reinicio
+            val lastWeek = userData.lastWeekParticipated ?: 0
+            
+            if (lastWeek != 0 && lastWeek != currentWeekId) {
+                // ¡REINICIO SEMANAL DETECTADO!
+                val reward = userData.weeklyWins * 3
+                Log.d("RESET", "Reiniciando semana. Recompensa: $reward monedas.")
+                
                 userData = userData.copy(
-                    victorias = 0,
-                    derrotas = 0,
+                    weeklyWins = 0,
+                    weeklyLosses = 0,
                     coins = userData.coins + reward,
-                    lastSeasonParticipated = currentSeasonId
+                    lastWeekParticipated = currentWeekId
                 )
                 guardarStats()
-            } else if (userData.lastSeasonParticipated == null) {
-                userData = userData.copy(lastSeasonParticipated = currentSeasonId)
+            } else if (lastWeek == 0) {
+                // Primer inicio con este sistema
+                userData = userData.copy(lastWeekParticipated = currentWeekId)
                 guardarStats()
             }
-            verificarReinicioSemanal(serverDate)
-        }
-    }
-
-    private fun verificarReinicioSemanal(serverDate: java.util.Date) {
-        val calendar = Calendar.getInstance()
-        calendar.time = serverDate
-        val currentWeek = calendar.get(Calendar.WEEK_OF_YEAR)
-
-        if (userData.lastWeekParticipated != null && userData.lastWeekParticipated != currentWeek) {
-            // Reinicio semanal: Otorgar recompensa menor
-            val reward = userData.weeklyWins * 3
-            userData = userData.copy(
-                weeklyWins = 0,
-                coins = userData.coins + reward,
-                lastWeekParticipated = currentWeek
-            )
-            guardarStats()
-        } else if (userData.lastWeekParticipated == null) {
-            userData = userData.copy(lastWeekParticipated = currentWeek)
-            guardarStats()
         }
     }
 
@@ -148,23 +138,19 @@ class HomeStatsViewModel : ViewModel() {
 
             when {
                 lastDate == null -> {
-                    // Primera vez: empezar racha en 1
                     userData = userData.copy(rachaActual = 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
                     rachaIncrementadaHoy = true
                     guardarStats()
                 }
                 lastDate == nowUTC -> {
-                    // Ya entró hoy: no hacer nada
                     rachaIncrementadaHoy = false
                 }
                 lastDate.plusDays(1) == nowUTC -> {
-                    // Entró al día siguiente: racha +1
                     userData = userData.copy(rachaActual = userData.rachaActual + 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
                     rachaIncrementadaHoy = true
                     guardarStats()
                 }
                 else -> {
-                    // Pasó más de un día: resetear a 1
                     userData = userData.copy(rachaActual = 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
                     rachaIncrementadaHoy = true
                     guardarStats()
@@ -194,7 +180,7 @@ class HomeStatsViewModel : ViewModel() {
                         "hasSeenTutorial" to userData.hasSeenTutorial,
                         "coins" to userData.coins,
                         "weeklyWins" to userData.weeklyWins,
-                        "lastSeasonParticipated" to userData.lastSeasonParticipated,
+                        "weeklyLosses" to userData.weeklyLosses,
                         "lastWeekParticipated" to userData.lastWeekParticipated
                     ),
                     SetOptions.merge()
@@ -202,32 +188,23 @@ class HomeStatsViewModel : ViewModel() {
                 .addOnSuccessListener {
                     Log.d("Firestore", "Stats guardados correctamente")
                 }
-                .addOnFailureListener {
-                    Log.e("Firestore", "Error guardando stats", it)
-                }
         }
     }
 
     fun cargarStats() {
         userId?.let { uid ->
-            // Cargar datos de usuario
             firestore.collection("Users").document(uid).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        val imagenActual = document.getString("imagen") ?: ""
-                        val profileImages = document.get("profileImages") as? List<String>
-
-                        if (profileImages == null && imagenActual.isNotEmpty()) {
-                            firestore.collection("Users").document(uid).update("profileImages", listOf(imagenActual))
-                        }
-
+                        val profileImages = document.get("profileImages") as? List<String> ?: emptyList()
+                        
                         userData = UserData(
                             userName = document.getString("userName"),
-                            imagen = imagenActual,
+                            imagen = document.getString("imagen") ?: "",
                             victorias = document.getLong("victorias")?.toInt() ?: 0,
                             derrotas = document.getLong("derrotas")?.toInt() ?: 0,
                             maxPoints = document.getLong("maxPoints")?.toInt() ?: 0,
-                            profileImages = profileImages ?: listOf(imagenActual),
+                            profileImages = profileImages,
                             maxPointsDos = document.getLong("maxPointsDos")?.toInt() ?: 0,
                             maxPointsTres = document.getLong("maxPointsTres")?.toInt() ?: 0,
                             instagram = document.getString("instagram"),
@@ -237,16 +214,15 @@ class HomeStatsViewModel : ViewModel() {
                             hasSeenTutorial = document.getBoolean("hasSeenTutorial") ?: false,
                             coins = document.getLong("coins")?.toInt() ?: 0,
                             weeklyWins = document.getLong("weeklyWins")?.toInt() ?: 0,
-                            lastSeasonParticipated = document.getString("lastSeasonParticipated"),
+                            weeklyLosses = document.getLong("weeklyLosses")?.toInt() ?: 0,
                             lastWeekParticipated = document.getLong("lastWeekParticipated")?.toInt()
                         )
                         verificarYActualizarRacha()
-                        verificarReinicioTemporada()
+                        verificarReinicioSemanal()
                     }
                     isUserLoaded = true
                 }
 
-            // Cargar intentos (Task 1) - Sin forzar SERVER para usar caché si está disponible
             firestore.collection("attempts").document(uid).get()
                 .addOnSuccessListener { document ->
                     gameAttempts = document.toObject(GameAttempts::class.java) ?: GameAttempts()
@@ -258,23 +234,18 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun verificarAccesoJuego(gameId: String, onResult: (Boolean) -> Unit) {
-        val attempts = gameAttempts ?: run {
-            onResult(true)
-            return
-        }
-
         val lastTimestamp = when (gameId) {
-            "first_game" -> attempts.first_game
-            "second_game" -> attempts.second_game
-            "third_game" -> attempts.third_game
-            "fourth_game" -> attempts.fourth_game
-            "sixth_game" -> attempts.sixth_game
-            "seventh_game" -> attempts.seventh_game
-            "fift_game" -> attempts.fift_game
-            "eight_game" -> attempts.eight_game
-            "ten_game" -> attempts.ten_game
-            "thirteen_game" -> attempts.thirteen_game
-            "forteen_game" -> attempts.forteen_game
+            "first_game" -> gameAttempts?.first_game
+            "second_game" -> gameAttempts?.second_game
+            "third_game" -> gameAttempts?.third_game
+            "fourth_game" -> gameAttempts?.fourth_game
+            "sixth_game" -> gameAttempts?.sixth_game
+            "seventh_game" -> gameAttempts?.seventh_game
+            "fift_game" -> gameAttempts?.fift_game
+            "eight_game" -> gameAttempts?.eight_game
+            "ten_game" -> gameAttempts?.ten_game
+            "thirteen_game" -> gameAttempts?.thirteen_game
+            "forteen_game" -> gameAttempts?.forteen_game
             else -> null
         }
 
@@ -282,7 +253,7 @@ class HomeStatsViewModel : ViewModel() {
             onResult(true)
         } else {
             timeRepository.obtenerHoraServidorDos { horaServidor ->
-                val nowUTC = horaServidor?.toInstant()?.atZone(ZoneOffset.UTC)?.toLocalDate()
+                val nowUTC = (horaServidor ?: java.util.Date()).toInstant().atZone(ZoneOffset.UTC).toLocalDate()
                 val lastDayUTC = lastTimestamp.toDate().toInstant().atZone(ZoneOffset.UTC).toLocalDate()
                 onResult(lastDayUTC != nowUTC)
             }
@@ -290,19 +261,18 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun canPlayGame(gameId: String): Boolean {
-        val attempts = gameAttempts ?: return true
         val lastTimestamp = when (gameId) {
-            "first_game" -> attempts.first_game
-            "second_game" -> attempts.second_game
-            "third_game" -> attempts.third_game
-            "fourth_game" -> attempts.fourth_game
-            "sixth_game" -> attempts.sixth_game
-            "seventh_game" -> attempts.seventh_game
-            "fift_game" -> attempts.fift_game
-            "eight_game" -> attempts.eight_game
-            "ten_game" -> attempts.ten_game
-            "thirteen_game" -> attempts.thirteen_game
-            "forteen_game" -> attempts.forteen_game
+            "first_game" -> gameAttempts?.first_game
+            "second_game" -> gameAttempts?.second_game
+            "third_game" -> gameAttempts?.third_game
+            "fourth_game" -> gameAttempts?.fourth_game
+            "sixth_game" -> gameAttempts?.sixth_game
+            "seventh_game" -> gameAttempts?.seventh_game
+            "fift_game" -> gameAttempts?.fift_game
+            "eight_game" -> gameAttempts?.eight_game
+            "ten_game" -> gameAttempts?.ten_game
+            "thirteen_game" -> gameAttempts?.thirteen_game
+            "forteen_game" -> gameAttempts?.forteen_game
             else -> null
         } ?: return true
 
@@ -312,19 +282,12 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun registrarIntentoJuego(gameId: String) {
-        val uid = userId ?: return
-        val docRef = firestore.collection("attempts").document(uid)
-        
-        val updateMap = mapOf(gameId to FieldValue.serverTimestamp())
-        
-        docRef.set(updateMap, SetOptions.merge())
-            .addOnSuccessListener {
-                // Actualizar localmente para evitar lecturas extras
-                // Nota: Esto es una simplificación, en un mundo ideal usaríamos el server timestamp retornado o SnapshotListeners
-                cargarStats() 
-            }
+        userId?.let { uid ->
+            firestore.collection("attempts").document(uid)
+                .set(mapOf(gameId to FieldValue.serverTimestamp()), SetOptions.merge())
+                .addOnSuccessListener { cargarStats() }
+        }
     }
-
 
     fun registrarMaxScoreNinthGame(score: Int) {
         if (score > userData.maxPoints) {
@@ -352,5 +315,4 @@ class HomeStatsViewModel : ViewModel() {
         gameAttempts = null
         isUserLoaded = false
     }
-
 }

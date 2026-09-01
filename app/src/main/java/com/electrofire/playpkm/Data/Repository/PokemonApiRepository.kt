@@ -127,8 +127,13 @@ class PokemonApiRepository @Inject constructor(
 
     suspend fun obtenerItemRandom(): ItemApi? {
         return try {
-            val randomId = (1..500).random() // Hay más de 2000 items, pero los primeros 500 son los más comunes
-            api.getItem(randomId).toItemApi()
+            var itemResponse: ItemResponse
+            do {
+                val randomId = (1..500).random() 
+                itemResponse = api.getItem(randomId)
+            } while (itemResponse.category.name == "all-machines") // Evitamos MTs y Máquinas
+
+            itemResponse.toItemApi()
         } catch (e: Exception) {
             Log.e("ITEM_API", "Error al traer item: ${e.message}")
             null

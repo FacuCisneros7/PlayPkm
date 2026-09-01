@@ -12,6 +12,6 @@ import com.electrofire.playpkm.R
 fun Loading() {
     LottieAnimationView(
         resId = R.raw.pokeballloading,
-        modifier = Modifier.size(50.dp)
+        modifier = Modifier.size(75.dp)
     )
 }

@@ -68,6 +68,7 @@ class RankingViewModel @Inject constructor(
 
                     val needsRefresh = when {
                         cache == null -> true
+                        cache.weekly.isEmpty() -> true // Forzamos si no hay datos semanales (caché viejo)
                         lastUpdatedUTC != null && lastUpdatedUTC != nowUTC -> true
                         else -> false
                     }
@@ -86,7 +87,6 @@ class RankingViewModel @Inject constructor(
 
     private fun updateAllStates(cache: RankingCache) {
         val newMap = mapOf(
-            RankingType.GENERAL to UIState.Success(cache.general),
             RankingType.WEEKLY to UIState.Success(cache.weekly),
             RankingType.GC to UIState.Success(cache.goodChoice),
             RankingType.TS to UIState.Success(cache.thousandShadows),

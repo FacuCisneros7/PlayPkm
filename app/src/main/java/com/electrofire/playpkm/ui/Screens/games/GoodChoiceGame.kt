@@ -12,10 +12,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CatchingPokemon
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -150,12 +158,24 @@ fun GoodChoiceGame(
 
                         Spacer(Modifier.height(20.dp))
 
-                        Text(
-                            text = stringResource(id = R.string.ninthgame_description),
-                            color = MaterialTheme.colorScheme.onSecondary,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
-                            textAlign = TextAlign.Center
-                        )
+                        Surface(
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                            modifier = Modifier.padding(horizontal = 32.dp)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.ninthgame_description),
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 0.5.sp
+                                ),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
 
                         Spacer(Modifier.height(20.dp))
 
@@ -249,18 +269,37 @@ fun GoodChoiceGame(
 
                         Spacer(Modifier.height(20.dp))
 
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = stringResource(id = R.string.ninthgame_puntuation),
-                                color = MaterialTheme.colorScheme.onSecondary,
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                text = " $puntaje", color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 30.sp),
-                                textAlign = TextAlign.Center
-                            )
+                        Surface(
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f))
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.CatchingPokemon,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.tertiary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+
+                                Spacer(modifier = Modifier.width(6.dp))
+
+                                Text(
+                                    text = stringResource(id = R.string.ninthgame_puntuation),
+                                    color = MaterialTheme.colorScheme.primary,
+                                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                    textAlign = TextAlign.Center
+                                )
+                                Text(
+                                    text = " $puntaje",
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
 
                     } else {

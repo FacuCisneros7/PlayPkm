@@ -29,10 +29,10 @@ fun GameResultPokemonCard(
             .widthIn(max = 200.dp)
             .aspectRatio(1f)
             .padding(8.dp),
-        border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary.copy(0.3f)),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
         )
     ) {
         Box(

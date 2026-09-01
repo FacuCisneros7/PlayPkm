@@ -1,15 +1,20 @@
 package com.electrofire.playpkm.ui.Screens.games
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +37,7 @@ import com.electrofire.playpkm.ui.CardItems.PokemonApiCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
+import com.electrofire.playpkm.ui.Components.StatBestCard
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
@@ -109,13 +115,20 @@ fun TheBestGame(
                         }
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Text(
-                            text = "${gameData.selectedStat}".replaceFirstChar { it.uppercase() },
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        Surface(
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                            modifier = Modifier.padding(horizontal = 32.dp).wrapContentSize()
+                        ) {
+                            Text(
+                                text = "${gameData.selectedStat}".replaceFirstChar { it.uppercase() },
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.wrapContentSize().padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -154,33 +167,10 @@ fun TheBestGame(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 GameResultPokemonCard(pokemon = gameData.correctPokemons.first())
                                 Spacer(Modifier.height(16.dp))
-                                Row {
-                                    Box {
-                                        Text(
-                                            text = "${gameData.selectedStat}: ",
-                                            textAlign = TextAlign.Center,
-                                            style = MaterialTheme.typography.headlineLarge.copy(
-                                                fontSize = 24.sp,
-                                                color = MaterialTheme.colorScheme.primary,
-                                                drawStyle = Stroke(width = 2f)
-                                            ),
-                                        )
-                                        Text(
-                                            text = "${gameData.selectedStat}: ",
-                                            textAlign = TextAlign.Center,
-                                            style = MaterialTheme.typography.headlineLarge.copy(
-                                                fontSize = 24.sp,
-                                                color = MaterialTheme.colorScheme.secondary
-                                            ),
-                                        )
-                                    }
-                                    Text(
-                                        text = "${gameData.correctPokemons.first().stats[gameData.selectedStatEnglish]}",
-                                        color = MaterialTheme.colorScheme.outline,
-                                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp),
-                                        textAlign = TextAlign.Center,
-                                    )
-                                }
+                                StatBestCard(
+                                    statNombre = "${gameData.selectedStat}",
+                                    numeroStat = "${gameData.correctPokemons.first().stats[gameData.selectedStatEnglish]}"
+                                )
                             }
                         }
                     )

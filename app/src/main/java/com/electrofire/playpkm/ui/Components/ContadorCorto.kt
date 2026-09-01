@@ -20,10 +20,10 @@ fun ContadorCorto(modifier: Modifier = Modifier, contador: Int) {
     Card(
         modifier = modifier.wrapContentSize(),
         shape = MaterialTheme.shapes.large,
-        border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary),
+        border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary.copy(0.3f)),
         elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
+            containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
         )
     ) {
         Text(

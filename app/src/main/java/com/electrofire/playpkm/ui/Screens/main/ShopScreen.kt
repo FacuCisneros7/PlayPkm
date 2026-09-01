@@ -17,28 +17,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,8 +48,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.Data.ShopItem
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.Loading
+import com.electrofire.playpkm.ui.Components.LottieAnimationView
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.ShopViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun ShopScreen(
@@ -59,76 +60,104 @@ fun ShopScreen(
 ) {
     val user = statsViewModel.userData
     val context = LocalContext.current
+    var showSuccessAnimation by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
+    if (showSuccessAnimation) {
+        LaunchedEffect(Unit) {
+            delay(2000)
+            showSuccessAnimation = false
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(R.drawable.tiendapokemon),
-                contentDescription = null,
-                modifier = Modifier.size(50.dp)
-            )
-            Text(
-                text = "TIENDA",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 32.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.MonetizationOn,
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.tiendapokemon),
                     contentDescription = null,
-                    tint = Color(0xFFFFC107),
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(50.dp)
                 )
-                Spacer(Modifier.width(4.dp))
+
                 Text(
-                    text = user.coins.toString(),
+                    text = "TIENDA",
                     style = MaterialTheme.typography.headlineLarge.copy(
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.primary
+                        fontSize = 32.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    LottieAnimationView(
+                        resId = R.raw.coin,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(Modifier.width(2.dp))
+                    Text(
+                        text = user.coins.toString(),
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (shopViewModel.isLoading) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Loading()
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(shopViewModel.shopItems) { item ->
+                        ShopItemCard(
+                            item = item,
+                            isOwned = user.profileImages.contains(item.imageUrl),
+                            canAfford = user.coins >= item.price,
+                            onBuyClick = {
+                                if (user.coins >= item.price) {
+                                    statsViewModel.registrarCompra(item.imageUrl, item.price)
+                                    showSuccessAnimation = true
+                                    Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "No tienes suficientes monedas", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
 
-        if (shopViewModel.isLoading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Loading()
-            }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+        if (showSuccessAnimation) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
             ) {
-                items(shopViewModel.shopItems) { item ->
-                    ShopItemCard(
-                        item = item,
-                        isOwned = user.profileImages.contains(item.imageUrl),
-                        canAfford = user.coins >= item.price,
-                        onBuyClick = {
-                            if (user.coins >= item.price) {
-                                statsViewModel.registrarCompra(item.imageUrl, item.price)
-                                Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, "No tienes suficientes monedas", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    )
-                }
+                LottieAnimationView(
+                    resId = R.raw.successbuy,
+                    modifier = Modifier.size(200.dp),
+                    iterations = 1
+                )
             }
         }
     }
@@ -201,13 +230,11 @@ fun ShopItemCard(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.MonetizationOn,
-                        contentDescription = null,
-                        tint = Color(0xFFFFC107),
-                        modifier = Modifier.size(16.dp)
+                    LottieAnimationView(
+                        resId = R.raw.coin,
+                        modifier = Modifier.size(24.dp)
                     )
-                    Spacer(Modifier.width(4.dp))
+                    Spacer(Modifier.width(2.dp))
                     Text(
                         text = item.price.toString(),
                         color = if (canAfford) MaterialTheme.colorScheme.primary else Color.Red,

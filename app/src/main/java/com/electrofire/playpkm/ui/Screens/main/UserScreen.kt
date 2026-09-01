@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -31,7 +32,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MonetizationOn
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Whatshot
@@ -71,6 +73,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.Domain.openNotificationSettings
 import com.electrofire.playpkm.R
+import com.electrofire.playpkm.ui.Components.LottieAnimationView
 import com.electrofire.playpkm.ui.Components.NationalityDropdown
 import com.electrofire.playpkm.ui.Components.PokemonWithFlag
 import com.electrofire.playpkm.ui.Navegation.Screen
@@ -98,7 +101,7 @@ fun UserScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 20.dp, bottom = 20.dp)
+                .padding(top = 19.dp, bottom = 19.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -117,22 +120,20 @@ fun UserScreen(
                 painter = selectedImage ?: user.imagen,
                 nationality = user.nationality,
                 imageSize = 100.dp,
-                borderColor = MaterialTheme.colorScheme.onSurfaceVariant
+                borderColor = MaterialTheme.colorScheme.tertiary.copy(0.4f)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.MonetizationOn,
-                    contentDescription = null,
-                    tint = Color(0xFFFFC107),
+                LottieAnimationView(
+                    resId = R.raw.coin,
                     modifier = Modifier.size(24.dp)
                 )
-                Spacer(Modifier.width(6.dp))
+                Spacer(Modifier.width(2.dp))
                 Text(
-                    text = "${user.coins} PKOINS",
-                    style = MaterialTheme.typography.titleMedium,
+                    text = "${user.coins}",
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp),
                     color = MaterialTheme.colorScheme.primary
                 )
             }
@@ -140,16 +141,16 @@ fun UserScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Card(
-                modifier = Modifier.wrapContentSize(),
+                modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
                 )
             ) {
 
                 Column(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -171,32 +172,33 @@ fun UserScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Row(
-                        modifier = Modifier.wrapContentSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(
-                            modifier = Modifier,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "VICTORIAS",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                                text = "HISTÓRICO",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
                             )
-                            Text(
-                                text = user.victorias.toString(),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.outline
-                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.wrapContentWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                StatColumn(label = "WINS", value = user.victorias, color = MaterialTheme.colorScheme.outline)
+                                StatColumn(label = "LOSS", value = user.derrotas, color = MaterialTheme.colorScheme.onSurface)
+                            }
                         }
 
-                        Spacer(modifier = Modifier.width(20.dp))
-
-                        // SECCIÓN DE RACHA
+                        // RACHA (En el medio)
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             val infiniteTransition = rememberInfiniteTransition(label = "streak")
                             val scale by infiniteTransition.animateFloat(
@@ -214,107 +216,55 @@ fun UserScreen(
                                 contentDescription = null,
                                 tint = if (user.rachaActual > 0) Color(0xFFFF9800) else Color.Gray,
                                 modifier = Modifier
-                                    .size(35.dp)
+                                    .size(30.dp)
                                     .scale(scale)
                             )
                             Text(
-                                text = if(user.rachaActual == 1){
-                                    "${user.rachaActual} DÍA"
-                                }else{
-                                    "${user.rachaActual} DÍAS"
-                                },
+                                text = "${user.rachaActual} DÍAS",
                                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                                 color = if (user.rachaActual > 0) Color(0xFFFF9800) else Color.Gray
                             )
                         }
 
-                        Spacer(modifier = Modifier.width(20.dp))
-
                         Column(
-                            modifier = Modifier,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            // SECCIÓN SEMANAL
                             Text(
-                                text = "DERROTAS",
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                                text = "SEMANAL",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
                             )
-                            Text(
-                                text = user.derrotas.toString(),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                modifier = Modifier.wrapContentWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                StatColumn(label = "WINS", value = user.weeklyWins, color = MaterialTheme.colorScheme.outline)
+                                StatColumn(label = "LOSS", value = user.weeklyLosses, color = MaterialTheme.colorScheme.onSurface)
+                            }
                         }
-
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
                         text = "RECORDS MÁXIMOS",
-                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
-                        modifier = Modifier.wrapContentSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(
-                            modifier = Modifier,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "GC",
-                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 14.sp),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = user.maxPoints.toString(),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(32.dp))
-
-                        Column(
-                            modifier = Modifier,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "TS",
-                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 14.sp),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = user.maxPointsDos.toString(),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(32.dp))
-
-                        Column(
-                            modifier = Modifier,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "BA",
-                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 14.sp),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = user.maxPointsTres.toString(),
-                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-
+                        RecordItem(label = "GC", value = user.maxPoints)
+                        RecordItem(label = "TS", value = user.maxPointsDos)
+                        RecordItem(label = "BA", value = user.maxPointsTres)
                     }
                 }
             }
@@ -325,7 +275,7 @@ fun UserScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp)
-                    .padding(start = 24.dp, end = 24.dp),
+                    .padding(start = 24.dp, end = 25.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -581,5 +531,37 @@ fun UserScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun StatColumn(label: String, value: Int, color: Color) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = value.toString(),
+            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
+            color = color
+        )
+    }
+}
+
+@Composable
+fun RecordItem(label: String, value: Int) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = value.toString(),
+            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }

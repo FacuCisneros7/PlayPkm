@@ -29,7 +29,7 @@ fun PokemonWithFlag(
     modifier: Modifier = Modifier,
     imageSize: Dp = 130.dp,
     flagSize: Dp = (imageSize.value * 0.25f).dp,
-    borderWidth: Dp = 3.dp,
+    borderWidth: Dp = 2.dp,
     borderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     Box(
@@ -44,7 +44,7 @@ fun PokemonWithFlag(
                 .fillMaxSize()
                 .border(
                     width = borderWidth,
-                    color = borderColor,
+                    color = borderColor.copy(0.5f),
                     shape = CircleShape
                 )
                 .padding(borderWidth)

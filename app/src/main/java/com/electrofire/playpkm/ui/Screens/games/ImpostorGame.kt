@@ -1,9 +1,11 @@
 package com.electrofire.playpkm.ui.Screens.games
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,7 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -114,13 +118,19 @@ fun ImpostorGame(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Text(
-                            text = "Habilidad: ${state.abilityName}".replaceFirstChar { it.uppercase() },
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        Surface(
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                            modifier = Modifier.padding(horizontal = 32.dp).wrapContentSize()
+                        ) {
+                            Text(
+                                text = "Habilidad: ${state.abilityName}".replaceFirstChar { it.uppercase() },
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.wrapContentSize().padding(horizontal = 16.dp, vertical = 8.dp)                            )
+                        }
 
                         Spacer(modifier = Modifier.height(16.dp))
 

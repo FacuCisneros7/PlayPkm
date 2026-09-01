@@ -77,6 +77,12 @@
         Find the only one that does not have that ability!
     </string>
 
+    <!-- Minigame: BEFORE OR AFTER -->
+    <string name="before_or_after_title">BEFORE OR AFTER</string>
+    <string name="before_or_after_description">
+        Será revelada una parte recortada del cuerpo, debes saber de qué pokemon se trata.
+    </string>
+
     <!-- Minigame: GOOD CHOICE -->
     <string name="good_choice_title">GOOD CHOICE</string>
     <string name="good_choice_description">
@@ -93,12 +99,67 @@
         It does not award points for the global ranking.
     </string>
 
-    <!-- Minijuego: BEFORE OR AFTER -->
-    <string name="before_or_after_title">BEFORE OR AFTER</string>
-    <string name="before_or_after_description">
-        This minigame can be played UNLIMITEDLY!
-        Guess the Pokémon and get your highest score.
-        It does not award points for the global ranking.
+    <!-- Minijuego: TYPES -->
+    <string name="type_game_title">TYPES</string>
+    <string name="type_game_description">
+        Prove how much you know about strengths and weaknesses by guessing the Pokémon\'s type or types!
+    </string>
+
+    <!-- Minijuego: ITEM MYSTERY -->
+    <string name="item_game_title">ITEM MYSTERY</string>
+    <string name="item_game_description">
+        Can you recognize the Pokémon item through its official sprite?
+    </string>
+
+    <!-- Categorías Info -->
+    <string name="category_games">GAMES</string>
+    <string name="category_ranking">RANKING</string>
+    <string name="category_shop">SHOP</string>
+    <string name="category_user">USER</string>
+
+    <!-- Ranking Info -->
+    <string name="ranking_info_title">RANKING SYSTEM</string>
+    <string name="ranking_info_description">
+        Compete against trainers from all over the world in our two modes:
+    </string>
+
+    <string name="ranking_seasonal_title">MONTHLY SEASON</string>
+    <string name="ranking_seasonal_desc">
+        Resets on the 1st of each month. At the end of the season, you will receive 4 coins for each victory obtained.
+    </string>
+
+    <string name="ranking_weekly_title">WEEKLY RANKING</string>
+    <string name="ranking_weekly_desc">
+        Resets every Monday. You will receive 3 coins for each victory accumulated during the week.
+    </string>
+
+    <string name="ranking_good_choice_title">RANKING GOOD CHOICE</string>
+    <string name="ranking_good_choice_desc">
+        Resets every Monday. You will receive 3 coins for each victory accumulated during the week.
+    </string>
+
+    <string name="ranking_thousand_shadows">RANKING THOUSAND SHADOWS</string>
+    <string name="ranking_thousand_shadows_desc">
+        Resets every Monday. You will receive 3 coins for each victory accumulated during the week.
+    </string>
+
+    <string name="ranking_before_or_after">RANKING BEFORE OR AFTER</string>
+    <string name="ranking_before_or_after_desc">
+        Resets every Monday. You will receive 3 coins for each victory accumulated during the week.
+    </string>
+
+    <!-- Shop Info -->
+    <string name="shop_info_title">BADGE SHOP</string>
+    <string name="shop_info_description">
+        Use your coins earned in the rankings to buy exclusive badges.
+        These badges will appear on your profile and can be seen by other users in the ranking.
+    </string>
+
+    <!-- User Info -->
+    <string name="user_info_title">YOUR TRAINER PROFILE</string>
+    <string name="user_info_description">
+        In the user section, you can manage your daily streak, change your nationality, and review your global stats.
+        Keep your streak alive by logging in every day to earn special bonuses in the future!
     </string>
 
     <!-- Suggestion -->

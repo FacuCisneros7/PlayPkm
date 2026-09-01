@@ -71,7 +71,7 @@ fun GameResultDialog(
         ) {
             Card(
                 modifier = Modifier
-                    .fillMaxWidth(0.95f)
+                    .fillMaxWidth(0.85f)
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
@@ -125,29 +125,33 @@ fun GameResultDialog(
 
                         // Información de Puntos (Solo si es GameOver en juego infinito)
                         if (isGameOver) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Text(
                                     text = stringResource(id = R.string.ninthgame_puntuation_final),
-                                    color = MaterialTheme.colorScheme.primary,
-                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp)
+                                    color = MaterialTheme.colorScheme.primary.copy(0.5f),
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp)
                                 )
                                 Text(
                                     text = " $puntaje",
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp)
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp)
                                 )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Text(
                                     text = stringResource(id = R.string.ninthgame_max_puntuacion),
-                                    color = MaterialTheme.colorScheme.primary,
-                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp)
+                                    color = MaterialTheme.colorScheme.primary.copy(0.5f),
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp)
                                 )
                                 Text(
                                     text = " $maxScore",
                                     color = MaterialTheme.colorScheme.outline,
-                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 24.sp)
+                                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp)
                                 )
                             }
                             Spacer(modifier = Modifier.height(24.dp))
@@ -189,7 +193,7 @@ fun GameResultDialog(
                                     onHomeClick()
                                 },
                                 modifier = Modifier
-                                    .width(200.dp)
+                                    .width(150.dp)
                                     .height(45.dp),
                                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
                                 colors = ButtonDefaults.buttonColors(

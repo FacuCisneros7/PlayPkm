@@ -34,8 +34,7 @@ class UsersRepository @Inject constructor() {
     }
 
     suspend fun refreshAndSaveRankingCache(): RankingCache {
-        Log.d("RankingCache", "Iniciando refresco masivo de rankings (150 lecturas...)")
-        val general = getUsersOrderedByVictories()
+        Log.d("RankingCache", "Iniciando refresco masivo de rankings (120 lecturas...)")
         val weekly = getUsersOrderedByWeeklyWins()
         val gc = getUsersOrderedByVictoriesInGC()
         val ts = getUsersOrderedByVictoriesInTS()
@@ -44,12 +43,11 @@ class UsersRepository @Inject constructor() {
         val docRef = db.collection("rankings_cache").document("global")
         
         val data = mapOf(
-            "general" to general,
             "weekly" to weekly,
             "goodChoice" to gc,
             "thousandShadows" to ts,
             "beforeAfter" to ba,
-            "lastUpdated" to FieldValue.serverTimestamp() // El servidor pone la fecha en el mismo momento
+            "lastUpdated" to FieldValue.serverTimestamp()
         )
 
         try {
@@ -59,25 +57,7 @@ class UsersRepository @Inject constructor() {
             Log.e("RankingCache", "Error al guardar el nuevo caché", e)
         }
 
-        return RankingCache(Timestamp.now(), general, weekly, gc, ts, ba)
-    }
-
-    suspend fun getUsersOrderedByVictories(): List<UserData> {
-        Log.e("RANKING_CRITICO", "ALERTA: Se ha llamado a getUsersOrderedByVictories() - Esto gasta 30 lecturas!")
-        return try {
-            val snapshot = db.collection("Users")
-                .orderBy("victorias", Query.Direction.DESCENDING)
-                .orderBy("derrotas", Query.Direction.ASCENDING)
-                .limit(30)
-                .get()
-                .await()
-
-            snapshot.documents.mapNotNull { doc ->
-                doc.toObject(UserData::class.java)?.copy(id = doc.id)
-            }
-        } catch (e: Exception) {
-            emptyList()
-        }
+        return RankingCache(Timestamp.now(), weekly, gc, ts, ba)
     }
 
     suspend fun getUsersOrderedByWeeklyWins(): List<UserData> {
@@ -85,6 +65,7 @@ class UsersRepository @Inject constructor() {
         return try {
             val snapshot = db.collection("Users")
                 .orderBy("weeklyWins", Query.Direction.DESCENDING)
+//                .orderBy("weeklyLosses", Query.Direction.ASCENDING)
                 .limit(30)
                 .get()
                 .await()
@@ -93,6 +74,7 @@ class UsersRepository @Inject constructor() {
                 doc.toObject(UserData::class.java)?.copy(id = doc.id)
             }
         } catch (e: Exception) {
+            Log.e("RANKING_ERROR", "Error en query semanal: ${e.message}")
             emptyList()
         }
     }

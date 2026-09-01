@@ -236,7 +236,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "ZOOM GAME",
-                            imageRes = R.drawable.adasdss,
+                            imageRes = R.drawable.zoom,
                             showBadge = statsViewModel.canPlayGame("ten_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -264,7 +264,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "EASY GAME",
-                            imageRes = R.drawable.asfasfasfa,
+                            imageRes = R.drawable.easygame,
                             showBadge = statsViewModel.canPlayGame("first_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -292,7 +292,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "BLURRED CARD",
-                            imageRes = R.drawable.carta,
+                            imageRes = R.drawable.card,
                             showBadge = statsViewModel.canPlayGame("second_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -320,7 +320,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "ONE ABILITY",
-                            imageRes = R.drawable.habilidad,
+                            imageRes = R.drawable.ability,
                             showBadge = statsViewModel.canPlayGame("third_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -347,7 +347,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "POWER OF MOVE",
-                            imageRes = R.drawable.movimiento,
+                            imageRes = R.drawable.movepower,
                             showBadge = statsViewModel.canPlayGame("fourth_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -374,7 +374,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "MYSTERIOUS STATS",
-                            imageRes = R.drawable.movimientodos,
+                            imageRes = R.drawable.stats,
                             showBadge = statsViewModel.canPlayGame("fift_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -400,7 +400,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "FUSION!",
-                            imageRes = R.drawable.fision,
+                            imageRes = R.drawable.fusion,
                             showBadge = statsViewModel.canPlayGame("sixth_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -427,7 +427,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "THE BEST",
-                            imageRes = R.drawable.adasdad,
+                            imageRes = R.drawable.thebest,
                             showBadge = statsViewModel.canPlayGame("seventh_game"),
                             onClick = {
                                 val mediaPlayer =
@@ -454,7 +454,7 @@ fun HomeScreen(
                     item {
                         MyCardButton(
                             title = "IMPOSTOR",
-                            imageRes = R.drawable.dfsfsdf,
+                            imageRes = R.drawable.impostor,
                             showBadge = statsViewModel.canPlayGame("eight_game"),
                             onClick = {
                                 val mediaPlayer =
