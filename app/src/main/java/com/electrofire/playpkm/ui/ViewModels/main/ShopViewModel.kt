@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.electrofire.playpkm.Data.ShopItem
+import com.electrofire.playpkm.Data.ShopData
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -13,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ShopViewModel @Inject constructor() : ViewModel() {
 
-    var shopItems by mutableStateOf<List<ShopItem>>(emptyList())
+    var shopData by mutableStateOf(ShopData())
         private set
 
     var isLoading by mutableStateOf(false)
@@ -27,14 +27,18 @@ class ShopViewModel @Inject constructor() : ViewModel() {
 
     fun loadShopItems() {
         isLoading = true
+        // Cambiamos a cargar un único documento para ahorrar lecturas
         firestore.collection("Shop")
+            .document("ShopData")
             .get()
             .addOnSuccessListener { result ->
                 try {
-                    shopItems = result.toObjects(ShopItem::class.java)
-                    Log.d("ShopVM", "Items cargados: ${shopItems.size}")
+                    if (result.exists()) {
+                        shopData = result.toObject(ShopData::class.java) ?: ShopData()
+                        Log.d("ShopVM", "Datos de tienda cargados correctamente")
+                    }
                 } catch (e: Exception) {
-                    Log.e("ShopVM", "Error mapeando items", e)
+                    Log.e("ShopVM", "Error mapeando ShopData", e)
                 }
                 isLoading = false
             }

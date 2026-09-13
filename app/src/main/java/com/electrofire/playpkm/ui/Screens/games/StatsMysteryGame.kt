@@ -1,5 +1,6 @@
 package com.electrofire.playpkm.ui.Screens.games
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,13 +14,19 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,28 +56,40 @@ import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaStatsApiPok
 import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
 import com.electrofire.playpkm.ui.ViewModels.games.StatsMysteryViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun StatsMysteryGame(
     navController: NavController,
-        viewModel: StatsMysteryViewModel = hiltViewModel(),
+    viewModel: StatsMysteryViewModel = hiltViewModel(),
     statsViewModel: HomeStatsViewModel,
     gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     var respuesta by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
+    var intentosRestantes by remember { mutableIntStateOf(3) }
 
-    var intentosRestantes by remember { mutableStateOf(3) }
+    // Registrar resultado UNA SOLA VEZ cuando se responde
+    LaunchedEffect(gameStateViewModel.respondido) {
+        if (gameStateViewModel.respondido) {
+            val pokemonActual = (state as? UIState.Success)?.data
+            if (pokemonActual != null) {
+                if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
+                    statsViewModel.registrarVictoria()
+                } else {
+                    statsViewModel.registrarDerrota()
+                }
+            }
+        }
+    }
 
-    Box(
-        Modifier.fillMaxSize()
-    ) {
+    Box(Modifier.fillMaxSize()) {
         when (val currentState = state) {
             is UIState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Loading()
                 }
             }
@@ -85,6 +105,21 @@ fun StatsMysteryGame(
             is UIState.Success -> {
                 val pokemonActual = currentState.data
 
+                if (gameStateViewModel.respondido) {
+                    val esCorrecto = verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)
+                    GameResultDialog(
+                        isWin = esCorrecto,
+                        onHomeClick = {
+                            navController.navigate("home") {
+                                popUpTo(Screen.StatsMysteryGame.route) { inclusive = true }
+                            }
+                        },
+                        content = {
+                            GameResultPokemonCard(pokemon = pokemonActual)
+                        }
+                    )
+                }
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -94,7 +129,6 @@ fun StatsMysteryGame(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (!gameStateViewModel.respondido) {
-
                         Box {
                             Text(
                                 text = "MYSTERIOUS\nSTATS",
@@ -121,43 +155,66 @@ fun StatsMysteryGame(
 
                         StatsApiCard(pokemon = pokemonActual)
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(32.dp))
 
-                        // --- SECCIÓN DE PISTAS ---
+                        // --- SECCIÓN DE PISTAS (Igual que ItemMystery) ---
                         if (intentosRestantes < 3) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(
-                                    text = "PISTA 1: NºPOKÉDEX: ${pokemonActual.id}",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-
-                                if (intentosRestantes < 2) {
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Row(
-                                        horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.CenterVertically
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(12.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = "PISTA 2: ",
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            text = "PISTA 1: NºPOKÉDEX",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.tertiary,
+                                            fontWeight = FontWeight.Bold
                                         )
-                                        
-                                        pokemonActual.types.keys.forEach { typeName ->
-                                            Image(
-                                                painter = painterResource(id = PokemonTypeUtils.getTypeRes(typeName)),
-                                                contentDescription = typeName,
-                                                modifier = Modifier.size(35.dp).padding(horizontal = 4.dp)
+                                        Text(
+                                            text = "${pokemonActual.id}",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            textAlign = TextAlign.Center
+                                        )
+
+                                        if (intentosRestantes < 2) {
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                            HorizontalDivider(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                            
+                                            Text(
+                                                text = "PISTA 2: TIPOS",
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = MaterialTheme.colorScheme.tertiary,
+                                                fontWeight = FontWeight.Bold
                                             )
+                                            Row(
+                                                horizontalArrangement = Arrangement.Center,
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.padding(top = 4.dp)
+                                            ) {
+                                                pokemonActual.types.keys.forEach { typeName ->
+                                                    Image(
+                                                        painter = painterResource(id = PokemonTypeUtils.getTypeRes(typeName)),
+                                                        contentDescription = typeName,
+                                                        modifier = Modifier.size(30.dp).padding(horizontal = 4.dp)
+                                                    )
+                                                }
+                                            }
                                         }
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(24.dp))
                             }
-                            Spacer(modifier = Modifier.height(24.dp))
                         }
 
                         UserInputPokemon(
@@ -168,41 +225,28 @@ fun StatsMysteryGame(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         ConfirmButton(onConfirm = {
-                            if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
-                                gameStateViewModel.responder()
+                            focusManager.clearFocus()
+                            val esCorrecto = verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)
+                            
+                            if (esCorrecto || intentosRestantes <= 1) {
+                                coroutineScope.launch {
+                                    delay(200)
+                                    if (esCorrecto) {
+                                        gameStateViewModel.responder()
+                                    } else {
+                                        intentosRestantes--
+                                        gameStateViewModel.responder()
+                                    }
+                                }
                             } else {
                                 intentosRestantes--
-                                if (intentosRestantes <= 0) {
-                                    gameStateViewModel.responder()
-                                } else {
-                                    respuesta = ""
-                                }
+                                respuesta = ""
                             }
                         })
 
                         Spacer(modifier = Modifier.height(48.dp))
 
                         Hearts(actuales = intentosRestantes)
-                    } else {
-                        val esCorrecto = verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)
-                        GameResultDialog(
-                            isWin = esCorrecto,
-                            onHomeClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.StatsMysteryGame.route) { inclusive = true }
-                                }
-                            },
-                            content = {
-                                GameResultPokemonCard(pokemon = pokemonActual)
-                            }
-                        )
-                        LaunchedEffect(gameStateViewModel.respondido) {
-                            if (verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)) {
-                                statsViewModel.registrarVictoria()
-                            } else {
-                                statsViewModel.registrarDerrota()
-                            }
-                        }
                     }
                 }
             }

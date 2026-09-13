@@ -50,6 +50,8 @@ import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
 import com.electrofire.playpkm.ui.ViewModels.games.ThousandShadowsViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ThousandShadowsGame(
@@ -57,6 +59,8 @@ fun ThousandShadowsGame(
     viewModel: ThousandShadowsViewModel = hiltViewModel(),
     statsViewModel: HomeStatsViewModel
 ) {
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     val usuario = statsViewModel.userData
     var respuesta by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
@@ -155,8 +159,12 @@ fun ThousandShadowsGame(
 
                         ConfirmButton(
                             onConfirm = {
-                                viewModel.escribirPokemon(respuesta)
-                                respuesta = ""
+                                focusManager.clearFocus()
+                                coroutineScope.launch {
+                                    delay(200)
+                                    viewModel.escribirPokemon(respuesta)
+                                    respuesta = ""
+                                }
                             }
                         )
 

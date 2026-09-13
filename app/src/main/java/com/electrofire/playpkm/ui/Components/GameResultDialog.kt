@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -72,6 +73,7 @@ fun GameResultDialog(
             Card(
                 modifier = Modifier
                     .fillMaxWidth(0.85f)
+                    .widthIn(min = 300.dp) // Fuerza un ancho mínimo para evitar el colapso vertical
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),

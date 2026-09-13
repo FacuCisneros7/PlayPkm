@@ -15,17 +15,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +66,12 @@ fun ShopScreen(
     val context = LocalContext.current
     var showSuccessAnimation by remember { mutableStateOf(false) }
 
+    // Calculamos el ancho de la tarjeta basándonos en el ancho de la pantalla
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    // Queremos que entren 3 tarjetas, considerando el padding lateral (16*2) y el espacio entre tarjetas (16*2)
+    val cardWidth = (screenWidth - 32.dp - 32.dp) / 2.8f // 2.8 para que se vea un poco de la 4ta o queden bien espaciadas
+
     if (showSuccessAnimation) {
         LaunchedEffect(Unit) {
             delay(2000)
@@ -73,9 +83,11 @@ fun ShopScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Header
             Row(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
@@ -113,36 +125,63 @@ fun ShopScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             if (shopViewModel.isLoading) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(Modifier.height(400.dp), contentAlignment = Alignment.Center) {
                     Loading()
                 }
             } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(shopViewModel.shopItems) { item ->
-                        ShopItemCard(
-                            item = item,
-                            isOwned = user.profileImages.contains(item.imageUrl),
-                            canAfford = user.coins >= item.price,
-                            onBuyClick = {
-                                if (user.coins >= item.price) {
-                                    statsViewModel.registrarCompra(item.imageUrl, item.price)
-                                    showSuccessAnimation = true
-                                    Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    Toast.makeText(context, "No tienes suficientes monedas", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        )
-                    }
-                }
+                // Sección Temporada Actual
+                ShopSection(
+                    title = "TEMPORADA ACTUAL",
+                    items = shopViewModel.shopData.currentSeason,
+                    userCoins = user.coins,
+                    userProfileImages = user.profileImages,
+                    cardWidth = cardWidth,
+                    onBuyClick = { item ->
+                        statsViewModel.registrarCompra(item.imageUrl, item.price)
+                        showSuccessAnimation = true
+                        Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
+                    },
+                    context = context
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Sección Shinys
+                ShopSection(
+                    title = "SHINYS",
+                    items = shopViewModel.shopData.shinys,
+                    userCoins = user.coins,
+                    userProfileImages = user.profileImages,
+                    cardWidth = cardWidth,
+                    onBuyClick = { item ->
+                        statsViewModel.registrarCompra(item.imageUrl, item.price)
+                        showSuccessAnimation = true
+                        Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
+                    },
+                    context = context
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Sección Legendarios
+                ShopSection(
+                    title = "LEGENDARIOS",
+                    items = shopViewModel.shopData.legendaries,
+                    userCoins = user.coins,
+                    userProfileImages = user.profileImages,
+                    cardWidth = cardWidth,
+                    onBuyClick = { item ->
+                        statsViewModel.registrarCompra(item.imageUrl, item.price)
+                        showSuccessAnimation = true
+                        Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
+                    },
+                    context = context
+                )
+                
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
 
@@ -164,16 +203,96 @@ fun ShopScreen(
 }
 
 @Composable
+fun ShopSection(
+    title: String,
+    items: List<ShopItem>,
+    userCoins: Int,
+    userProfileImages: List<String>,
+    cardWidth: androidx.compose.ui.unit.Dp,
+    onBuyClick: (ShopItem) -> Unit,
+    context: android.content.Context
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start
+    ) {
+        // Título estilizado como en Ranking
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+            modifier = Modifier.padding(bottom = 12.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    letterSpacing = 1.sp,
+                    fontSize = 14.sp
+                ),
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            )
+        }
+
+        // Contenedor de la Fila (LazyRow) estilizado
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            if (items.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No hay items disponibles",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                    )
+                }
+            } else {
+                LazyRow(
+                    contentPadding = PaddingValues(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(items) { item ->
+                        ShopItemCard(
+                            item = item,
+                            isOwned = userProfileImages.contains(item.imageUrl),
+                            canAfford = userCoins >= item.price,
+                            cardWidth = cardWidth,
+                            onBuyClick = {
+                                if (userCoins >= item.price) {
+                                    onBuyClick(item)
+                                } else {
+                                    Toast.makeText(context, "No tienes suficientes monedas", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun ShopItemCard(
     item: ShopItem,
     isOwned: Boolean,
     canAfford: Boolean,
+    cardWidth: androidx.compose.ui.unit.Dp,
     onBuyClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp),
+            .width(cardWidth)
+            .height(150.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)),
         border = BorderStroke(2.dp, if (isOwned) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.tertiary)
@@ -181,85 +300,80 @@ fun ShopItemCard(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Imagen ocupando la parte superior con bordes redondeados arriba
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
+                    .height(80.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.2f))
                     .border(2.dp, Color.White.copy(alpha = 0.15f), RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center,
             ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(item.imageUrl),
-                        contentDescription = item.name,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(12.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.White.copy(alpha = 0.15f)),
-                        contentScale = ContentScale.Fit,
-                    )
-                }
+                Image(
+                    painter = rememberAsyncImagePainter(item.imageUrl),
+                    contentDescription = item.name,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color.White.copy(alpha = 0.15f)),
+                    contentScale = ContentScale.Fit,
+                )
+            }
 
-            Spacer(Modifier.height(8.dp))
-            
-            Text(
-                text = item.name.uppercase(),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 12.sp,
-                maxLines = 1
-            )
-            
-            Spacer(Modifier.height(4.dp))
-            
-            if (isOwned) {
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            Column(
+                modifier = Modifier.height(70.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 8.dp),
+                    text = item.name.uppercase(),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 12.sp,
+                    maxLines = 1
+                )
+
+                if (isOwned) {
                     Text(
+                        modifier = Modifier.padding(top = 4.dp),
                         text = "ADQUIRIDO",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
+                        fontSize = 12.sp
                     )
+                } else {
+                    Button(
+                        onClick = onBuyClick,
+                        enabled = canAfford,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+                            .height(28.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        LottieAnimationView(
+                            resId = R.raw.coin,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(Modifier.width(1.dp))
+                        Text(
+                            text = item.price.toString(),
+                            color = if (canAfford) MaterialTheme.colorScheme.primary else Color.Red,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp)
+                        )
+                        Spacer(Modifier.width(5.dp))
+                        Text("COMPRAR", fontSize = 10.sp, fontWeight = MaterialTheme.typography.titleLarge.fontWeight)
+                    }
                 }
-            } else {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    LottieAnimationView(
-                        resId = R.raw.coin,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(Modifier.width(2.dp))
-                    Text(
-                        text = item.price.toString(),
-                        color = if (canAfford) MaterialTheme.colorScheme.primary else Color.Red,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-                Spacer(Modifier.height(8.dp))
-                Button(
-                    onClick = onBuyClick,
-                    enabled = canAfford,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-                        .height(32.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Text("COMPRAR", fontSize = 14.sp, fontWeight = MaterialTheme.typography.titleLarge.fontWeight)
-                }
-                Spacer(Modifier.height(8.dp))
             }
+
         }
     }
 }

@@ -57,6 +57,7 @@ import com.electrofire.playpkm.ui.Screens.auth.RegisterScreen
 import com.electrofire.playpkm.ui.Screens.games.BlurredCardGame
 import com.electrofire.playpkm.ui.Screens.games.TheBestGame
 import com.electrofire.playpkm.ui.Screens.games.FusionGame
+import com.electrofire.playpkm.ui.Screens.games.PyramidGameScreen
 import com.electrofire.playpkm.ui.Screens.games.ZoomGame
 import com.electrofire.playpkm.ui.Screens.games.AbilityGame
 import com.electrofire.playpkm.ui.Screens.games.BeforeAfterGame
@@ -396,6 +397,12 @@ fun AppNavigation(
             }
             composable(Screen.ItemMysteryGame.route) {
                 ItemMysteryGame(
+                    navController = navController,
+                    statsViewModel = statsViewModel
+                )
+            }
+            composable(Screen.PyramidGame.route) {
+                PyramidGameScreen(
                     navController = navController,
                     statsViewModel = statsViewModel
                 )

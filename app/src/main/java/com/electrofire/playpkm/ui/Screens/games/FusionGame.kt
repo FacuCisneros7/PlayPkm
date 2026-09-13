@@ -44,6 +44,8 @@ import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaFusion
 import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun FusionGame(
@@ -54,6 +56,8 @@ fun FusionGame(
     statsViewModel: HomeStatsViewModel,
     gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     var respuesta by remember { mutableStateOf("") }
     var respuestaDos by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
@@ -140,7 +144,13 @@ fun FusionGame(
 
                         Spacer(modifier = Modifier.height(32.dp))
 
-                        ConfirmButton(onConfirm = { gameStateViewModel.responder() })
+                        ConfirmButton(onConfirm = {
+                            focusManager.clearFocus()
+                            coroutineScope.launch {
+                                delay(200)
+                                gameStateViewModel.responder()
+                            }
+                        })
                     } else {
                         val esCorrecto = verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)
                         GameResultDialog(

@@ -43,6 +43,8 @@ import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
 import com.electrofire.playpkm.ui.ViewModels.games.SilhouetteViewModel
 import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaSilhouette
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SilhouetteGame(
@@ -52,6 +54,8 @@ fun SilhouetteGame(
     contadorViewModel: ContadorViewModel = viewModel(),
     gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     var respuesta by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
 
@@ -134,7 +138,13 @@ fun SilhouetteGame(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        ConfirmButton(onConfirm = { gameStateViewModel.responder() })
+                        ConfirmButton(onConfirm = {
+                            focusManager.clearFocus()
+                            coroutineScope.launch {
+                                delay(200)
+                                gameStateViewModel.responder()
+                            }
+                        })
 
                         Spacer(modifier = Modifier.height(32.dp))
 

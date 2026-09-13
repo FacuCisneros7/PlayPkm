@@ -54,7 +54,11 @@ class HomeStatsViewModel : ViewModel() {
             victorias = userData.victorias + 1,
             weeklyWins = userData.weeklyWins + 1
         )
-        guardarStats()
+        // Usamos update para que solo se escriban estos campos y no todo el objeto
+        actualizarCamposFiresore(mapOf(
+            "victorias" to userData.victorias,
+            "weeklyWins" to userData.weeklyWins
+        ))
     }
 
     fun registrarDerrota() {
@@ -62,32 +66,35 @@ class HomeStatsViewModel : ViewModel() {
             derrotas = userData.derrotas + 1,
             weeklyLosses = userData.weeklyLosses + 1
         )
-        guardarStats()
+        actualizarCamposFiresore(mapOf(
+            "derrotas" to userData.derrotas,
+            "weeklyLosses" to userData.weeklyLosses
+        ))
     }
 
     fun registrarUserName(userName: String) {
         userData = userData.copy(userName = userName)
-        guardarStats()
+        actualizarCamposFiresore(mapOf("userName" to userName))
     }
 
     fun registrarFoto(image: String) {
         userData = userData.copy(imagen = image)
-        guardarStats()
+        actualizarCamposFiresore(mapOf("imagen" to image))
     }
 
     fun registrarInstagram(ig: String) {
         userData = userData.copy(instagram = ig)
-        guardarStats()
+        actualizarCamposFiresore(mapOf("instagram" to ig))
     }
 
     fun registrarNationality(nationality: String) {
         userData = userData.copy(nationality = nationality)
-        guardarStats()
+        actualizarCamposFiresore(mapOf("nationality" to nationality))
     }
 
     fun completarTutorial() {
         userData = userData.copy(hasSeenTutorial = true)
-        guardarStats()
+        actualizarCamposFiresore(mapOf("hasSeenTutorial" to true))
     }
 
     fun registrarCompra(newInsignia: String, cost: Int) {
@@ -99,13 +106,16 @@ class HomeStatsViewModel : ViewModel() {
                 coins = userData.coins - cost,
                 profileImages = updatedProfileImages
             )
-            guardarStats()
+            actualizarCamposFiresore(mapOf(
+                "coins" to userData.coins,
+                "profileImages" to userData.profileImages
+            ))
         }
     }
 
     private fun verificarReinicioSemanal() {
         timeRepository.obtenerHoraServidorDos { serverDate ->
-            val dateToUse = serverDate ?: java.util.Date() // Si falla el server, usamos la local como respaldo
+            val dateToUse = serverDate ?: java.util.Date()
 
             val calendar = Calendar.getInstance()
             calendar.time = dateToUse
@@ -113,15 +123,11 @@ class HomeStatsViewModel : ViewModel() {
             val currentYear = calendar.get(Calendar.YEAR)
             val currentWeekId = currentYear * 100 + currentWeek
 
-            // Si el lastWeekParticipated es de formato viejo (menor a 200000), forzamos reinicio
             val lastWeek = userData.lastWeekParticipated ?: 0
             
             if (lastWeek != 0 && lastWeek != currentWeekId) {
-                // ¡REINICIO SEMANAL DETECTADO!
                 val reward = userData.weeklyWins * 3
-                Log.d("RESET", "Reiniciando semana. Recompensa: $reward monedas.")
                 
-                // Guardamos los datos para mostrar el diálogo
                 weeklyRewardToShow = WeeklyRewardData(
                     wins = userData.weeklyWins,
                     losses = userData.weeklyLosses,
@@ -134,11 +140,10 @@ class HomeStatsViewModel : ViewModel() {
                     coins = userData.coins + reward,
                     lastWeekParticipated = currentWeekId
                 )
-                guardarStats()
+                guardarStatsCompletos() // Aquí sí guardamos todo el objeto para asegurar consistencia
             } else if (lastWeek == 0) {
-                // Primer inicio con este sistema
                 userData = userData.copy(lastWeekParticipated = currentWeekId)
-                guardarStats()
+                actualizarCamposFiresore(mapOf("lastWeekParticipated" to currentWeekId))
             }
             isCheckingRewards = false
         }
@@ -155,7 +160,10 @@ class HomeStatsViewModel : ViewModel() {
                 lastDate == null -> {
                     userData = userData.copy(rachaActual = 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
                     rachaIncrementadaHoy = true
-                    guardarStats()
+                    actualizarCamposFiresore(mapOf(
+                        "rachaActual" to 1,
+                        "ultimaConexionRacha" to userData.ultimaConexionRacha
+                    ))
                 }
                 lastDate == nowUTC -> {
                     rachaIncrementadaHoy = false
@@ -163,46 +171,40 @@ class HomeStatsViewModel : ViewModel() {
                 lastDate.plusDays(1) == nowUTC -> {
                     userData = userData.copy(rachaActual = userData.rachaActual + 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
                     rachaIncrementadaHoy = true
-                    guardarStats()
+                    actualizarCamposFiresore(mapOf(
+                        "rachaActual" to userData.rachaActual,
+                        "ultimaConexionRacha" to userData.ultimaConexionRacha
+                    ))
                 }
                 else -> {
                     userData = userData.copy(rachaActual = 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
                     rachaIncrementadaHoy = true
-                    guardarStats()
+                    actualizarCamposFiresore(mapOf(
+                        "rachaActual" to 1,
+                        "ultimaConexionRacha" to userData.ultimaConexionRacha
+                    ))
                 }
             }
         }
     }
 
-    private fun guardarStats() {
+    // NUEVA FUNCIÓN: Solo actualiza lo que necesitamos, ahorrando escrituras internas
+    private fun actualizarCamposFiresore(campos: Map<String, Any?>) {
         userId?.let { uid ->
-            firestore.collection("Users")
-                .document(uid)
-                .set(
-                    mapOf(
-                        "userName" to userData.userName,
-                        "imagen" to userData.imagen,
-                        "victorias" to userData.victorias,
-                        "derrotas" to userData.derrotas,
-                        "maxPoints" to userData.maxPoints,
-                        "maxPointsDos" to userData.maxPointsDos,
-                        "maxPointsTres" to userData.maxPointsTres,
-                        "profileImages" to userData.profileImages,
-                        "instagram" to userData.instagram,
-                        "rachaActual" to userData.rachaActual,
-                        "ultimaConexionRacha" to userData.ultimaConexionRacha,
-                        "nationality" to userData.nationality,
-                        "hasSeenTutorial" to userData.hasSeenTutorial,
-                        "coins" to userData.coins,
-                        "weeklyWins" to userData.weeklyWins,
-                        "weeklyLosses" to userData.weeklyLosses,
-                        "lastWeekParticipated" to userData.lastWeekParticipated
-                    ),
-                    SetOptions.merge()
-                )
-                .addOnSuccessListener {
-                    Log.d("Firestore", "Stats guardados correctamente")
+            firestore.collection("Users").document(uid)
+                .update(campos)
+                .addOnFailureListener {
+                    // Si falla el update (porque el doc no existe), usamos set
+                    guardarStatsCompletos()
                 }
+        }
+    }
+
+    private fun guardarStatsCompletos() {
+        userId?.let { uid ->
+            firestore.collection("Users").document(uid)
+                .set(userData, SetOptions.merge())
+                .addOnSuccessListener { Log.d("Firestore", "Stats completos guardados") }
         }
     }
 
@@ -211,27 +213,7 @@ class HomeStatsViewModel : ViewModel() {
             firestore.collection("Users").document(uid).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        val profileImages = document.get("profileImages") as? List<String> ?: emptyList()
-                        
-                        userData = UserData(
-                            userName = document.getString("userName"),
-                            imagen = document.getString("imagen") ?: "",
-                            victorias = document.getLong("victorias")?.toInt() ?: 0,
-                            derrotas = document.getLong("derrotas")?.toInt() ?: 0,
-                            maxPoints = document.getLong("maxPoints")?.toInt() ?: 0,
-                            profileImages = profileImages,
-                            maxPointsDos = document.getLong("maxPointsDos")?.toInt() ?: 0,
-                            maxPointsTres = document.getLong("maxPointsTres")?.toInt() ?: 0,
-                            instagram = document.getString("instagram"),
-                            rachaActual = document.getLong("rachaActual")?.toInt() ?: 0,
-                            ultimaConexionRacha = document.getTimestamp("ultimaConexionRacha"),
-                            nationality = document.getString("nationality"),
-                            hasSeenTutorial = document.getBoolean("hasSeenTutorial") ?: false,
-                            coins = document.getLong("coins")?.toInt() ?: 0,
-                            weeklyWins = document.getLong("weeklyWins")?.toInt() ?: 0,
-                            weeklyLosses = document.getLong("weeklyLosses")?.toInt() ?: 0,
-                            lastWeekParticipated = document.getLong("lastWeekParticipated")?.toInt()
-                        )
+                        userData = document.toObject(UserData::class.java) ?: UserData()
                         verificarYActualizarRacha()
                         verificarReinicioSemanal()
                     }
@@ -262,6 +244,7 @@ class HomeStatsViewModel : ViewModel() {
             "ten_game" -> gameAttempts?.ten_game
             "thirteen_game" -> gameAttempts?.thirteen_game
             "forteen_game" -> gameAttempts?.forteen_game
+            "fifteen_game" -> gameAttempts?.fifteen_game
             else -> null
         }
 
@@ -289,6 +272,7 @@ class HomeStatsViewModel : ViewModel() {
             "ten_game" -> gameAttempts?.ten_game
             "thirteen_game" -> gameAttempts?.thirteen_game
             "forteen_game" -> gameAttempts?.forteen_game
+            "fifteen_game" -> gameAttempts?.fifteen_game
             else -> null
         } ?: return true
 
@@ -299,30 +283,54 @@ class HomeStatsViewModel : ViewModel() {
 
     fun registrarIntentoJuego(gameId: String) {
         userId?.let { uid ->
+            val timestamp = com.google.firebase.Timestamp.now()
+            
+            // 1. Actualizar localmente de inmediato para que la UI responda sin esperar al servidor
+            actualizarIntentoLocal(gameId, timestamp)
+            
+            // 2. Guardar en Firestore SIN llamar a cargarStats() al éxito
             firestore.collection("attempts").document(uid)
                 .set(mapOf(gameId to FieldValue.serverTimestamp()), SetOptions.merge())
-                .addOnSuccessListener { cargarStats() }
+                .addOnFailureListener { Log.e("Firestore", "Error al registrar intento") }
+        }
+    }
+
+    private fun actualizarIntentoLocal(gameId: String, timestamp: com.google.firebase.Timestamp) {
+        gameAttempts = when (gameId) {
+            "first_game" -> gameAttempts?.copy(first_game = timestamp)
+            "second_game" -> gameAttempts?.copy(second_game = timestamp)
+            "third_game" -> gameAttempts?.copy(third_game = timestamp)
+            "fourth_game" -> gameAttempts?.copy(fourth_game = timestamp)
+            "sixth_game" -> gameAttempts?.copy(sixth_game = timestamp)
+            "seventh_game" -> gameAttempts?.copy(seventh_game = timestamp)
+            "fift_game" -> gameAttempts?.copy(fift_game = timestamp)
+            "eight_game" -> gameAttempts?.copy(eight_game = timestamp)
+            "ten_game" -> gameAttempts?.copy(ten_game = timestamp)
+            "thirteen_game" -> gameAttempts?.copy(thirteen_game = timestamp)
+            "forteen_game" -> gameAttempts?.copy(forteen_game = timestamp)
+            "fifteen_game" -> gameAttempts?.copy(fifteen_game = timestamp)
+            else -> gameAttempts
         }
     }
 
     fun registrarMaxScoreNinthGame(score: Int) {
         if (score > userData.maxPoints) {
             userData = userData.copy(maxPoints = score)
-            guardarStats()
+            actualizarCamposFiresore(mapOf("maxPoints" to score))
         }
     }
 
     fun registrarMaxScoreElevenGame(score: Int) {
         if (score > userData.maxPointsDos) {
             userData = userData.copy(maxPointsDos = score)
-            guardarStats()
+            actualizarCamposFiresore(mapOf("maxPointsDos" to score))
         }
     }
 
     fun registrarMaxScoreTwelveGame(score: Int) {
         if (score > userData.maxPointsTres) {
             userData = userData.copy(maxPointsTres = score)
-            guardarStats()
+            actualizarCamposFiresore(mapOf("maxPointsTres" to score))
         }
     }
 

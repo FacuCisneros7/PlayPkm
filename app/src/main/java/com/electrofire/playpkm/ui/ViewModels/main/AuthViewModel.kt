@@ -11,6 +11,8 @@ class AuthViewModel : ViewModel() {
     private val repository = AuthRepository()
 
     private val _userId = MutableLiveData<String?>()
+    
+    var hasShownResetDialog = false
 
     fun register(
         email: String,

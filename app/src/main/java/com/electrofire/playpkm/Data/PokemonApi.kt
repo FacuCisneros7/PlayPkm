@@ -8,8 +8,3 @@ data class PokemonApi(
     val id: Int,
     val types: Map<String, Int>
 )
-
-data class ItemApi(
-    val name: String,
-    val sprite: String
-)

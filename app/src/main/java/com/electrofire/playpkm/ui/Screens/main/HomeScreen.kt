@@ -250,6 +250,33 @@ fun HomeScreen(
 
                         item {
                             MyCardButton(
+                                title = "PYRAMID POKEMON",
+                                imageRes = R.drawable.pyramid,
+                                showBadge = statsViewModel.canPlayGame("fifteen_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                                    statsViewModel.verificarAccesoJuego("fifteen_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("fifteen_game")
+                                            navController.navigate(Screen.PyramidGame.route)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                }
+                            )
+                        }
+
+                        item {
+                            MyCardButton(
                                 title = "ZOOM GAME",
                                 imageRes = R.drawable.zoom,
                                 showBadge = statsViewModel.canPlayGame("ten_game"),

@@ -111,6 +111,12 @@
         ¿Podrás reconocer el objeto Pokémon a través de su sprite oficial?
     </string>
 
+    <!-- Minijuego: PYRAMID POKEMON -->
+    <string name="pyramid_game_title">PYRAMID POKEMON</string>
+    <string name="pyramid_game_description">
+        ¡Ordena los Pokémon en la pirámide de mayor a menor según su sumatoria total de estadísticas base!
+    </string>
+
     <!-- Categorías Info -->
     <string name="category_games">JUEGOS</string>
     <string name="category_ranking">RANKING</string>

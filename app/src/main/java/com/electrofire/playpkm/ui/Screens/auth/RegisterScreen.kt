@@ -41,6 +41,7 @@ import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.ConfirmButtonRegLog
 import com.electrofire.playpkm.ui.Components.Loading
+import com.electrofire.playpkm.ui.Components.ResetAccountsDialog
 import com.electrofire.playpkm.ui.ViewModels.main.AuthViewModel
 
 @Composable
@@ -53,6 +54,15 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var passwordVisible by remember { mutableStateOf(false) }
     var repeatPasswordVisible by remember { mutableStateOf(false) }
+
+    var showResetDialog by remember { mutableStateOf(!authViewModel.hasShownResetDialog) }
+
+    if (showResetDialog) {
+        ResetAccountsDialog(onDismiss = {
+            showResetDialog = false
+            authViewModel.hasShownResetDialog = true
+        })
+    }
 
 
     BackHandler(enabled = true) {
@@ -281,6 +291,15 @@ fun RegisterScreen(navController: NavController, authViewModel: AuthViewModel) {
                     Loading()
                 }
             }
+
+            Text(
+                text = "v1.3.0",
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                style = MaterialTheme.typography.labelSmall
+            )
         }
 
     } else {

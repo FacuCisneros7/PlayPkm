@@ -62,9 +62,25 @@ class PokemonApiRepository @Inject constructor(
 
     private fun ItemResponse.toItemApi(): ItemApi {
         val spanishName = names.firstOrNull { it.language.name == "es" }?.name ?: "Objeto Desconocido"
+        val description = flavor_text_entries.find { it.language.name == "es" }?.text ?: ""
+        
+        // Traducimos categorías comunes a mano para mejor experiencia
+        val translatedCategory = when(category.name) {
+            "pokeballs" -> "Poké Ball"
+            "medicine" -> "Medicina / Curación"
+            "status-cures" -> "Cura de estado"
+            "revival" -> "Revivir"
+            "held-items" -> "Objeto para llevar"
+            "evolution-stones" -> "Piedra evolutiva"
+            "stat-boosters" -> "Mejora de estadísticas"
+            else -> category.name.replace("-", " ").uppercase()
+        }
+
         return ItemApi(
             name = spanishName,
-            sprite = sprites.default
+            sprite = sprites.default,
+            description = description,
+            category = translatedCategory
         )
     }
 
@@ -162,8 +178,8 @@ class PokemonApiRepository @Inject constructor(
         return response.toPokemonApi(translated)
     }
 
-    suspend fun getRandomPokemons(): List<PokemonApi> = withContext(Dispatchers.IO) {
-        val randomIds = (1..1025).shuffled().take(3)
+    suspend fun getRandomPokemons(count: Int = 3): List<PokemonApi> = withContext(Dispatchers.IO) {
+        val randomIds = (1..1025).shuffled().take(count)
         randomIds.map { id ->
             async { api.getPokemon(id).toPokemonApi() }
         }.awaitAll()

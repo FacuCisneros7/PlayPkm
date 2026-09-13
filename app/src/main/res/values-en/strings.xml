@@ -111,6 +111,12 @@
         Can you recognize the Pokémon item through its official sprite?
     </string>
 
+    <!-- Minijuego: PYRAMID POKEMON -->
+    <string name="pyramid_game_title">PYRAMID POKEMON</string>
+    <string name="pyramid_game_description">
+        Order the Pokémon in the pyramid from highest to lowest according to their total base stats!
+    </string>
+
     <!-- Categorías Info -->
     <string name="category_games">GAMES</string>
     <string name="category_ranking">RANKING</string>

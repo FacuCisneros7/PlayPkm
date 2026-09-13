@@ -3,6 +3,7 @@ package com.electrofire.playpkm.ui.Screens.games
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -57,6 +59,8 @@ import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import com.electrofire.playpkm.ui.ViewModels.games.ItemMysteryViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ItemMysteryGame(
@@ -65,6 +69,8 @@ fun ItemMysteryGame(
     statsViewModel: HomeStatsViewModel,
     gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     var respuesta by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
     var intentosRestantes by remember { mutableIntStateOf(3) }
@@ -102,6 +108,40 @@ fun ItemMysteryGame(
             is UIState.Success -> {
                 val itemActual = currentState.data
 
+                // DIÁLOGO DE RESULTADO (FUERA DE LA COLUMNA PARA EVITAR COLAPSO VISUAL)
+                if (gameStateViewModel.respondido) {
+                    val esCorrecto = viewModel.verifyAnswer(itemActual, respuesta)
+                    GameResultDialog(
+                        isWin = esCorrecto,
+                        onHomeClick = {
+                            navController.navigate("home") {
+                                popUpTo(Screen.ItemMysteryGame.route) { inclusive = true }
+                            }
+                        },
+                        content = {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                GameResultItemCard(item = itemActual)
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                                    modifier = Modifier.padding(horizontal = 32.dp)
+                                ) {
+                                    Text(
+                                        text = itemActual.name.uppercase(),
+                                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                        color = MaterialTheme.colorScheme.primary,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
+
+                // CONTENIDO DE LA PANTALLA
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -140,6 +180,60 @@ fun ItemMysteryGame(
 
                         Spacer(modifier = Modifier.height(32.dp))
 
+                        // --- SECCIÓN DE PISTAS ---
+                        if (intentosRestantes < 3) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(12.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = "PISTA 1: CATEGORÍA",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.tertiary,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = itemActual.category,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            textAlign = TextAlign.Center
+                                        )
+
+                                        if (intentosRestantes < 2) {
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                            HorizontalDivider(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                                            Spacer(modifier = Modifier.height(12.dp))
+                                            
+                                            Text(
+                                                text = "PISTA 2: EFECTO",
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = MaterialTheme.colorScheme.tertiary,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Text(
+                                                text = itemActual.description,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.primary,
+                                                textAlign = TextAlign.Center,
+                                                lineHeight = 16.sp
+                                            )
+                                        }
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(24.dp))
+                            }
+                        }
+
                         OutlinedTextField(
                             value = respuesta,
                             onValueChange = { respuesta = it },
@@ -158,7 +252,7 @@ fun ItemMysteryGame(
                                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                                 focusedTextColor = MaterialTheme.colorScheme.primary,
-                                unfocusedTextColor = MaterialTheme.colorScheme.primary.copy(0.6f),
+                                unfocusedTextColor = MaterialTheme.colorScheme.primary,
                                 cursorColor = MaterialTheme.colorScheme.tertiary,
                                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(0.5f),
                                 focusedPlaceholderColor = MaterialTheme.colorScheme.primary
@@ -169,15 +263,22 @@ fun ItemMysteryGame(
                         Spacer(modifier = Modifier.height(24.dp))
 
                         ConfirmButton(onConfirm = {
-                            if (viewModel.verifyAnswer(itemActual, respuesta)) {
-                                gameStateViewModel.responder()
+                            focusManager.clearFocus() 
+                            val esCorrecto = viewModel.verifyAnswer(itemActual, respuesta)
+                            
+                            if (esCorrecto || intentosRestantes <= 1) {
+                                coroutineScope.launch {
+                                    delay(200)
+                                    if (esCorrecto) {
+                                        gameStateViewModel.responder()
+                                    } else {
+                                        intentosRestantes--
+                                        gameStateViewModel.responder()
+                                    }
+                                }
                             } else {
                                 intentosRestantes--
-                                if (intentosRestantes <= 0) {
-                                    gameStateViewModel.responder()
-                                } else {
-                                    respuesta = ""
-                                }
+                                respuesta = ""
                             }
                         })
 
@@ -185,38 +286,6 @@ fun ItemMysteryGame(
 
                         Hearts(actuales = intentosRestantes)
 
-                    } else {
-                        // PANTALLA DE RESULTADOS (DIFERENCIADA AL IGUAL QUE OTROS JUEGOS)
-                        val esCorrecto = viewModel.verifyAnswer(itemActual, respuesta)
-                        
-                        GameResultDialog(
-                            isWin = esCorrecto,
-                            onHomeClick = {
-                                navController.navigate("home") {
-                                    popUpTo(Screen.ItemMysteryGame.route) { inclusive = true }
-                                }
-                            },
-                            content = {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    GameResultItemCard(item = itemActual)
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    Surface(
-                                        shape = RoundedCornerShape(12.dp),
-                                        color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
-                                        modifier = Modifier.padding(horizontal = 32.dp)
-                                    ) {
-                                        Text(
-                                            text = itemActual.name.uppercase(),
-                                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
-                                            color = MaterialTheme.colorScheme.primary.copy(0.5f),
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                                        )
-                                    }
-                                }
-                            }
-                        )
                     }
                 }
             }

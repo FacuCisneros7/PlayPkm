@@ -55,6 +55,7 @@ fun GamesInfoSection() {
             GameInfo(R.string.blurred_card_title, R.string.blurred_card_description, R.drawable.carddos),
             GameInfo(R.string.type_game_title, R.string.type_game_description, R.drawable.typegamedos),
             GameInfo(R.string.item_game_title, R.string.item_game_description, R.drawable.itemgamedos),
+            GameInfo(R.string.pyramid_game_title, R.string.pyramid_game_description, R.drawable.pyramiddos),
             GameInfo(R.string.one_ability_title, R.string.one_ability_description, R.drawable.abilitydos),
             GameInfo(R.string.power_move_title, R.string.power_move_description, R.drawable.movepowerdos),
             GameInfo(R.string.mysterious_stats_title, R.string.mysterious_stats_description, R.drawable.statsdos),
