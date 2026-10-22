@@ -48,9 +48,10 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.2.1")
     implementation("androidx.media3:media3-common:1.2.1")
 
-    //Gif
+    // Coil con soporte para SVG y optimizaciones
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("io.coil-kt:coil-gif:2.6.0")
+    implementation("io.coil-kt:coil-svg:2.6.0")
 
     // Lottie
     implementation("com.airbnb.android:lottie-compose:6.4.0")

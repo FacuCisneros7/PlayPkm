@@ -117,6 +117,18 @@
         ¡Ordena los Pokémon en la pirámide de mayor a menor según su sumatoria total de estadísticas base!
     </string>
 
+    <!-- Minijuego: POKEMON POLYGLOT -->
+    <string name="language_game_title">POKEMON POLYGLOT</string>
+    <string name="language_game_description">
+        Adivina el Pokémon viendo su nombre en 3 idiomas diferentes: japonés, alemán y francés.
+    </string>
+
+    <!-- Minijuego: HEAVY POKEMON -->
+    <string name="weight_game_title">POKE HEAVY</string>
+    <string name="weight_game_description">
+        Compara el peso de los Pokémon a lo largo de 5 enfrentamientos. ¡Tienes 2 vidas para superar todos los steps!
+    </string>
+
     <!-- Categorías Info -->
     <string name="category_games">JUEGOS</string>
     <string name="category_ranking">RANKING</string>

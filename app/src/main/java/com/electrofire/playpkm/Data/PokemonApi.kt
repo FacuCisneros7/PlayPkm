@@ -6,5 +6,6 @@ data class PokemonApi(
     val stats: Map<String, Int>,
     val abilities: List<String>,
     val id: Int,
-    val types: Map<String, Int>
+    val types: Map<String, Int>,
+    val weight: Int
 )

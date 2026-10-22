@@ -117,6 +117,18 @@
         Order the Pokémon in the pyramid from highest to lowest according to their total base stats!
     </string>
 
+    <!-- Minijuego: POKEMON POLYGLOT -->
+    <string name="language_game_title">POKEMON POLYGLOT</string>
+    <string name="language_game_description">
+        Guess the Pokémon by seeing its name in 3 different languages: Japanese, German, and French.
+    </string>
+
+    <!-- Minigame: HEAVY POKEMON -->
+    <string name="weight_game_title">HEAVY POKEMON</string>
+    <string name="weight_game_description">
+        Compare Pokémon weights across 5 rounds. You have 2 lives to beat all steps!
+    </string>
+
     <!-- Categorías Info -->
     <string name="category_games">GAMES</string>
     <string name="category_ranking">RANKING</string>

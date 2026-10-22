@@ -6,7 +6,8 @@ data class PokemonResponse(
     val abilities: List<AbilitySlot>,
     val id: Int,
     val url: String,
-    val types: List<Type>
+    val types: List<Type>,
+    val weight: Int
 )
 
 data class Type(

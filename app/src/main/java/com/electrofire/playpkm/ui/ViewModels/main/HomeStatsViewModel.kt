@@ -78,8 +78,17 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun registrarFoto(image: String) {
-        userData = userData.copy(imagen = image)
-        actualizarCamposFiresore(mapOf("imagen" to image))
+        val updatedProfileImages = userData.profileImages.toMutableList().apply {
+            if (!contains(image)) add(image)
+        }
+        userData = userData.copy(
+            imagen = image,
+            profileImages = updatedProfileImages
+        )
+        actualizarCamposFiresore(mapOf(
+            "imagen" to image,
+            "profileImages" to updatedProfileImages
+        ))
     }
 
     fun registrarInstagram(ig: String) {
@@ -127,7 +136,7 @@ class HomeStatsViewModel : ViewModel() {
             
             if (lastWeek != 0 && lastWeek != currentWeekId) {
                 val reward = userData.weeklyWins * 3
-                
+
                 weeklyRewardToShow = WeeklyRewardData(
                     wins = userData.weeklyWins,
                     losses = userData.weeklyLosses,
@@ -245,6 +254,8 @@ class HomeStatsViewModel : ViewModel() {
             "thirteen_game" -> gameAttempts?.thirteen_game
             "forteen_game" -> gameAttempts?.forteen_game
             "fifteen_game" -> gameAttempts?.fifteen_game
+            "sixteen_game" -> gameAttempts?.sixteen_game
+            "seventeen_game" -> gameAttempts?.seventeen_game
             else -> null
         }
 
@@ -273,6 +284,8 @@ class HomeStatsViewModel : ViewModel() {
             "thirteen_game" -> gameAttempts?.thirteen_game
             "forteen_game" -> gameAttempts?.forteen_game
             "fifteen_game" -> gameAttempts?.fifteen_game
+            "sixteen_game" -> gameAttempts?.sixteen_game
+            "seventeen_game" -> gameAttempts?.seventeen_game
             else -> null
         } ?: return true
 
@@ -309,6 +322,8 @@ class HomeStatsViewModel : ViewModel() {
             "thirteen_game" -> gameAttempts?.copy(thirteen_game = timestamp)
             "forteen_game" -> gameAttempts?.copy(forteen_game = timestamp)
             "fifteen_game" -> gameAttempts?.copy(fifteen_game = timestamp)
+            "sixteen_game" -> gameAttempts?.copy(sixteen_game = timestamp)
+            "seventeen_game" -> gameAttempts?.copy(seventeen_game = timestamp)
             else -> gameAttempts
         }
     }

@@ -3,6 +3,7 @@ package com.electrofire.playpkm.Data.Repository
 import android.util.Log
 import com.electrofire.playpkm.Data.ImpostorGameData
 import com.electrofire.playpkm.Data.ItemApi
+import com.electrofire.playpkm.Data.LanguageGameData
 import com.electrofire.playpkm.Data.LocalData.PokemonDao
 import com.electrofire.playpkm.Data.LocalData.PokemonEntity
 import com.electrofire.playpkm.Data.NetworkData.Ability
@@ -37,7 +38,8 @@ class PokemonApiRepository @Inject constructor(
             stats = stats.associate { it.stat.name to it.base_stat },
             abilities = translatedAbilities ?: abilities.map { it.ability.name },
             id = id,
-            types = types.associate { it.type.name to it.slot }
+            types = types.associate { it.type.name to it.slot },
+            weight = weight
         )
     }
 
@@ -176,6 +178,32 @@ class PokemonApiRepository @Inject constructor(
         val response = api.getPokemon(id)
         val translated = translateAbilities(response)
         return response.toPokemonApi(translated)
+    }
+
+    suspend fun obtenerPokemonPorIdiomasDelDia(): LanguageGameData? {
+        return try {
+            val id = getIdDelDia(1625)
+            val pokemonResponse = api.getPokemon(id)
+            val speciesResponse = api.getPokemonSpecies(id)
+
+            val japaneseName = speciesResponse.names.find { it.language.name == "ja" }?.name
+                ?: speciesResponse.names.find { it.language.name == "ja-Hrkt" }?.name
+                ?: "???"
+            val germanName = speciesResponse.names.find { it.language.name == "de" }?.name ?: "???"
+            val frenchName = speciesResponse.names.find { it.language.name == "fr" }?.name ?: "???"
+
+            val pokemonApi = pokemonResponse.toPokemonApi()
+
+            LanguageGameData(
+                pokemon = pokemonApi,
+                japaneseName = japaneseName,
+                germanName = germanName,
+                frenchName = frenchName
+            )
+        } catch (e: Exception) {
+            Log.e("LANGUAGE_REPO", "Error al obtener pokemon por idiomas: ${e.message}")
+            null
+        }
     }
 
     suspend fun getRandomPokemons(count: Int = 3): List<PokemonApi> = withContext(Dispatchers.IO) {

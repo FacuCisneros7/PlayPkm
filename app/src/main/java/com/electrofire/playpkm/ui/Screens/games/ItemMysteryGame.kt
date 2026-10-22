@@ -108,7 +108,6 @@ fun ItemMysteryGame(
             is UIState.Success -> {
                 val itemActual = currentState.data
 
-                // DIÁLOGO DE RESULTADO (FUERA DE LA COLUMNA PARA EVITAR COLAPSO VISUAL)
                 if (gameStateViewModel.respondido) {
                     val esCorrecto = viewModel.verifyAnswer(itemActual, respuesta)
                     GameResultDialog(
@@ -158,7 +157,6 @@ fun ItemMysteryGame(
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 32.sp,
-                                    lineHeight = 38.sp,
                                     color = MaterialTheme.colorScheme.secondary,
                                     drawStyle = Stroke(width = 7f)
                                 )
@@ -168,19 +166,17 @@ fun ItemMysteryGame(
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.headlineLarge.copy(
                                     fontSize = 32.sp,
-                                    lineHeight = 38.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         ItemSpriteCard(item = itemActual)
 
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                        // --- SECCIÓN DE PISTAS ---
                         if (intentosRestantes < 3) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -199,13 +195,13 @@ fun ItemMysteryGame(
                                         Text(
                                             text = "PISTA 1: CATEGORÍA",
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.tertiary,
+                                            color = MaterialTheme.colorScheme.primary,
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
                                             text = itemActual.category,
                                             style = MaterialTheme.typography.bodyLarge,
-                                            color = MaterialTheme.colorScheme.primary,
+                                            color = MaterialTheme.colorScheme.primary.copy(0.8f),
                                             textAlign = TextAlign.Center
                                         )
 
@@ -217,15 +213,14 @@ fun ItemMysteryGame(
                                             Text(
                                                 text = "PISTA 2: EFECTO",
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = MaterialTheme.colorScheme.tertiary,
+                                                color = MaterialTheme.colorScheme.primary,
                                                 fontWeight = FontWeight.Bold
                                             )
                                             Text(
                                                 text = itemActual.description,
                                                 style = MaterialTheme.typography.bodyMedium,
-                                                color = MaterialTheme.colorScheme.primary,
+                                                color = MaterialTheme.colorScheme.primary.copy(0.8f),
                                                 textAlign = TextAlign.Center,
-                                                lineHeight = 16.sp
                                             )
                                         }
                                     }
@@ -297,8 +292,7 @@ fun ItemMysteryGame(
 fun ItemSpriteCard(item: ItemApi) {
     Card(
         modifier = Modifier
-            .size(200.dp)
-            .padding(8.dp),
+            .size(200.dp),
         border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f)),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(

@@ -157,7 +157,6 @@ fun StatsMysteryGame(
 
                         Spacer(modifier = Modifier.height(32.dp))
 
-                        // --- SECCIÓN DE PISTAS (Igual que ItemMystery) ---
                         if (intentosRestantes < 3) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -176,13 +175,13 @@ fun StatsMysteryGame(
                                         Text(
                                             text = "PISTA 1: NºPOKÉDEX",
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.tertiary,
+                                            color = MaterialTheme.colorScheme.primary,
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
                                             text = "${pokemonActual.id}",
                                             style = MaterialTheme.typography.bodyLarge,
-                                            color = MaterialTheme.colorScheme.primary,
+                                            color = MaterialTheme.colorScheme.primary.copy(0.8f),
                                             textAlign = TextAlign.Center
                                         )
 
@@ -194,7 +193,7 @@ fun StatsMysteryGame(
                                             Text(
                                                 text = "PISTA 2: TIPOS",
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = MaterialTheme.colorScheme.tertiary,
+                                                color = MaterialTheme.colorScheme.primary,
                                                 fontWeight = FontWeight.Bold
                                             )
                                             Row(

@@ -25,17 +25,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.electrofire.playpkm.ui.CardItems.BlurredCard
 import com.electrofire.playpkm.ui.CardItems.RealCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
-import com.electrofire.playpkm.ui.Components.Contador
 import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.ViewModels.common.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
@@ -51,21 +48,12 @@ fun BlurredCardGame(
     navController: NavController,
     viewModel: BlurredCardViewModel = hiltViewModel(),
     statsViewModel: HomeStatsViewModel,
-    contadorViewModel: ContadorViewModel = viewModel(),
     gameStateViewModel: GameStateViewModel = hiltViewModel()
 ) {
     val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
     val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     var respuesta by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
-
-    val contador = contadorViewModel.contador
-
-    LaunchedEffect(contador) {
-        if (contador == 0) {
-            gameStateViewModel.responder()
-        }
-    }
 
     Box(
         Modifier.fillMaxSize()
@@ -124,7 +112,7 @@ fun BlurredCardGame(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(32.dp))
 
                         BlurredCard(carta = cartaActual)
 
@@ -135,7 +123,7 @@ fun BlurredCardGame(
                             text = respuesta,
                             onTextChange = { respuesta = it })
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(32.dp))
 
                         ConfirmButton(onConfirm = {
                             focusManager.clearFocus()
@@ -143,11 +131,9 @@ fun BlurredCardGame(
                                 delay(200)
                                 gameStateViewModel.responder()
                             }
-                        })
+                        }
+                        )
 
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        Contador(contadorViewModel = contadorViewModel)
                     } else {
                         val esCorrecto = verificarRespuestaBlurredCard(cartaActual, respuesta)
                         GameResultDialog(

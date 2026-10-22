@@ -309,8 +309,23 @@ fun ShopItemCard(
                     .border(2.dp, Color.White.copy(alpha = 0.15f), RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center,
             ) {
+                val painter = rememberAsyncImagePainter(
+                    model = coil.request.ImageRequest.Builder(LocalContext.current)
+                        .data(item.imageUrl)
+                        .crossfade(true)
+                        .diskCachePolicy(coil.request.CachePolicy.ENABLED)
+                        .listener(
+                            onError = { _, errorResult ->
+                                android.util.Log.e("IMAGE_ERROR", "Error cargando item de tienda: ${item.name}")
+                                android.util.Log.e("IMAGE_ERROR", "URL: ${item.imageUrl}")
+                                android.util.Log.e("IMAGE_ERROR", "Motivo: ${errorResult.throwable.message}")
+                            }
+                        )
+                        .build()
+                )
+
                 Image(
-                    painter = rememberAsyncImagePainter(item.imageUrl),
+                    painter = painter,
                     contentDescription = item.name,
                     modifier = Modifier
                         .fillMaxSize()

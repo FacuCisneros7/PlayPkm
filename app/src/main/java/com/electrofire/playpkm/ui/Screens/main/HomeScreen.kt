@@ -133,7 +133,17 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                HomeStatsCard(statsViewModel = statsViewModel)
+                HomeStatsCard(
+                    statsViewModel = statsViewModel,
+                    onClick = {
+                        val mediaPlayer =
+                            MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                        mediaPlayer.start()
+                        mediaPlayer.setOnCompletionListener { it.release() }
+
+                        navController.navigate(Screen.UserScreen.route)
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -271,6 +281,61 @@ fun HomeScreen(
                                             ).show()
                                         }
                                     }
+                                }
+                            )
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = "HEAVY POKEMON",
+                                imageRes = R.drawable.pokeheavy,
+                                showBadge = statsViewModel.canPlayGame("seventeen_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+                                    navController.navigate(Screen.WeightGame.route)
+
+//                                    statsViewModel.verificarAccesoJuego("seventeen_game") { canPlay ->
+//                                        if (canPlay) {
+//                                            statsViewModel.registrarIntentoJuego("seventeen_game")
+//                                            navController.navigate(Screen.WeightGame.route)
+//                                        } else {
+//                                            Toast.makeText(
+//                                                context,
+//                                                "Ya jugaste hoy! Espera a mañana",
+//                                                Toast.LENGTH_SHORT
+//                                            ).show()
+//                                        }
+//                                    }
+                                }
+                            )
+                        }
+
+                        item {
+                            MyCardButton(
+                                title = "POKEMON POLYGLOT",
+                                imageRes = R.drawable.lenguajes,
+                                showBadge = statsViewModel.canPlayGame("sixteen_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+                                    navController.navigate(Screen.LanguageGame.route)
+//                                    statsViewModel.verificarAccesoJuego("sixteen_game") { canPlay ->
+//                                        if (canPlay) {
+//                                            statsViewModel.registrarIntentoJuego("sixteen_game")
+//                                            navController.navigate(Screen.LanguageGame.route)
+//                                        } else {
+//                                            Toast.makeText(
+//                                                context,
+//                                                "Ya jugaste hoy! Espera a mañana",
+//                                                Toast.LENGTH_SHORT
+//                                            ).show()
+//                                        }
+//                                    }
                                 }
                             )
                         }
@@ -423,6 +488,7 @@ fun HomeScreen(
                                         MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                     mediaPlayer.start()
                                     mediaPlayer.setOnCompletionListener { it.release() }
+
                                     statsViewModel.verificarAccesoJuego("fift_game") { canPlay ->
                                         if (canPlay) {
                                             statsViewModel.registrarIntentoJuego("fift_game")

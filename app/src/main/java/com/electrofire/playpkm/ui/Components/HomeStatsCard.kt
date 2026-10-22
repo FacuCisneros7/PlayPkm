@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
@@ -36,11 +37,17 @@ import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 
 @Composable
-fun HomeStatsCard(modifier: Modifier = Modifier, statsViewModel: HomeStatsViewModel) {
+fun HomeStatsCard(
+    modifier: Modifier = Modifier,
+    statsViewModel: HomeStatsViewModel,
+    onClick: () -> Unit
+) {
     val stats = statsViewModel.userData
 
     Card(
-        modifier = modifier.wrapContentSize(),
+        modifier = modifier
+            .wrapContentSize()
+            .clickable { onClick() },
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
         elevation = CardDefaults.cardElevation(0.dp),
@@ -53,7 +60,6 @@ fun HomeStatsCard(modifier: Modifier = Modifier, statsViewModel: HomeStatsViewMo
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            // Victorias
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
@@ -104,7 +110,6 @@ fun HomeStatsCard(modifier: Modifier = Modifier, statsViewModel: HomeStatsViewMo
 
             Spacer(modifier = Modifier.width(24.dp))
 
-            // Derrotas
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Close,

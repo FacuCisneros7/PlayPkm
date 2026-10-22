@@ -67,9 +67,8 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                 )
             }
 
-            // Temporizador de Semana más estético
+            // Temporizador de Semana más estético (arriba)
             val currentType = tabs[pagerState.currentPage]
-            
             if (currentType == RankingType.WEEKLY) {
                 val daysUntilMonday = remember {
                     val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -107,6 +106,56 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                 }
             }
 
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // ScrollableTabRow con estilo de pastillas (pills) arriba
+            ScrollableTabRow(
+                selectedTabIndex = pagerState.currentPage,
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.primary,
+                edgePadding = 16.dp,
+                divider = {},
+                indicator = {}
+            ) {
+                tabs.forEachIndexed { index, type ->
+                    val isSelected = pagerState.currentPage == index
+                    Tab(
+                        selected = isSelected,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        }
+                    ) {
+                        Surface(
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            color = if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                            ),
+                            shadowElevation = if (isSelected) 4.dp else 0.dp
+                        ) {
+                            Text(
+                                text = when(type) {
+                                    RankingType.WEEKLY -> "SEMANAL"
+                                    RankingType.GC -> "GOOD CHOICE"
+                                    RankingType.TS -> "T. SHADOWS"
+                                    RankingType.BA -> "BEFORE AFTER"
+                                },
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
 
             // Contenido Deslizable (Pager)
@@ -136,40 +185,6 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                 }
             }
 
-            ScrollableTabRow(
-                selectedTabIndex = pagerState.currentPage,
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.primary,
-                edgePadding = 16.dp,
-                divider = {},
-                indicator = {}
-            ) {
-                tabs.forEachIndexed { index, type ->
-                    val isSelected = pagerState.currentPage == index
-                    Tab(
-                        selected = isSelected,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
-                        text = {
-                            Text(
-                                text = when(type) {
-                                    RankingType.WEEKLY -> "SEMANAL"
-                                    RankingType.GC -> "GOOD CHOICE"
-                                    RankingType.TS -> "THOUSAND SHADOWS"
-                                    RankingType.BA -> "BEFORE AFTER"
-                                },
-                                style = MaterialTheme.typography.titleLarge.copy(
-                                    fontSize = 12.sp,
-                                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
-                                )
-                            )
-                        }
-                    )
-                }
-            }
             Spacer(modifier = Modifier.height(8.dp))
         }
     }

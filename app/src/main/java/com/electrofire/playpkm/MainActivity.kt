@@ -62,7 +62,9 @@ import com.electrofire.playpkm.ui.Screens.games.ZoomGame
 import com.electrofire.playpkm.ui.Screens.games.AbilityGame
 import com.electrofire.playpkm.ui.Screens.games.BeforeAfterGame
 import com.electrofire.playpkm.ui.Screens.games.ItemMysteryGame
+import com.electrofire.playpkm.ui.Screens.games.LanguageGameScreen
 import com.electrofire.playpkm.ui.Screens.games.TypeGameScreen
+import com.electrofire.playpkm.ui.Screens.games.WeightGameScreen
 import com.electrofire.playpkm.ui.Screens.main.ShopScreen
 import com.electrofire.playpkm.ui.Screens.main.UserScreen
 import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
@@ -115,7 +117,7 @@ class MainActivity : ComponentActivity() {
                         ViewContainer(musicViewModel)
                     }
                 } else {
-                    NotInternetScreen(showBackground = true)
+                    NotInternetScreen()
                 }
             }
         }
@@ -403,6 +405,18 @@ fun AppNavigation(
             }
             composable(Screen.PyramidGame.route) {
                 PyramidGameScreen(
+                    navController = navController,
+                    statsViewModel = statsViewModel
+                )
+            }
+            composable(Screen.LanguageGame.route) {
+                LanguageGameScreen(
+                    navController = navController,
+                    statsViewModel = statsViewModel
+                )
+            }
+            composable(Screen.WeightGame.route) {
+                WeightGameScreen(
                     navController = navController,
                     statsViewModel = statsViewModel
                 )

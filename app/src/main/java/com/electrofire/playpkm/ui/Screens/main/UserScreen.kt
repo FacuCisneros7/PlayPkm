@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -32,8 +31,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Whatshot
@@ -46,6 +43,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -271,36 +269,46 @@ fun UserScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            LazyRow(
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp)
-                    .padding(start = 24.dp, end = 25.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                items(user.profileImages) { profileImage ->
-                    Image(
-                        painter = rememberAsyncImagePainter(profileImage),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(CircleShape)
-                            .border(
-                                width = if (selectedImage == profileImage) 4.dp else 2.dp,
-                                color = if (selectedImage == profileImage) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                                shape = CircleShape
-                            )
-                            .clickable {
-                                val mediaPlayer =
-                                    MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                mediaPlayer.start()
-                                mediaPlayer.setOnCompletionListener { it.release() }
+                    .padding(start = 24.dp, end = 25.dp)
 
-                                selectedImage = profileImage
-                            },
-                        contentScale = ContentScale.Crop
-                    )
+            ) {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .padding(start = 8.dp, end = 9.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    items(user.profileImages) { profileImage ->
+                        Image(
+                            painter = rememberAsyncImagePainter(profileImage),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(CircleShape)
+                                .border(
+                                    width = if (selectedImage == profileImage) 4.dp else 2.dp,
+                                    color = if (selectedImage == profileImage) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                    shape = CircleShape
+                                )
+                                .clickable {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                                    selectedImage = profileImage
+                                },
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
             }
 

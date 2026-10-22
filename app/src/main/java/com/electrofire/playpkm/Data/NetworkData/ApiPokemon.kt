@@ -9,6 +9,9 @@ interface ApiPokemon {
     @GET("pokemon/{id}")
     suspend fun getPokemon(@Path("id") id: Int): PokemonResponse
 
+    @GET("pokemon-species/{id}")
+    suspend fun getPokemonSpecies(@Path("id") id: Int): PokemonSpeciesResponse
+
     @GET("pokemon")
     suspend fun getAllPokemon(
         @Query("limit") limit: Int,
