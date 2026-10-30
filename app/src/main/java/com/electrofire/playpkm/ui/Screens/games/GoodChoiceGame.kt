@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CatchingPokemon
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -28,6 +26,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,11 +49,11 @@ import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.common.UIState
-import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
+import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import com.electrofire.playpkm.ui.ViewModels.games.GoodChoiceViewModel
+import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 
 @Composable
 fun GoodChoiceGame(
@@ -67,9 +68,14 @@ fun GoodChoiceGame(
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
 
+    var missionRegistered by remember { mutableStateOf(false) }
     LaunchedEffect(state) {
         if (state is UIState.Success && (state as UIState.Success).data.isGameOver) {
             statsViewModel.registrarMaxScoreNinthGame((state as UIState.Success).data.puntaje)
+            if (!missionRegistered) {
+                missionRegistered = true
+                statsViewModel.registrarJuegoLibre()
+            }
         }
     }
 
@@ -161,7 +167,10 @@ fun GoodChoiceGame(
                         Surface(
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                             color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                            border = BorderStroke(
+                                1.dp,
+                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                            ),
                             modifier = Modifier.padding(horizontal = 32.dp)
                         ) {
                             Text(
@@ -220,7 +229,9 @@ fun GoodChoiceGame(
                                         .align(Alignment.BottomStart)
                                         .padding(bottom = 8.dp, start = 8.dp)
                                         .background(
-                                            color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.4f),
+                                            color = MaterialTheme.colorScheme.inverseSurface.copy(
+                                                alpha = 0.4f
+                                            ),
                                             shape = MaterialTheme.shapes.small
                                         )
                                 )
@@ -272,7 +283,10 @@ fun GoodChoiceGame(
                         Surface(
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                             color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f))
+                            border = BorderStroke(
+                                1.dp,
+                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                            )
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -290,7 +304,10 @@ fun GoodChoiceGame(
                                 Text(
                                     text = stringResource(id = R.string.ninthgame_puntuation),
                                     color = MaterialTheme.colorScheme.primary,
-                                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.titleLarge.copy(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
                                     textAlign = TextAlign.Center
                                 )
                                 Text(

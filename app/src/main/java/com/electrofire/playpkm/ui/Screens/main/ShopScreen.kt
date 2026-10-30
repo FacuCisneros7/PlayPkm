@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -66,11 +65,9 @@ fun ShopScreen(
     val context = LocalContext.current
     var showSuccessAnimation by remember { mutableStateOf(false) }
 
-    // Calculamos el ancho de la tarjeta basándonos en el ancho de la pantalla
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    // Queremos que entren 3 tarjetas, considerando el padding lateral (16*2) y el espacio entre tarjetas (16*2)
-    val cardWidth = (screenWidth - 32.dp - 32.dp) / 2.8f // 2.8 para que se vea un poco de la 4ta o queden bien espaciadas
+    val cardWidth = (screenWidth - 32.dp - 32.dp) / 2.8f
 
     if (showSuccessAnimation) {
         LaunchedEffect(Unit) {
@@ -137,10 +134,11 @@ fun ShopScreen(
                     title = "TEMPORADA ACTUAL",
                     items = shopViewModel.shopData.currentSeason,
                     userCoins = user.coins,
-                    userProfileImages = user.profileImages,
+                    purchasedAvatars = user.purchasedAvatars,
                     cardWidth = cardWidth,
+                    isShiny = false,
                     onBuyClick = { item ->
-                        statsViewModel.registrarCompra(item.imageUrl, item.price)
+                        statsViewModel.registrarCompra(item.id, item.price)
                         showSuccessAnimation = true
                         Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
                     },
@@ -154,10 +152,11 @@ fun ShopScreen(
                     title = "SHINYS",
                     items = shopViewModel.shopData.shinys,
                     userCoins = user.coins,
-                    userProfileImages = user.profileImages,
+                    purchasedAvatars = user.purchasedAvatars,
                     cardWidth = cardWidth,
+                    isShiny = true,
                     onBuyClick = { item ->
-                        statsViewModel.registrarCompra(item.imageUrl, item.price)
+                        statsViewModel.registrarCompra(item.id, item.price)
                         showSuccessAnimation = true
                         Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
                     },
@@ -171,16 +170,17 @@ fun ShopScreen(
                     title = "LEGENDARIOS",
                     items = shopViewModel.shopData.legendaries,
                     userCoins = user.coins,
-                    userProfileImages = user.profileImages,
+                    purchasedAvatars = user.purchasedAvatars,
                     cardWidth = cardWidth,
+                    isShiny = false,
                     onBuyClick = { item ->
-                        statsViewModel.registrarCompra(item.imageUrl, item.price)
+                        statsViewModel.registrarCompra(item.id, item.price)
                         showSuccessAnimation = true
                         Toast.makeText(context, "¡Pokémon adquirido!", Toast.LENGTH_SHORT).show()
                     },
                     context = context
                 )
-                
+
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
@@ -207,16 +207,16 @@ fun ShopSection(
     title: String,
     items: List<ShopItem>,
     userCoins: Int,
-    userProfileImages: List<String>,
+    purchasedAvatars: List<String>,
     cardWidth: androidx.compose.ui.unit.Dp,
     onBuyClick: (ShopItem) -> Unit,
+    isShiny: Boolean,
     context: android.content.Context
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
-        // Título estilizado como en Ranking
         Surface(
             shape = RoundedCornerShape(12.dp),
             color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
@@ -235,7 +235,6 @@ fun ShopSection(
             )
         }
 
-        // Contenedor de la Fila (LazyRow) estilizado
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
@@ -263,14 +262,19 @@ fun ShopSection(
                     items(items) { item ->
                         ShopItemCard(
                             item = item,
-                            isOwned = userProfileImages.contains(item.imageUrl),
+                            isOwned = purchasedAvatars.contains(item.id),
                             canAfford = userCoins >= item.price,
                             cardWidth = cardWidth,
+                            isShiny = isShiny,
                             onBuyClick = {
                                 if (userCoins >= item.price) {
                                     onBuyClick(item)
                                 } else {
-                                    Toast.makeText(context, "No tienes suficientes monedas", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "No tienes suficientes monedas",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         )
@@ -287,6 +291,7 @@ fun ShopItemCard(
     isOwned: Boolean,
     canAfford: Boolean,
     cardWidth: androidx.compose.ui.unit.Dp,
+    isShiny: Boolean,
     onBuyClick: () -> Unit
 ) {
     Card(
@@ -294,8 +299,15 @@ fun ShopItemCard(
             .width(cardWidth)
             .height(150.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)),
-        border = BorderStroke(2.dp, if (isOwned) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.tertiary)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary.copy(
+                alpha = 0.8f
+            )
+        ),
+        border = BorderStroke(
+            2.dp,
+            if (isOwned) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.tertiary
+        )
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -311,14 +323,23 @@ fun ShopItemCard(
             ) {
                 val painter = rememberAsyncImagePainter(
                     model = coil.request.ImageRequest.Builder(LocalContext.current)
-                        .data(item.imageUrl)
+                        .data(
+                            if (isShiny) {
+                                "file:///android_asset/portraits_shiny/${item.id}.png"
+                            } else "file:///android_asset/portraits/${item.id}.png"
+                        )
                         .crossfade(true)
                         .diskCachePolicy(coil.request.CachePolicy.ENABLED)
                         .listener(
                             onError = { _, errorResult ->
-                                android.util.Log.e("IMAGE_ERROR", "Error cargando item de tienda: ${item.name}")
-                                android.util.Log.e("IMAGE_ERROR", "URL: ${item.imageUrl}")
-                                android.util.Log.e("IMAGE_ERROR", "Motivo: ${errorResult.throwable.message}")
+                                android.util.Log.e(
+                                    "IMAGE_ERROR",
+                                    "Error cargando asset de tienda ID: ${item.id}"
+                                )
+                                android.util.Log.e(
+                                    "IMAGE_ERROR",
+                                    "Motivo: ${errorResult.throwable.message}"
+                                )
                             }
                         )
                         .build()
@@ -369,22 +390,29 @@ fun ShopItemCard(
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(0.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = MaterialTheme.colorScheme.primary
+                            containerColor = MaterialTheme.colorScheme.outline,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
                         )
                     ) {
                         LottieAnimationView(
                             resId = R.raw.coin,
                             modifier = Modifier.size(16.dp)
                         )
-                        Spacer(Modifier.width(1.dp))
+                        Spacer(Modifier.width(0.5.dp))
                         Text(
                             text = item.price.toString(),
-                            color = if (canAfford) MaterialTheme.colorScheme.primary else Color.Red,
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp)
+                            color = if (canAfford) MaterialTheme.colorScheme.onSecondary else Color.Red,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 10.sp
+                            )
                         )
                         Spacer(Modifier.width(5.dp))
-                        Text("COMPRAR", fontSize = 10.sp, fontWeight = MaterialTheme.typography.titleLarge.fontWeight)
+                        Text(
+                            "COMPRAR",
+                            fontSize = 10.sp,
+                            fontWeight = MaterialTheme.typography.titleLarge.fontWeight
+                        )
                     }
                 }
             }

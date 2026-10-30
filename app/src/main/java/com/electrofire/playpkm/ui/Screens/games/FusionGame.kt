@@ -35,15 +35,15 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Components.UserInputPokemonDos
 import com.electrofire.playpkm.ui.Navegation.Screen
+import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.ViewModels.common.AutoPokeViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.AutoPokeViewModelDos
-import com.electrofire.playpkm.ui.ViewModels.games.FusionViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
-import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
+import com.electrofire.playpkm.ui.ViewModels.games.FusionViewModel
 import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaFusion
-import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
-import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -119,9 +119,10 @@ fun FusionGame(
 
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        FusionCard(fusion = fusionActual, modifier = Modifier
-                            .width(230.dp)
-                            .height(230.dp)
+                        FusionCard(
+                            fusion = fusionActual, modifier = Modifier
+                                .width(230.dp)
+                                .height(230.dp)
                         )
 
                         Spacer(modifier = Modifier.height(20.dp))
@@ -152,7 +153,8 @@ fun FusionGame(
                             }
                         })
                     } else {
-                        val esCorrecto = verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)
+                        val esCorrecto =
+                            verificarRespuestaFusion(fusionActual, respuesta, respuestaDos)
                         GameResultDialog(
                             isWin = esCorrecto,
                             onHomeClick = {
@@ -162,7 +164,12 @@ fun FusionGame(
                             },
                             content = {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    FusionCard(fusion = fusionActual)
+                                    FusionCard(
+                                        fusion = fusionActual,
+                                        modifier = Modifier
+                                            .width(180.dp)
+                                            .height(180.dp)
+                                    )
                                     Spacer(modifier = Modifier.height(16.dp))
                                     PokemonesFusionCard(fusionActual = fusionActual)
                                 }

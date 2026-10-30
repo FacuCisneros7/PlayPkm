@@ -3,9 +3,7 @@ package com.electrofire.playpkm.ui.CardItems
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,7 +36,8 @@ fun PokemonesFusionCard(
     ) {
         Column(
             modifier = Modifier
-                .wrapContentWidth().fillMaxHeight()
+                .wrapContentWidth()
+                .fillMaxHeight()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

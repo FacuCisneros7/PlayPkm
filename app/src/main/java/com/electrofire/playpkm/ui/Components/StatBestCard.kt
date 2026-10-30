@@ -1,7 +1,6 @@
 package com.electrofire.playpkm.ui.Components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -26,7 +25,7 @@ fun StatBestCard(modifier: Modifier = Modifier, statNombre: String?, numeroStat:
 
     var statNombreCorto = statNombre
 
-    when (statNombreCorto){
+    when (statNombreCorto) {
         "Ataque Especial" -> statNombreCorto = "ATQ.ESP"
         "Defensa Especial" -> statNombreCorto = "DEF.ESP"
         "Ataque Físico" -> statNombreCorto = "ATQ.FIS"
@@ -48,7 +47,8 @@ fun StatBestCard(modifier: Modifier = Modifier, statNombre: String?, numeroStat:
 
         Row(
             modifier = Modifier
-                .wrapContentWidth().fillMaxHeight()
+                .wrapContentWidth()
+                .fillMaxHeight()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

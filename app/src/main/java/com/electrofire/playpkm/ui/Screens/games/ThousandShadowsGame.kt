@@ -45,11 +45,11 @@ import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.common.UIState
-import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
+import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import com.electrofire.playpkm.ui.ViewModels.games.ThousandShadowsViewModel
+import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -65,10 +65,15 @@ fun ThousandShadowsGame(
     var respuesta by remember { mutableStateOf("") }
     val state by viewModel.state.collectAsState()
     val contador by viewModel.contador.collectAsState()
+    var missionRegistered by remember { mutableStateOf(false) }
 
     LaunchedEffect(state) {
         if (state is UIState.Success && (state as UIState.Success).data.isGameOver) {
             statsViewModel.registrarMaxScoreElevenGame((state as UIState.Success).data.puntaje)
+            if (!missionRegistered) {
+                missionRegistered = true
+                statsViewModel.registrarJuegoLibre()
+            }
         }
     }
 
@@ -111,7 +116,10 @@ fun ThousandShadowsGame(
                         Surface(
                             shape = RoundedCornerShape(12.dp),
                             color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f))
+                            border = BorderStroke(
+                                1.dp,
+                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                            )
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -127,7 +135,10 @@ fun ThousandShadowsGame(
                                 Text(
                                     text = stringResource(id = R.string.ninthgame_puntuation),
                                     color = MaterialTheme.colorScheme.primary,
-                                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                    style = MaterialTheme.typography.titleLarge.copy(
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
                                     textAlign = TextAlign.Center
                                 )
                                 Text(

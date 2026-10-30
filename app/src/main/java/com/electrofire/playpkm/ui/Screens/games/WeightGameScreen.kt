@@ -4,13 +4,36 @@ import android.media.MediaPlayer
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,8 +49,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.electrofire.playpkm.R
 import com.electrofire.playpkm.Data.PokemonApi
+import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Navegation.Screen
@@ -130,7 +153,10 @@ fun WeightGameScreen(
                         Surface(
                             shape = RoundedCornerShape(12.dp),
                             color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                            border = BorderStroke(
+                                1.dp,
+                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                            ),
                             modifier = Modifier.padding(horizontal = 32.dp)
                         ) {
                             Text(
@@ -155,7 +181,8 @@ fun WeightGameScreen(
                                 .padding(8.dp)
                                 .clickable(enabled = !isAnswerRevealed && !isLoadingNextStep) {
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                     mediaPlayer.start()
                                     mediaPlayer.setOnCompletionListener { it.release() }
                                     viewModel.seleccionarPokemon(pokemonA)
@@ -179,13 +206,18 @@ fun WeightGameScreen(
                                 if (isAnswerRevealed) {
                                     Text(
                                         text = "${pokemonA.weight / 10.0} kg",
-                                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                                        style = MaterialTheme.typography.headlineMedium.copy(
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold
+                                        ),
                                         color = Color.White,
                                         modifier = Modifier
                                             .align(Alignment.BottomCenter)
                                             .padding(bottom = 8.dp)
                                             .background(
-                                                color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.6f),
+                                                color = MaterialTheme.colorScheme.inverseSurface.copy(
+                                                    alpha = 0.6f
+                                                ),
                                                 shape = MaterialTheme.shapes.small
                                             )
                                             .padding(horizontal = 8.dp, vertical = 2.dp)
@@ -204,7 +236,8 @@ fun WeightGameScreen(
                                 .padding(8.dp)
                                 .clickable(enabled = !isAnswerRevealed && !isLoadingNextStep) {
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                     mediaPlayer.start()
                                     mediaPlayer.setOnCompletionListener { it.release() }
                                     viewModel.seleccionarPokemon(pokemonB)
@@ -228,13 +261,18 @@ fun WeightGameScreen(
                                 if (isAnswerRevealed) {
                                     Text(
                                         text = "${pokemonB.weight / 10.0} kg",
-                                        style = MaterialTheme.typography.headlineMedium.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                                        style = MaterialTheme.typography.headlineMedium.copy(
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold
+                                        ),
                                         color = Color.White,
                                         modifier = Modifier
                                             .align(Alignment.BottomCenter)
                                             .padding(bottom = 8.dp)
                                             .background(
-                                                color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.6f),
+                                                color = MaterialTheme.colorScheme.inverseSurface.copy(
+                                                    alpha = 0.6f
+                                                ),
                                                 shape = MaterialTheme.shapes.small
                                             )
                                             .padding(horizontal = 8.dp, vertical = 2.dp)

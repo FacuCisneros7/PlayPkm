@@ -5,15 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,13 +37,13 @@ import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.HabilityCard
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
-import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.common.UIState
-import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaImpostor
-import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
+import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
+import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import com.electrofire.playpkm.ui.ViewModels.games.ImpostorViewModel
+import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaImpostor
+import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 
 @Composable
 fun ImpostorGame(
@@ -121,15 +118,23 @@ fun ImpostorGame(
                         Surface(
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
                             color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
-                            modifier = Modifier.padding(horizontal = 32.dp).wrapContentSize()
+                            border = BorderStroke(
+                                1.dp,
+                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                            ),
+                            modifier = Modifier
+                                .padding(horizontal = 32.dp)
+                                .wrapContentSize()
                         ) {
                             Text(
                                 text = "Habilidad: ${state.abilityName}".replaceFirstChar { it.uppercase() },
                                 color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.headlineLarge.copy(fontSize = 20.sp),
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.wrapContentSize().padding(horizontal = 16.dp, vertical = 8.dp)                            )
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -200,7 +205,7 @@ fun ImpostorGame(
                             enabled = selectedPokemon != null
                         )
                     } else {
-                        val esCorrecta = remember(gameStateViewModel.respondido){
+                        val esCorrecta = remember(gameStateViewModel.respondido) {
                             selectedPokemon != null && verificarRespuestaImpostor(
                                 correctPokemon = state.impostor?.name ?: "",
                                 choisePokemon = selectedPokemon?.name ?: ""

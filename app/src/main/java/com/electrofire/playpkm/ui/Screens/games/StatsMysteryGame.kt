@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -49,13 +47,13 @@ import com.electrofire.playpkm.ui.Components.Hearts
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Navegation.Screen
-import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
-import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
-import com.electrofire.playpkm.ui.ViewModels.common.UIState
-import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaStatsApiPokemon
-import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
+import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
+import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import com.electrofire.playpkm.ui.ViewModels.games.StatsMysteryViewModel
+import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaStatsApiPokemon
+import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -165,7 +163,10 @@ fun StatsMysteryGame(
                                 Surface(
                                     shape = RoundedCornerShape(12.dp),
                                     color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                                    border = BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                                    ),
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                 ) {
                                     Column(
@@ -187,9 +188,13 @@ fun StatsMysteryGame(
 
                                         if (intentosRestantes < 2) {
                                             Spacer(modifier = Modifier.height(12.dp))
-                                            HorizontalDivider(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                                            HorizontalDivider(
+                                                color = MaterialTheme.colorScheme.primary.copy(
+                                                    alpha = 0.1f
+                                                )
+                                            )
                                             Spacer(modifier = Modifier.height(12.dp))
-                                            
+
                                             Text(
                                                 text = "PISTA 2: TIPOS",
                                                 style = MaterialTheme.typography.labelSmall,
@@ -203,9 +208,15 @@ fun StatsMysteryGame(
                                             ) {
                                                 pokemonActual.types.keys.forEach { typeName ->
                                                     Image(
-                                                        painter = painterResource(id = PokemonTypeUtils.getTypeRes(typeName)),
+                                                        painter = painterResource(
+                                                            id = PokemonTypeUtils.getTypeRes(
+                                                                typeName
+                                                            )
+                                                        ),
                                                         contentDescription = typeName,
-                                                        modifier = Modifier.size(30.dp).padding(horizontal = 4.dp)
+                                                        modifier = Modifier
+                                                            .size(30.dp)
+                                                            .padding(horizontal = 4.dp)
                                                     )
                                                 }
                                             }
@@ -225,8 +236,9 @@ fun StatsMysteryGame(
 
                         ConfirmButton(onConfirm = {
                             focusManager.clearFocus()
-                            val esCorrecto = verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)
-                            
+                            val esCorrecto =
+                                verificarRespuestaStatsApiPokemon(pokemonActual, respuesta)
+
                             if (esCorrecto || intentosRestantes <= 1) {
                                 coroutineScope.launch {
                                     delay(200)

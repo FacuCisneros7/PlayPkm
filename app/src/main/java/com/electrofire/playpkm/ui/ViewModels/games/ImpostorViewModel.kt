@@ -25,9 +25,9 @@ class ImpostorViewModel @Inject constructor(
         loadGame()
     }
 
-    fun loadGame(){
+    fun loadGame() {
 
-        viewModelScope.launch{
+        viewModelScope.launch {
             _state.value = UIState.Loading
 
             try {
@@ -45,7 +45,6 @@ class ImpostorViewModel @Inject constructor(
     }
 
 }
-
 
 
 fun verificarRespuestaImpostor(choisePokemon: String, correctPokemon: String): Boolean {

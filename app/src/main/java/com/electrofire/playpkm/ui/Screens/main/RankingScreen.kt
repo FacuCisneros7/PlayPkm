@@ -31,14 +31,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.RankingList
 import com.electrofire.playpkm.ui.ViewModels.common.RankingType
-import com.electrofire.playpkm.ui.ViewModels.main.RankingViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
+import com.electrofire.playpkm.ui.ViewModels.main.RankingViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.TimeZone
@@ -81,7 +82,10 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                     modifier = Modifier.padding(top = 8.dp),
                     shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f))
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                    )
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
@@ -130,26 +134,33 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                         Surface(
                             modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp),
                             shape = RoundedCornerShape(16.dp),
-                            color = if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                            color = if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondary.copy(
+                                alpha = 0.5f
+                            ),
                             border = BorderStroke(
-                                width = 1.dp,
-                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                                width = 2.dp,
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(
+                                    alpha = 0.5f
+                                )
                             ),
                             shadowElevation = if (isSelected) 4.dp else 0.dp
                         ) {
                             Text(
-                                text = when(type) {
+                                text = when (type) {
                                     RankingType.WEEKLY -> "SEMANAL"
                                     RankingType.GC -> "GOOD CHOICE"
                                     RankingType.TS -> "T. SHADOWS"
                                     RankingType.BA -> "BEFORE AFTER"
                                 },
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontSize = 12.sp,
+                                style = MaterialTheme.typography.labelMedium.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
-                                )
+                                    fontSize = 11.sp
+                                ),
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(
+                                    alpha = 0.5f
+                                ),
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
@@ -173,14 +184,17 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                             Loading()
                         }
                     }
+
                     is UIState.Error -> {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text(text = state.message, color = Color.Red)
                         }
                     }
+
                     is UIState.Success -> {
                         RankingList(users = state.data, type = type)
                     }
+
                     else -> {}
                 }
             }

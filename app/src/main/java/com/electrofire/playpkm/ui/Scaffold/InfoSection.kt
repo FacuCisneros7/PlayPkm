@@ -51,22 +51,78 @@ fun GamesInfoSection() {
 
         val games = listOf(
             GameInfo(R.string.zoom_game_title, R.string.zoom_game_description, R.drawable.zoomdos),
-            GameInfo(R.string.easy_game_title, R.string.easy_game_description, R.drawable.easygamedos),
-            GameInfo(R.string.blurred_card_title, R.string.blurred_card_description, R.drawable.carddos),
-            GameInfo(R.string.type_game_title, R.string.type_game_description, R.drawable.typegamedos),
-            GameInfo(R.string.item_game_title, R.string.item_game_description, R.drawable.itemgamedos),
-            GameInfo(R.string.pyramid_game_title, R.string.pyramid_game_description, R.drawable.pyramiddos),
-            GameInfo(R.string.language_game_title, R.string.language_game_description, R.drawable.lenguajesdos),
-            GameInfo(R.string.weight_game_title, R.string.weight_game_description, R.drawable.pokeheavydos),
-            GameInfo(R.string.one_ability_title, R.string.one_ability_description, R.drawable.abilitydos),
-            GameInfo(R.string.power_move_title, R.string.power_move_description, R.drawable.movepowerdos),
-            GameInfo(R.string.mysterious_stats_title, R.string.mysterious_stats_description, R.drawable.statsdos),
+            GameInfo(
+                R.string.easy_game_title,
+                R.string.easy_game_description,
+                R.drawable.easygamedos
+            ),
+            GameInfo(
+                R.string.blurred_card_title,
+                R.string.blurred_card_description,
+                R.drawable.carddos
+            ),
+            GameInfo(
+                R.string.type_game_title,
+                R.string.type_game_description,
+                R.drawable.typegamedos
+            ),
+            GameInfo(
+                R.string.item_game_title,
+                R.string.item_game_description,
+                R.drawable.itemgamedos
+            ),
+            GameInfo(
+                R.string.pyramid_game_title,
+                R.string.pyramid_game_description,
+                R.drawable.pyramiddos
+            ),
+            GameInfo(
+                R.string.language_game_title,
+                R.string.language_game_description,
+                R.drawable.lenguajesdos
+            ),
+            GameInfo(
+                R.string.weight_game_title,
+                R.string.weight_game_description,
+                R.drawable.pokeheavydos
+            ),
+            GameInfo(
+                R.string.speed_game_title,
+                R.string.speed_game_description,
+                R.drawable.pokespeeddos
+            ),
+            GameInfo(
+                R.string.one_ability_title,
+                R.string.one_ability_description,
+                R.drawable.abilitydos
+            ),
+            GameInfo(
+                R.string.mysterious_stats_title,
+                R.string.mysterious_stats_description,
+                R.drawable.statsdos
+            ),
             GameInfo(R.string.fusion_title, R.string.fusion_description, R.drawable.fusiondos),
             GameInfo(R.string.the_best_title, R.string.the_best_description, R.drawable.thebestdos),
-            GameInfo(R.string.impostor_title, R.string.impostor_description, R.drawable.impostordos),
-            GameInfo(R.string.good_choice_title, R.string.good_choice_description, R.drawable.goodchoisedos),
-            GameInfo(R.string.thousand_shadows_title, R.string.thousand_shadows_description, R.drawable.thousandshadowsdos),
-            GameInfo(R.string.before_or_after_title, R.string.before_or_after_description, R.drawable.beforeorafter)
+            GameInfo(
+                R.string.impostor_title,
+                R.string.impostor_description,
+                R.drawable.impostordos
+            ),
+            GameInfo(
+                R.string.good_choice_title,
+                R.string.good_choice_description,
+                R.drawable.goodchoisedos
+            ),
+            GameInfo(
+                R.string.thousand_shadows_title,
+                R.string.thousand_shadows_description,
+                R.drawable.thousandshadowsdos
+            ),
+            GameInfo(
+                R.string.before_or_after_title,
+                R.string.before_or_after_description,
+                R.drawable.beforeorafter
+            )
         )
 
         items(games.size) { index ->
@@ -158,7 +214,9 @@ fun UserInfoSection() {
         Image(
             painter = painterResource(R.drawable.garchomp),
             contentDescription = null,
-            modifier = Modifier.size(80.dp).clip(CircleShape)
+            modifier = Modifier
+                .size(80.dp)
+                .clip(CircleShape)
         )
         Spacer(Modifier.height(16.dp))
         Text(
@@ -172,7 +230,12 @@ fun UserInfoSection() {
 
 @Composable
 fun SectionTitle(title: String) {
-    Box(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall.copy(
@@ -195,7 +258,11 @@ fun SectionTitle(title: String) {
 fun RankingSubSection(title: String, description: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary.copy(
+                alpha = 0.1f
+            )
+        ),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {

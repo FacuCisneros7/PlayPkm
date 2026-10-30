@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.electrofire.playpkm.Data.GameAttempts
+import com.electrofire.playpkm.Data.Mission
 import com.electrofire.playpkm.Data.Repository.TimeRepository
 import com.electrofire.playpkm.Data.UserData
 import com.electrofire.playpkm.Data.WeeklyRewardData
@@ -54,11 +55,16 @@ class HomeStatsViewModel : ViewModel() {
             victorias = userData.victorias + 1,
             weeklyWins = userData.weeklyWins + 1
         )
-        // Usamos update para que solo se escriban estos campos y no todo el objeto
-        actualizarCamposFiresore(mapOf(
-            "victorias" to userData.victorias,
-            "weeklyWins" to userData.weeklyWins
-        ))
+        incrementarProgresoMision("daily_5_wins")
+        incrementarProgresoMision("weekly_25_wins")
+
+        actualizarCamposFiresore(
+            mapOf(
+                "victorias" to userData.victorias,
+                "weeklyWins" to userData.weeklyWins,
+                "missions" to userData.missions
+            )
+        )
     }
 
     fun registrarDerrota() {
@@ -66,10 +72,12 @@ class HomeStatsViewModel : ViewModel() {
             derrotas = userData.derrotas + 1,
             weeklyLosses = userData.weeklyLosses + 1
         )
-        actualizarCamposFiresore(mapOf(
-            "derrotas" to userData.derrotas,
-            "weeklyLosses" to userData.weeklyLosses
-        ))
+        actualizarCamposFiresore(
+            mapOf(
+                "derrotas" to userData.derrotas,
+                "weeklyLosses" to userData.weeklyLosses
+            )
+        )
     }
 
     fun registrarUserName(userName: String) {
@@ -77,19 +85,6 @@ class HomeStatsViewModel : ViewModel() {
         actualizarCamposFiresore(mapOf("userName" to userName))
     }
 
-    fun registrarFoto(image: String) {
-        val updatedProfileImages = userData.profileImages.toMutableList().apply {
-            if (!contains(image)) add(image)
-        }
-        userData = userData.copy(
-            imagen = image,
-            profileImages = updatedProfileImages
-        )
-        actualizarCamposFiresore(mapOf(
-            "imagen" to image,
-            "profileImages" to updatedProfileImages
-        ))
-    }
 
     fun registrarInstagram(ig: String) {
         userData = userData.copy(instagram = ig)
@@ -106,20 +101,40 @@ class HomeStatsViewModel : ViewModel() {
         actualizarCamposFiresore(mapOf("hasSeenTutorial" to true))
     }
 
-    fun registrarCompra(newInsignia: String, cost: Int) {
+    fun registrarCompra(avatarId: String, cost: Int) {
         if (userData.coins >= cost) {
-            val updatedProfileImages = userData.profileImages.toMutableList().apply {
-                if (!contains(newInsignia)) add(newInsignia)
+            val updatedPurchased = userData.purchasedAvatars.toMutableList().apply {
+                if (!contains(avatarId)) add(avatarId)
             }
             userData = userData.copy(
                 coins = userData.coins - cost,
-                profileImages = updatedProfileImages
+                purchasedAvatars = updatedPurchased,
+                avatarId = avatarId
             )
-            actualizarCamposFiresore(mapOf(
-                "coins" to userData.coins,
-                "profileImages" to userData.profileImages
-            ))
+            actualizarCamposFiresore(
+                mapOf(
+                    "coins" to userData.coins,
+                    "purchasedAvatars" to userData.purchasedAvatars,
+                    "avatarId" to userData.avatarId
+                )
+            )
         }
+    }
+
+    fun seleccionarAvatar(avatarId: String) {
+        val updatedPurchased = userData.purchasedAvatars.toMutableList().apply {
+            if (!contains(avatarId)) add(avatarId)
+        }
+        userData = userData.copy(
+            avatarId = avatarId,
+            purchasedAvatars = updatedPurchased
+        )
+        actualizarCamposFiresore(
+            mapOf(
+                "avatarId" to avatarId,
+                "purchasedAvatars" to userData.purchasedAvatars
+            )
+        )
     }
 
     private fun verificarReinicioSemanal() {
@@ -133,7 +148,7 @@ class HomeStatsViewModel : ViewModel() {
             val currentWeekId = currentYear * 100 + currentWeek
 
             val lastWeek = userData.lastWeekParticipated ?: 0
-            
+
             if (lastWeek != 0 && lastWeek != currentWeekId) {
                 val reward = userData.weeklyWins * 3
 
@@ -149,13 +164,154 @@ class HomeStatsViewModel : ViewModel() {
                     coins = userData.coins + reward,
                     lastWeekParticipated = currentWeekId
                 )
-                guardarStatsCompletos() // Aquí sí guardamos todo el objeto para asegurar consistencia
+                guardarStatsCompletos()
             } else if (lastWeek == 0) {
                 userData = userData.copy(lastWeekParticipated = currentWeekId)
                 actualizarCamposFiresore(mapOf("lastWeekParticipated" to currentWeekId))
             }
+
+            verificarYInicializarMisiones(dateToUse)
             isCheckingRewards = false
         }
+    }
+
+    private fun verificarYInicializarMisiones(serverDate: java.util.Date) {
+        val calendar = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"))
+        calendar.time = serverDate
+        val currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
+        val currentYear = calendar.get(Calendar.YEAR)
+        val currentWeekOfYear = calendar.get(Calendar.WEEK_OF_YEAR)
+
+        var currentMissions = userData.missions.toMutableList()
+
+        if (currentMissions.isEmpty()) {
+            val defaultDaily = listOf(
+                Mission("daily_14_games", "Juega los 14 juegos diarios", 0, 14, 5, false, "DAILY"),
+                Mission("daily_5_wins", "Gana 5 juegos diarios", 0, 5, 3, false, "DAILY"),
+                Mission("daily_3_free", "Juega 3 veces un juego libre", 0, 3, 3, false, "DAILY")
+            )
+            val defaultWeekly = listOf(
+                Mission(
+                    "weekly_40_games",
+                    "Juega 50 veces juegos diarios",
+                    0,
+                    50,
+                    20,
+                    false,
+                    "WEEKLY"
+                ),
+                Mission("weekly_25_wins", "Consigue 30 victorias", 0, 30, 30, false, "WEEKLY")
+            )
+            currentMissions = (defaultDaily + defaultWeekly).toMutableList()
+            userData = userData.copy(
+                missions = currentMissions,
+                lastMissionsResetDate = userData.lastMissionsResetDate
+                    ?: com.google.firebase.Timestamp(serverDate),
+                lastWeeklyMissionsResetDate = userData.lastWeeklyMissionsResetDate
+                    ?: com.google.firebase.Timestamp(serverDate)
+            )
+            guardarStatsCompletos()
+            return
+        }
+
+        val lastDailyDay = userData.lastMissionsResetDate?.toDate()?.let {
+            val c = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"))
+            c.time = it
+            c.get(Calendar.DAY_OF_YEAR)
+        }
+
+        val lastDailyYear = userData.lastMissionsResetDate?.toDate()?.let {
+            val c = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"))
+            c.time = it
+            c.get(Calendar.YEAR)
+        }
+
+        val lastWeeklyWeek = userData.lastWeeklyMissionsResetDate?.toDate()?.let {
+            val c = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"))
+            c.time = it
+            c.get(Calendar.WEEK_OF_YEAR)
+        }
+
+        val needsDailyReset =
+            lastDailyDay != null && (lastDailyDay != currentDayOfYear || lastDailyYear != currentYear)
+        val needsWeeklyReset = lastWeeklyWeek != null && lastWeeklyWeek != currentWeekOfYear
+
+        if (needsDailyReset || needsWeeklyReset) {
+            val defaultDaily = listOf(
+                Mission("daily_14_games", "Juega los 14 juegos diarios", 0, 14, 5, false, "DAILY"),
+                Mission("daily_5_wins", "Gana 5 juegos diarios", 0, 5, 3, false, "DAILY"),
+                Mission("daily_3_free", "Juega 3 veces un juego libre", 0, 3, 3, false, "DAILY")
+            )
+            val defaultWeekly = listOf(
+                Mission(
+                    "weekly_40_games",
+                    "Juega 50 veces juegos diarios",
+                    0,
+                    50,
+                    20,
+                    false,
+                    "WEEKLY"
+                ),
+                Mission("weekly_25_wins", "Consigue 30 victorias", 0, 30, 30, false, "WEEKLY")
+            )
+
+            if (needsDailyReset) {
+                currentMissions.removeAll { it.type == "DAILY" }
+                currentMissions.addAll(defaultDaily)
+            }
+            if (needsWeeklyReset) {
+                currentMissions.removeAll { it.type == "WEEKLY" }
+                currentMissions.addAll(defaultWeekly)
+            }
+
+            userData = userData.copy(
+                missions = currentMissions,
+                lastMissionsResetDate = if (needsDailyReset) com.google.firebase.Timestamp(
+                    serverDate
+                ) else userData.lastMissionsResetDate,
+                lastWeeklyMissionsResetDate = if (needsWeeklyReset) com.google.firebase.Timestamp(
+                    serverDate
+                ) else userData.lastWeeklyMissionsResetDate
+            )
+            guardarStatsCompletos()
+        }
+    }
+
+    fun incrementarProgresoMision(missionId: String, amount: Int = 1) {
+        val updatedMissions = userData.missions.map { m ->
+            if (m.id == missionId && !m.isClaimed) {
+                val newProg = (m.currentProgress + amount).coerceAtMost(m.targetProgress)
+                m.copy(currentProgress = newProg)
+            } else m
+        }
+        if (updatedMissions != userData.missions) {
+            userData = userData.copy(missions = updatedMissions)
+            actualizarCamposFiresore(mapOf("missions" to userData.missions))
+        }
+    }
+
+    fun canjearMision(missionId: String) {
+        val mission = userData.missions.find { it.id == missionId }
+        if (mission != null && !mission.isClaimed && mission.currentProgress >= mission.targetProgress) {
+            val updatedMissions = userData.missions.map { m ->
+                if (m.id == missionId) m.copy(isClaimed = true) else m
+            }
+            userData = userData.copy(
+                missions = updatedMissions,
+                coins = userData.coins + mission.rewardCoins
+            )
+            actualizarCamposFiresore(
+                mapOf(
+                    "missions" to userData.missions,
+                    "coins" to userData.coins
+                )
+            )
+            guardarStatsCompletos()
+        }
+    }
+
+    fun registrarJuegoLibre() {
+        incrementarProgresoMision("daily_3_free")
     }
 
     private fun verificarYActualizarRacha() {
@@ -163,47 +319,65 @@ class HomeStatsViewModel : ViewModel() {
             if (serverDate == null) return@obtenerHoraServidorDos
 
             val nowUTC = serverDate.toInstant().atZone(ZoneOffset.UTC).toLocalDate()
-            val lastDate = userData.ultimaConexionRacha?.toDate()?.toInstant()?.atZone(ZoneOffset.UTC)?.toLocalDate()
+            val lastDate =
+                userData.ultimaConexionRacha?.toDate()?.toInstant()?.atZone(ZoneOffset.UTC)
+                    ?.toLocalDate()
 
             when {
                 lastDate == null -> {
-                    userData = userData.copy(rachaActual = 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
+                    userData = userData.copy(
+                        rachaActual = 1,
+                        ultimaConexionRacha = com.google.firebase.Timestamp(serverDate)
+                    )
                     rachaIncrementadaHoy = true
-                    actualizarCamposFiresore(mapOf(
-                        "rachaActual" to 1,
-                        "ultimaConexionRacha" to userData.ultimaConexionRacha
-                    ))
+                    actualizarCamposFiresore(
+                        mapOf(
+                            "rachaActual" to 1,
+                            "ultimaConexionRacha" to userData.ultimaConexionRacha
+                        )
+                    )
                 }
+
                 lastDate == nowUTC -> {
                     rachaIncrementadaHoy = false
                 }
+
                 lastDate.plusDays(1) == nowUTC -> {
-                    userData = userData.copy(rachaActual = userData.rachaActual + 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
+                    userData = userData.copy(
+                        rachaActual = userData.rachaActual + 1,
+                        ultimaConexionRacha = com.google.firebase.Timestamp(serverDate)
+                    )
                     rachaIncrementadaHoy = true
-                    actualizarCamposFiresore(mapOf(
-                        "rachaActual" to userData.rachaActual,
-                        "ultimaConexionRacha" to userData.ultimaConexionRacha
-                    ))
+                    actualizarCamposFiresore(
+                        mapOf(
+                            "rachaActual" to userData.rachaActual,
+                            "ultimaConexionRacha" to userData.ultimaConexionRacha
+                        )
+                    )
                 }
+
                 else -> {
-                    userData = userData.copy(rachaActual = 1, ultimaConexionRacha = com.google.firebase.Timestamp(serverDate))
+                    userData = userData.copy(
+                        rachaActual = 1,
+                        ultimaConexionRacha = com.google.firebase.Timestamp(serverDate)
+                    )
                     rachaIncrementadaHoy = true
-                    actualizarCamposFiresore(mapOf(
-                        "rachaActual" to 1,
-                        "ultimaConexionRacha" to userData.ultimaConexionRacha
-                    ))
+                    actualizarCamposFiresore(
+                        mapOf(
+                            "rachaActual" to 1,
+                            "ultimaConexionRacha" to userData.ultimaConexionRacha
+                        )
+                    )
                 }
             }
         }
     }
 
-    // NUEVA FUNCIÓN: Solo actualiza lo que necesitamos, ahorrando escrituras internas
     private fun actualizarCamposFiresore(campos: Map<String, Any?>) {
         userId?.let { uid ->
             firestore.collection("Users").document(uid)
                 .update(campos)
                 .addOnFailureListener {
-                    // Si falla el update (porque el doc no existe), usamos set
                     guardarStatsCompletos()
                 }
         }
@@ -218,20 +392,69 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun cargarStats() {
+        userData = UserData()
+        gameAttempts = null
+        isUserLoaded = false
+        isCheckingRewards = true
+
         userId?.let { uid ->
             firestore.collection("Users").document(uid).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        userData = document.toObject(UserData::class.java) ?: UserData()
-                        verificarYActualizarRacha()
-                        verificarReinicioSemanal()
+                        val obj = document.toObject(UserData::class.java) ?: UserData()
+
+                        val rawMissions = document.get("missions") as? List<*>
+
+                        val parsedMissions = rawMissions?.mapNotNull { item ->
+                            val map = item as? Map<*, *>
+                            if (map != null) {
+                                val rawClaimed = map["isClaimed"] ?: map["claimed"]
+                                Mission(
+                                    id = map["id"] as? String ?: "",
+                                    title = map["title"] as? String ?: "",
+                                    currentProgress = (map["currentProgress"] as? Long)?.toInt()
+                                        ?: (map["currentProgress"] as? Int) ?: 0,
+                                    targetProgress = (map["targetProgress"] as? Long)?.toInt()
+                                        ?: (map["targetProgress"] as? Int) ?: 1,
+                                    rewardCoins = (map["rewardCoins"] as? Long)?.toInt()
+                                        ?: (map["rewardCoins"] as? Int) ?: 100,
+                                    isClaimed = rawClaimed as? Boolean ?: false,
+                                    type = map["type"] as? String ?: "DAILY"
+                                )
+                            } else null
+                        } ?: obj.missions
+
+                        val resetDate = document.getTimestamp("lastMissionsResetDate")
+                            ?: obj.lastMissionsResetDate
+                        val weeklyResetDate = document.getTimestamp("lastWeeklyMissionsResetDate")
+                            ?: obj.lastWeeklyMissionsResetDate
+
+                        userData = obj.copy(
+                            missions = parsedMissions,
+                            lastMissionsResetDate = resetDate,
+                            lastWeeklyMissionsResetDate = weeklyResetDate
+                        )
+                    } else {
+                        userData = UserData()
                     }
+                    verificarYActualizarRacha()
+                    verificarReinicioSemanal()
                     isUserLoaded = true
+                }
+                .addOnFailureListener {
+                    userData = UserData()
+                    verificarYActualizarRacha()
+                    verificarReinicioSemanal()
+                    isUserLoaded = true
+                    isCheckingRewards = false
                 }
 
             firestore.collection("attempts").document(uid).get()
                 .addOnSuccessListener { document ->
                     gameAttempts = document.toObject(GameAttempts::class.java) ?: GameAttempts()
+                }
+                .addOnFailureListener {
+                    gameAttempts = GameAttempts()
                 }
         } ?: run {
             userData = UserData()
@@ -245,7 +468,6 @@ class HomeStatsViewModel : ViewModel() {
             "first_game" -> gameAttempts?.first_game
             "second_game" -> gameAttempts?.second_game
             "third_game" -> gameAttempts?.third_game
-            "fourth_game" -> gameAttempts?.fourth_game
             "sixth_game" -> gameAttempts?.sixth_game
             "seventh_game" -> gameAttempts?.seventh_game
             "fift_game" -> gameAttempts?.fift_game
@@ -256,6 +478,7 @@ class HomeStatsViewModel : ViewModel() {
             "fifteen_game" -> gameAttempts?.fifteen_game
             "sixteen_game" -> gameAttempts?.sixteen_game
             "seventeen_game" -> gameAttempts?.seventeen_game
+            "eighteen_game" -> gameAttempts?.eighteen_game
             else -> null
         }
 
@@ -263,8 +486,10 @@ class HomeStatsViewModel : ViewModel() {
             onResult(true)
         } else {
             timeRepository.obtenerHoraServidorDos { horaServidor ->
-                val nowUTC = (horaServidor ?: java.util.Date()).toInstant().atZone(ZoneOffset.UTC).toLocalDate()
-                val lastDayUTC = lastTimestamp.toDate().toInstant().atZone(ZoneOffset.UTC).toLocalDate()
+                val nowUTC = (horaServidor ?: java.util.Date()).toInstant().atZone(ZoneOffset.UTC)
+                    .toLocalDate()
+                val lastDayUTC =
+                    lastTimestamp.toDate().toInstant().atZone(ZoneOffset.UTC).toLocalDate()
                 onResult(lastDayUTC != nowUTC)
             }
         }
@@ -275,7 +500,6 @@ class HomeStatsViewModel : ViewModel() {
             "first_game" -> gameAttempts?.first_game
             "second_game" -> gameAttempts?.second_game
             "third_game" -> gameAttempts?.third_game
-            "fourth_game" -> gameAttempts?.fourth_game
             "sixth_game" -> gameAttempts?.sixth_game
             "seventh_game" -> gameAttempts?.seventh_game
             "fift_game" -> gameAttempts?.fift_game
@@ -286,6 +510,7 @@ class HomeStatsViewModel : ViewModel() {
             "fifteen_game" -> gameAttempts?.fifteen_game
             "sixteen_game" -> gameAttempts?.sixteen_game
             "seventeen_game" -> gameAttempts?.seventeen_game
+            "eighteen_game" -> gameAttempts?.eighteen_game
             else -> null
         } ?: return true
 
@@ -297,10 +522,12 @@ class HomeStatsViewModel : ViewModel() {
     fun registrarIntentoJuego(gameId: String) {
         userId?.let { uid ->
             val timestamp = com.google.firebase.Timestamp.now()
-            
+
             // 1. Actualizar localmente de inmediato para que la UI responda sin esperar al servidor
             actualizarIntentoLocal(gameId, timestamp)
-            
+            incrementarProgresoMision("daily_15_games")
+            incrementarProgresoMision("weekly_40_games")
+
             // 2. Guardar en Firestore SIN llamar a cargarStats() al éxito
             firestore.collection("attempts").document(uid)
                 .set(mapOf(gameId to FieldValue.serverTimestamp()), SetOptions.merge())
@@ -313,7 +540,6 @@ class HomeStatsViewModel : ViewModel() {
             "first_game" -> gameAttempts?.copy(first_game = timestamp)
             "second_game" -> gameAttempts?.copy(second_game = timestamp)
             "third_game" -> gameAttempts?.copy(third_game = timestamp)
-            "fourth_game" -> gameAttempts?.copy(fourth_game = timestamp)
             "sixth_game" -> gameAttempts?.copy(sixth_game = timestamp)
             "seventh_game" -> gameAttempts?.copy(seventh_game = timestamp)
             "fift_game" -> gameAttempts?.copy(fift_game = timestamp)
@@ -324,6 +550,7 @@ class HomeStatsViewModel : ViewModel() {
             "fifteen_game" -> gameAttempts?.copy(fifteen_game = timestamp)
             "sixteen_game" -> gameAttempts?.copy(sixteen_game = timestamp)
             "seventeen_game" -> gameAttempts?.copy(seventeen_game = timestamp)
+            "eighteen_game" -> gameAttempts?.copy(eighteen_game = timestamp)
             else -> gameAttempts
         }
     }

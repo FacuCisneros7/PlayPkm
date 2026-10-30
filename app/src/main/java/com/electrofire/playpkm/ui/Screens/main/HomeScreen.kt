@@ -4,7 +4,9 @@ import android.app.Activity
 import android.media.MediaPlayer
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,25 +14,35 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,8 +50,6 @@ import androidx.navigation.NavController
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.AdReward
 import com.electrofire.playpkm.ui.Components.GifAnimation
-import com.electrofire.playpkm.ui.Components.HomeStatsCard
-import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.MyCardButton
 import com.electrofire.playpkm.ui.Components.WeeklyRewardsDialog
 import com.electrofire.playpkm.ui.Navegation.Screen
@@ -65,6 +75,19 @@ fun HomeScreen(
     val rewardedAdManager = remember { AdReward(context) }
 
     val listState = rememberLazyListState()
+
+    var selectedTab by remember { mutableIntStateOf(0) } // 0: Desafíos Diarios, 1: Juega cuando quieras
+
+    val dailyGameIds = listOf(
+        "first_game", "second_game", "third_game",
+        "sixth_game", "seventh_game", "fift_game", "eight_game",
+        "ten_game", "thirteen_game", "forteen_game", "fifteen_game",
+        "sixteen_game", "seventeen_game", "eighteen_game"
+    )
+    val totalDaily = dailyGameIds.size
+    val completedCount = dailyGameIds.count { gameId ->
+        !statsViewModel.canPlayGame(gameId)
+    }
 
     val isAtBottom by remember {
         derivedStateOf {
@@ -102,7 +125,6 @@ fun HomeScreen(
         authViewModel.checkUserLoggedIn()
     }
 
-    // Mostrar Diálogo de Recompensas Semanales
     statsViewModel.weeklyRewardToShow?.let { rewardData ->
         WeeklyRewardsDialog(
             rewardData = rewardData,
@@ -110,52 +132,69 @@ fun HomeScreen(
         )
     }
 
-    // Bloquear pantalla hasta que el usuario y las recompensas estén cargadas
-    if (!statsViewModel.isUserLoaded || statsViewModel.isCheckingRewards) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Loading()
-        }
-    } else {
-        Box(Modifier.fillMaxSize()) {
-            Column(
+    Box(Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 24.dp, bottom = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logohomecopia),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 24.dp, bottom = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .height(80.dp)
+                    .wrapContentWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logohomecopia),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(80.dp)
-                        .wrapContentWidth()
+                TabButton(
+                    text = "RETOS DIARIOS",
+                    isSelected = selectedTab == 0,
+                    onClick = { selectedTab = 0 }
                 )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                HomeStatsCard(
-                    statsViewModel = statsViewModel,
-                    onClick = {
-                        val mediaPlayer =
-                            MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                        mediaPlayer.start()
-                        mediaPlayer.setOnCompletionListener { it.release() }
-
-                        navController.navigate(Screen.UserScreen.route)
-                    }
+                TabButton(
+                    text = "RETOS LIBRES",
+                    isSelected = selectedTab == 1,
+                    onClick = { selectedTab = 1 }
                 )
+            }
 
-                Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-                Box {
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier.height(380.dp),
-                        contentPadding = PaddingValues(top = 6.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+            // Header con el contador o sin límite
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.onSecondary,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+            ) {
+                Text(
+                    text = if (selectedTab == 0) "$completedCount/$totalDaily completados" else "∞ SIN LÍMITE",
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                )
+            }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.height(380.dp),
+                    contentPadding = PaddingValues(top = 6.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (selectedTab == 1) {
+                        // Juegos Repetitivos (Juega cuando quieras)
                         item {
                             MyCardButton(
                                 title = "BEFORE OR AFTER",
@@ -203,7 +242,8 @@ fun HomeScreen(
                                 }
                             )
                         }
-
+                    } else {
+                        // Juegos Diarios
                         item {
                             MyCardButton(
                                 title = "TYPES",
@@ -287,7 +327,7 @@ fun HomeScreen(
 
                         item {
                             MyCardButton(
-                                title = "HEAVY POKEMON",
+                                title = "POKE HEAVY",
                                 imageRes = R.drawable.pokeheavy,
                                 showBadge = statsViewModel.canPlayGame("seventeen_game"),
                                 onClick = {
@@ -295,20 +335,45 @@ fun HomeScreen(
                                         MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                     mediaPlayer.start()
                                     mediaPlayer.setOnCompletionListener { it.release() }
-                                    navController.navigate(Screen.WeightGame.route)
+                                    statsViewModel.verificarAccesoJuego("seventeen_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("seventeen_game")
+                                            navController.navigate(Screen.WeightGame.route)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                }
+                            )
+                        }
 
-//                                    statsViewModel.verificarAccesoJuego("seventeen_game") { canPlay ->
-//                                        if (canPlay) {
-//                                            statsViewModel.registrarIntentoJuego("seventeen_game")
-//                                            navController.navigate(Screen.WeightGame.route)
-//                                        } else {
-//                                            Toast.makeText(
-//                                                context,
-//                                                "Ya jugaste hoy! Espera a mañana",
-//                                                Toast.LENGTH_SHORT
-//                                            ).show()
-//                                        }
-//                                    }
+                        item {
+                            MyCardButton(
+                                title = "POKE SPEED",
+                                imageRes = R.drawable.pokespeed,
+                                showBadge = statsViewModel.canPlayGame("eighteen_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                                    statsViewModel.verificarAccesoJuego("eighteen_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("eighteen_game")
+                                            navController.navigate(Screen.SpeedGame.route)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
                                 }
                             )
                         }
@@ -323,19 +388,18 @@ fun HomeScreen(
                                         MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                     mediaPlayer.start()
                                     mediaPlayer.setOnCompletionListener { it.release() }
-                                    navController.navigate(Screen.LanguageGame.route)
-//                                    statsViewModel.verificarAccesoJuego("sixteen_game") { canPlay ->
-//                                        if (canPlay) {
-//                                            statsViewModel.registrarIntentoJuego("sixteen_game")
-//                                            navController.navigate(Screen.LanguageGame.route)
-//                                        } else {
-//                                            Toast.makeText(
-//                                                context,
-//                                                "Ya jugaste hoy! Espera a mañana",
-//                                                Toast.LENGTH_SHORT
-//                                            ).show()
-//                                        }
-//                                    }
+                                    statsViewModel.verificarAccesoJuego("sixteen_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("sixteen_game")
+                                            navController.navigate(Screen.LanguageGame.route)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
                                 }
                             )
                         }
@@ -439,33 +503,6 @@ fun HomeScreen(
                                         if (canPlay) {
                                             statsViewModel.registrarIntentoJuego("third_game")
                                             navController.navigate("third_game")
-                                        } else {
-                                            Toast.makeText(
-                                                context,
-                                                "Ya jugaste hoy! Espera a mañana",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
-                                }
-                            )
-                        }
-
-                        item {
-                            MyCardButton(
-                                title = "POWER OF MOVE",
-                                imageRes = R.drawable.movepower,
-                                showBadge = statsViewModel.canPlayGame("fourth_game"),
-                                onClick = {
-                                    val mediaPlayer =
-                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                                    mediaPlayer.start()
-                                    mediaPlayer.setOnCompletionListener { it.release() }
-
-                                    statsViewModel.verificarAccesoJuego("fourth_game") { canPlay ->
-                                        if (canPlay) {
-                                            statsViewModel.registrarIntentoJuego("fourth_game")
-                                            navController.navigate("fourth_game")
                                         } else {
                                             Toast.makeText(
                                                 context,
@@ -586,36 +623,79 @@ fun HomeScreen(
                                 }
                             )
                         }
-
                     }
-
-                    if (!isAtBottom) {
-                        GifAnimation(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(bottom = 8.dp)
-                        )
-                    }
-
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row {
-                    Text(
-                        text = stringResource(id = R.string.actualizacion_en) + " ",
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
-                        color = MaterialTheme.colorScheme.inversePrimary
-                    )
-                    Text(
-                        text = timeLeft,
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
-                        color = color
+                if (!isAtBottom) {
+                    GifAnimation(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 8.dp)
                     )
                 }
 
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                Text(
+                    text = stringResource(id = R.string.actualizacion_en) + " ",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
+                    color = MaterialTheme.colorScheme.inversePrimary
+                )
+                Text(
+                    text = timeLeft,
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
+                    color = color
+                )
+            }
+
         }
     }
+}
 
+@Composable
+fun TabButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .width(120.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(
+            2.dp,
+            if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(
+                alpha = 0.5f
+            )
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondary.copy(
+                alpha = 0.5f
+            )
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 11.sp
+                ),
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(
+                    alpha = 0.5f
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 }

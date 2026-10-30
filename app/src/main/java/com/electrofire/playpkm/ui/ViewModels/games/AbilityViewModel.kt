@@ -18,7 +18,7 @@ import javax.inject.Inject
 class AbilityViewModel @Inject constructor(
     private val repo: PokemonApiRepository
 ) : ViewModel() {
-    
+
     private val _state = MutableStateFlow<UIState<PokemonApi>>(UIState.Loading)
     val state: StateFlow<UIState<PokemonApi>> = _state
 

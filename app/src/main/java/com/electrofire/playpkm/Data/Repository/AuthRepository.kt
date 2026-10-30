@@ -60,6 +60,22 @@ class AuthRepository {
             }
     }
 
+    fun iniciarSesionConGoogle(
+        idToken: String,
+        onSuccess: (String) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val credential = com.google.firebase.auth.GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnSuccessListener {
+                val uid = it.user?.uid ?: ""
+                onSuccess(uid)
+            }
+            .addOnFailureListener { e ->
+                onError(e.message ?: "Error al autenticar con Google")
+            }
+    }
+
     fun obtenerUsuarioActual(): String? {
         return FirebaseAuth.getInstance().currentUser?.uid
     }

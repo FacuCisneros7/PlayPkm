@@ -3,9 +3,7 @@ package com.electrofire.playpkm.ui.Components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,30 +25,31 @@ fun HabilityCard(
     modifier: Modifier = Modifier,
     pokemonActual: PokemonApi?
 ) {
-        Card(
-            modifier = modifier
-                .wrapContentSize()
-                .padding(8.dp),
-            shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary.copy(0.3f)),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
-            )
+    Card(
+        modifier = modifier
+            .wrapContentSize()
+            .padding(8.dp),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary.copy(0.3f)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f)
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .wrapContentWidth()
+                .fillMaxHeight()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .wrapContentWidth().fillMaxHeight()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                for (habilidad in pokemonActual?.abilities ?: listOf("")) {
-                    Text(
-                        habilidad.uppercase(),
-                        color = MaterialTheme.colorScheme.primary.copy(0.5f),
-                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
-                        textAlign = TextAlign.Center
-                    )
-                }
+            for (habilidad in pokemonActual?.abilities ?: listOf("")) {
+                Text(
+                    habilidad.uppercase(),
+                    color = MaterialTheme.colorScheme.primary.copy(0.5f),
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+                    textAlign = TextAlign.Center
+                )
             }
         }
+    }
 }

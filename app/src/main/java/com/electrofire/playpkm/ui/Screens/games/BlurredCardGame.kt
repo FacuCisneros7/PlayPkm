@@ -33,15 +33,15 @@ import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Navegation.Screen
+import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
-import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
+import com.electrofire.playpkm.ui.ViewModels.games.BlurredCardViewModel
 import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaBlurredCard
+import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
-import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
-import com.electrofire.playpkm.ui.ViewModels.games.BlurredCardViewModel
 
 @Composable
 fun BlurredCardGame(

@@ -1,12 +1,16 @@
 package com.electrofire.playpkm.ui.Screens.main
 
 import android.media.MediaPlayer
-import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -58,12 +62,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -72,7 +74,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.electrofire.playpkm.Domain.openNotificationSettings
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.LottieAnimationView
-import com.electrofire.playpkm.ui.Components.NationalityDropdown
 import com.electrofire.playpkm.ui.Components.PokemonWithFlag
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
@@ -87,8 +88,7 @@ fun UserScreen(
 ) {
     val user = statsViewModel.userData
     val context = LocalContext.current
-    var selectedImage by remember { mutableStateOf<String?>(null) }
-    var selectedNationality by remember { mutableStateOf(user.nationality) }
+    var selectedAvatarId by remember { mutableStateOf<String?>(null) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var instagramText by remember { mutableStateOf(user.instagram ?: "") }
 
@@ -99,7 +99,7 @@ fun UserScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 19.dp, bottom = 19.dp)
+                .padding(top = 19.dp, bottom = 14.dp)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -115,13 +115,14 @@ fun UserScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             PokemonWithFlag(
-                painter = selectedImage ?: user.imagen,
+                painter = selectedAvatarId?.let { "file:///android_asset/portraits/$it.png" }
+                    ?: "file:///android_asset/portraits/${user.avatarId}.png",
                 nationality = user.nationality,
                 imageSize = 100.dp,
-                borderColor = MaterialTheme.colorScheme.tertiary.copy(0.4f)
+                borderColor = MaterialTheme.colorScheme.outline
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 LottieAnimationView(
@@ -136,14 +137,14 @@ fun UserScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Card(
                 modifier = Modifier.width(300.dp),
                 shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
+                    containerColor = MaterialTheme.colorScheme.onSecondary
                 )
             ) {
 
@@ -151,24 +152,13 @@ fun UserScreen(
                     modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
-                    Box {
-                        Text(
-                            text = "ESTADÍSTICAS",
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onSecondary,
-                                drawStyle = Stroke(width = 4f)
-                            )
+                    Text(
+                        text = "ESTADÍSTICAS",
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.outline
                         )
-                        Text(
-                            text = "ESTADÍSTICAS",
-                            style = MaterialTheme.typography.headlineLarge.copy(
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.tertiary
-                            )
-                        )
-                    }
+                    )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -191,8 +181,16 @@ fun UserScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                StatColumn(label = "WINS", value = user.victorias, color = MaterialTheme.colorScheme.outline)
-                                StatColumn(label = "LOSS", value = user.derrotas, color = MaterialTheme.colorScheme.onSurface)
+                                StatColumn(
+                                    label = "WINS",
+                                    value = user.victorias,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                StatColumn(
+                                    label = "LOSS",
+                                    value = user.derrotas,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             }
                         }
 
@@ -239,8 +237,16 @@ fun UserScreen(
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                StatColumn(label = "WINS", value = user.weeklyWins, color = MaterialTheme.colorScheme.outline)
-                                StatColumn(label = "LOSS", value = user.weeklyLosses, color = MaterialTheme.colorScheme.onSurface)
+                                StatColumn(
+                                    label = "WINS",
+                                    value = user.weeklyWins,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                StatColumn(
+                                    label = "LOSS",
+                                    value = user.weeklyLosses,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             }
                         }
                     }
@@ -286,16 +292,20 @@ fun UserScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(user.profileImages) { profileImage ->
+                    items(user.purchasedAvatars) { avatarId ->
+                        val isSelected =
+                            (selectedAvatarId == avatarId || (selectedAvatarId == null && user.avatarId == avatarId))
                         Image(
-                            painter = rememberAsyncImagePainter(profileImage),
+                            painter = rememberAsyncImagePainter("file:///android_asset/portraits/$avatarId.png"),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(60.dp)
                                 .clip(CircleShape)
                                 .border(
-                                    width = if (selectedImage == profileImage) 4.dp else 2.dp,
-                                    color = if (selectedImage == profileImage) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                    width = if (isSelected) 4.dp else 2.dp,
+                                    color = if (isSelected) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(
+                                        alpha = 0.4f
+                                    ),
                                     shape = CircleShape
                                 )
                                 .clickable {
@@ -304,7 +314,7 @@ fun UserScreen(
                                     mediaPlayer.start()
                                     mediaPlayer.setOnCompletionListener { it.release() }
 
-                                    selectedImage = profileImage
+                                    selectedAvatarId = avatarId
                                 },
                             contentScale = ContentScale.Crop
                         )
@@ -312,14 +322,14 @@ fun UserScreen(
                 }
             }
 
-            if (selectedImage != null && selectedImage != user.imagen) {
+            if (selectedAvatarId != null && selectedAvatarId != user.avatarId) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
                     onClick = {
-                        selectedImage?.let { 
-                            statsViewModel.registrarFoto(it)
-                            selectedImage = null
+                        selectedAvatarId?.let {
+                            statsViewModel.seleccionarAvatar(it)
+                            selectedAvatarId = null
                         }
                     },
                     shape = RoundedCornerShape(24.dp),
@@ -334,7 +344,7 @@ fun UserScreen(
                         .height(45.dp)
                 ) {
                     Text(
-                        text = "Cambiar Pokemon insignia",
+                        text = "Cambiar Pokémon insignia",
                         style = MaterialTheme.typography.titleLarge.copy(fontSize = 14.sp)
                     )
                 }
@@ -350,95 +360,104 @@ fun UserScreen(
 
             Button(
                 onClick = { showSettingsDialog = true },
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(24.dp),
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary.copy(0.9f),
+                    containerColor = MaterialTheme.colorScheme.secondary,
                     contentColor = MaterialTheme.colorScheme.primary
                 ),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp),
                 modifier = Modifier
-                    .width(150.dp)
-                    .height(40.dp)
+                    .fillMaxWidth(0.4f)
+                    .height(45.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = null,
-                    modifier = Modifier.size(30.dp).padding(end = 6.dp)
-                )
-                Text(
-                    text = "Ajustes",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontSize = 13.sp
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
                     )
-                )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Ajustes",
+                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 14.sp)
+                    )
+                }
             }
-        }
 
-        if (showSettingsDialog) {
-            Dialog(onDismissRequest = { showSettingsDialog = false }) {
+        }
+    }
+
+    if (showSettingsDialog) {
+        Dialog(onDismissRequest = { showSettingsDialog = false }) {
+            AnimatedVisibility(
+                visible = showSettingsDialog,
+                enter = scaleIn(
+                    initialScale = 0.8f,
+                    animationSpec = tween(300)
+                ) + fadeIn(tween(300)),
+                exit = scaleOut(
+                    targetScale = 0.8f,
+                    animationSpec = tween(200)
+                ) + fadeOut(tween(200))
+            ) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(0.95f)
                         .wrapContentHeight(),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(24.dp),
                     border = BorderStroke(4.dp, MaterialTheme.colorScheme.tertiary),
                     elevation = CardDefaults.cardElevation(12.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.9f)
+                        containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.95f)
                     )
                 ) {
                     Column(
-                        modifier = Modifier
-                            .padding(24.dp)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Box {
-                            Text(
-                                text = "AJUSTES",
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.headlineLarge.copy(
-                                    fontSize = 26.sp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    drawStyle = Stroke(width = 4f)
-                                )
-                            )
-                            Text(
-                                text = "AJUSTES",
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.headlineLarge.copy(
-                                    fontSize = 26.sp,
-                                    color = MaterialTheme.colorScheme.tertiary
-                                )
-                            )
-                        }
-
-                        // Volumen
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "VOLUMEN",
+                        Text(
+                            text = "AJUSTES",
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                fontSize = 24.sp,
                                 color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.titleLarge
+                                fontWeight = FontWeight.Bold
                             )
-                            Slider(
-                                value = volume,
-                                onValueChange = { musicViewModel.setVolume(it) },
-                                valueRange = 0f..0.2f, // Limitamos a 0.3 para que no sea muy fuerte
-                                colors = SliderDefaults.colors(
-                                    thumbColor = MaterialTheme.colorScheme.tertiary,
-                                    activeTrackColor = MaterialTheme.colorScheme.tertiary,
-                                    inactiveTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                                ),
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
+                        )
 
-                        // Instagram
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Volumen de música
+                        Text(
+                            text = "Volumen de música",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Slider(
+                            value = volume,
+                            onValueChange = { musicViewModel.setVolume(it) },
+                            valueRange = 0f..1f,
+                            colors = SliderDefaults.colors(
+                                thumbColor = MaterialTheme.colorScheme.tertiary,
+                                activeTrackColor = MaterialTheme.colorScheme.primary,
+                                inactiveTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         OutlinedTextField(
                             value = instagramText,
                             onValueChange = { instagramText = it.trim().replace("@", "") },
-                            label = { Text("Tu Instagram (Opcional)", style = MaterialTheme.typography.bodyLarge) },
+                            label = {
+                                Text(
+                                    "Tu Instagram (Opcional)",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            },
                             leadingIcon = {
                                 Image(
                                     painter = painterResource(id = R.drawable.instagram),
@@ -447,12 +466,12 @@ fun UserScreen(
                                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
                                 )
                             },
-                            placeholder = { 
+                            placeholder = {
                                 Text(
-                                    "usuario_ig", 
+                                    "usuario_ig",
                                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                                     style = MaterialTheme.typography.bodyLarge
-                                ) 
+                                )
                             },
                             singleLine = true,
                             textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
@@ -460,7 +479,9 @@ fun UserScreen(
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent,
                                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                                unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary.copy(
+                                    alpha = 0.5f
+                                ),
                                 focusedLabelColor = MaterialTheme.colorScheme.tertiary,
                                 unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                                 focusedTextColor = MaterialTheme.colorScheme.primary,
@@ -470,71 +491,71 @@ fun UserScreen(
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        // Nacionalidad
-                        NationalityDropdown(
-                            selectedNationality = selectedNationality,
-                            onNationalitySelected = { selectedNationality = it }
-                        )
+                        Spacer(modifier = Modifier.height(24.dp))
 
-                        // Notificaciones
                         Button(
                             onClick = { openNotificationSettings(context) },
-                            modifier = Modifier.fillMaxWidth().height(45.dp),
                             shape = RoundedCornerShape(12.dp),
-                            border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                contentColor = MaterialTheme.colorScheme.primary
-                            )
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.onSecondary
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp)
                         ) {
-                            Icon(Icons.Default.Notifications, contentDescription = null, modifier = Modifier.size(20.dp))
-                            Spacer(Modifier.width(8.dp))
-                            Text("ACTIVAR NOTIFICACIONES", style = MaterialTheme.typography.titleLarge.copy(fontSize = 12.sp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Notifications,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Configurar Notificaciones",
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            }
                         }
 
-                        // Cerrar Sesión
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         Button(
                             onClick = {
-                                FirebaseAuth.getInstance().signOut()
-                                showSettingsDialog = false
                                 statsViewModel.reset()
-                                navController.navigate("register") {
-                                    popUpTo(Screen.Home.route) { inclusive = true }
+                                FirebaseAuth.getInstance().signOut()
+                                navController.navigate(Screen.Login.route) {
+                                    popUpTo(0) { inclusive = true }
                                 }
-                                Toast.makeText(context, "Sesión cerrada", Toast.LENGTH_SHORT).show()
                             },
-                            modifier = Modifier.fillMaxWidth().height(45.dp),
                             shape = RoundedCornerShape(12.dp),
-                            border = BorderStroke(2.dp, Color.Red),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Red.copy(alpha = 0.1f),
-                                contentColor = Color.Red
-                            )
+                                containerColor = MaterialTheme.colorScheme.onSurface,
+                                contentColor = MaterialTheme.colorScheme.onSecondary
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp)
                         ) {
-                            Text("CERRAR SESIÓN", style = MaterialTheme.typography.titleLarge.copy(fontSize = 14.sp))
+                            Text(
+                                text = "Cerrar Sesión",
+                                style = MaterialTheme.typography.labelLarge
+                            )
                         }
 
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                        // Botón de Cerrar Diálogo
-                        Button(
-                            onClick = { 
-                                statsViewModel.registrarInstagram(instagramText)
-                                selectedNationality?.let { statsViewModel.registrarNationality(it) }
-                                showSettingsDialog = false 
-                            },
-                            modifier = Modifier.width(150.dp).height(40.dp),
-                            shape = RoundedCornerShape(20.dp),
-                            border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f),
-                                contentColor = MaterialTheme.colorScheme.primary
-                            )
-                        ) {
-                            Text(text = "GUARDAR",
-                                style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp)
-                            )
-                        }
+                        Text(
+                            text = "CERRAR",
+                            color = MaterialTheme.colorScheme.tertiary,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .clickable {
+                                    showSettingsDialog =
+                                        dialogAnimateClose { showSettingsDialog = false }
+                                }
+                                .padding(vertical = 8.dp)
+                        )
                     }
                 }
             }
@@ -545,16 +566,8 @@ fun UserScreen(
 @Composable
 fun StatColumn(label: String, value: Int, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            text = value.toString(),
-            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-            color = color
-        )
+        Text(text = label, style = MaterialTheme.typography.labelMedium, color = color)
+        Text(text = "$value", style = MaterialTheme.typography.titleMedium, color = color)
     }
 }
 
@@ -563,13 +576,18 @@ fun RecordItem(label: String, value: Int) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            text = value.toString(),
-            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 18.sp),
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            text = "$value",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
         )
     }
+}
+
+fun dialogAnimateClose(onClose: () -> Unit): Boolean {
+    onClose()
+    return false
 }

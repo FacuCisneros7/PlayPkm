@@ -41,7 +41,7 @@ class RankingViewModel @Inject constructor(
         viewModelScope.launch {
             Log.d("RankingCache", "--- CONSULTANDO CACHÉ GLOBAL ---")
             val cache = repo.getRankingCache()
-            
+
             // Si ya tenemos datos, los mostramos de inmediato (UX rápida)
             cache?.let { updateAllStates(it) }
 
@@ -54,15 +54,19 @@ class RankingViewModel @Inject constructor(
                 viewModelScope.launch {
                     val nowUTC = serverDate.toInstant().atZone(ZoneOffset.UTC).toLocalDate()
                     val lastUpdatedDate = cache?.lastUpdated?.toDate()
-                    
+
                     // Si el documento existe pero no tiene fecha (pendiente de sync), 
                     // NO refrescamos. Esperamos a la próxima vez.
                     if (cache != null && cache.lastUpdated == null) {
-                        Log.d("RankingCache", "Documento en sync local. Evitando refresco preventivo.")
+                        Log.d(
+                            "RankingCache",
+                            "Documento en sync local. Evitando refresco preventivo."
+                        )
                         return@launch
                     }
 
-                    val lastUpdatedUTC = lastUpdatedDate?.toInstant()?.atZone(ZoneOffset.UTC)?.toLocalDate()
+                    val lastUpdatedUTC =
+                        lastUpdatedDate?.toInstant()?.atZone(ZoneOffset.UTC)?.toLocalDate()
 
                     Log.d("RankingCache", "Día Servidor: $nowUTC | Día Caché: $lastUpdatedUTC")
 

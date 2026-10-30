@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -66,7 +63,7 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
             ) {
                 // Avatar
                 PokemonWithFlag(
-                    painter = user.imagen,
+                    painter = "file:///android_asset/portraits/${user.avatarId}.png",
                     nationality = user.nationality,
                     imageSize = 100.dp,
                     borderColor = MaterialTheme.colorScheme.tertiary.copy(0.4f),
@@ -108,7 +105,11 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    StatItem(label = "WINS", value = user.victorias.toString(), color = MaterialTheme.colorScheme.outline)
+                    StatItem(
+                        label = "WINS",
+                        value = user.victorias.toString(),
+                        color = MaterialTheme.colorScheme.outline
+                    )
 
                     // RACHA
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -125,7 +126,11 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
                         )
                     }
 
-                    StatItem(label = "LOSS", value = user.derrotas.toString(), color = MaterialTheme.colorScheme.onSurface)
+                    StatItem(
+                        label = "LOSS",
+                        value = user.derrotas.toString(),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -141,8 +146,16 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    StatItem(label = "WINS", value = user.victorias.toString(), color = MaterialTheme.colorScheme.outline)
-                    StatItem(label = "LOSS", value = user.derrotas.toString(), color = MaterialTheme.colorScheme.onSurface)
+                    StatItem(
+                        label = "WINS",
+                        value = user.victorias.toString(),
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                    StatItem(
+                        label = "LOSS",
+                        value = user.derrotas.toString(),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -154,7 +167,7 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -171,7 +184,10 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
                 if (!user.instagram.isNullOrBlank()) {
                     Button(
                         onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram/${user.instagram}/"))
+                            val intent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://www.instagram/${user.instagram}/")
+                            )
                             context.startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE1306C)),
@@ -208,7 +224,11 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
 @Composable
 fun StatItem(label: String, value: String, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+        )
         Text(text = value, style = MaterialTheme.typography.headlineMedium, color = color)
     }
 }
@@ -216,7 +236,15 @@ fun StatItem(label: String, value: String, color: Color) {
 @Composable
 fun MiniGameStat(label: String, value: Int) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-        Text(text = value.toString(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = value.toString(),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }

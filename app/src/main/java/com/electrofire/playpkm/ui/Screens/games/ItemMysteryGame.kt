@@ -3,7 +3,6 @@ package com.electrofire.playpkm.ui.Screens.games
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,11 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,7 +42,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.electrofire.playpkm.Data.ItemApi
-import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.CardItems.GameResultItemCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.GameResultDialog
@@ -124,15 +119,24 @@ fun ItemMysteryGame(
                                 Surface(
                                     shape = RoundedCornerShape(12.dp),
                                     color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                                    border = BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                                    ),
                                     modifier = Modifier.padding(horizontal = 32.dp)
                                 ) {
                                     Text(
                                         text = itemActual.name.uppercase(),
-                                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                                        style = MaterialTheme.typography.titleLarge.copy(
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold
+                                        ),
                                         color = MaterialTheme.colorScheme.primary,
                                         textAlign = TextAlign.Center,
-                                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 8.dp
+                                        )
                                     )
                                 }
                             }
@@ -185,7 +189,10 @@ fun ItemMysteryGame(
                                 Surface(
                                     shape = RoundedCornerShape(12.dp),
                                     color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                                    border = BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                                    ),
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                 ) {
                                     Column(
@@ -207,9 +214,13 @@ fun ItemMysteryGame(
 
                                         if (intentosRestantes < 2) {
                                             Spacer(modifier = Modifier.height(12.dp))
-                                            HorizontalDivider(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                                            HorizontalDivider(
+                                                color = MaterialTheme.colorScheme.primary.copy(
+                                                    alpha = 0.1f
+                                                )
+                                            )
                                             Spacer(modifier = Modifier.height(12.dp))
-                                            
+
                                             Text(
                                                 text = "PISTA 2: EFECTO",
                                                 style = MaterialTheme.typography.labelSmall,
@@ -242,14 +253,20 @@ fun ItemMysteryGame(
                             modifier = Modifier.width(200.dp),
                             textStyle = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.primary),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                                unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                                focusedContainerColor = MaterialTheme.colorScheme.secondary.copy(
+                                    alpha = 0.5f
+                                ),
+                                unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(
+                                    alpha = 0.5f
+                                ),
                                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                                 unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                                 focusedTextColor = MaterialTheme.colorScheme.primary,
                                 unfocusedTextColor = MaterialTheme.colorScheme.primary,
                                 cursorColor = MaterialTheme.colorScheme.tertiary,
-                                unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(0.5f),
+                                unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(
+                                    0.5f
+                                ),
                                 focusedPlaceholderColor = MaterialTheme.colorScheme.primary
                             ),
                             singleLine = true
@@ -258,9 +275,9 @@ fun ItemMysteryGame(
                         Spacer(modifier = Modifier.height(24.dp))
 
                         ConfirmButton(onConfirm = {
-                            focusManager.clearFocus() 
+                            focusManager.clearFocus()
                             val esCorrecto = viewModel.verifyAnswer(itemActual, respuesta)
-                            
+
                             if (esCorrecto || intentosRestantes <= 1) {
                                 coroutineScope.launch {
                                     delay(200)

@@ -19,11 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.electrofire.playpkm.R
-import com.electrofire.playpkm.ui.Themes.PLAYPKMTheme
 
 @Composable
 fun MyCardButton(
@@ -45,7 +43,12 @@ fun MyCardButton(
                 .height(68.dp)
                 .clickable { onClick() },
             shape = MaterialTheme.shapes.large,
-            border = BorderStroke(2.dp, if(showBadge)MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.inversePrimary.copy(0.8f)),
+            border = BorderStroke(
+                2.dp,
+                if (showBadge) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.inversePrimary.copy(
+                    0.8f
+                )
+            ),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
             )
@@ -86,10 +89,3 @@ fun MyCardButton(
     }
 }
 
-@Preview
-@Composable
-fun MyCardButtonPreview() {
-    PLAYPKMTheme {
-        MyCardButton(title = "¿Quién es este Pokemon?", imageRes = R.drawable.pokedex, onClick = {}, showBadge = true)
-    }
-}

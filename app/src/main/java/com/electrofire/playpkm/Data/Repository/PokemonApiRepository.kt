@@ -31,9 +31,33 @@ class PokemonApiRepository @Inject constructor(
 
     // --- Funciones de Utilidad Interna ---
 
+    private val paradoxSpanishNames = mapOf(
+        "great-tusk" to "colmilargo",
+        "scream-tail" to "colagrito",
+        "brute-bonnet" to "furioseta",
+        "flutter-mane" to "melenaleteo",
+        "slither-wing" to "reptalada",
+        "sandy-shocks" to "pelarena",
+        "roaring-moon" to "bramaluna",
+        "walking-wake" to "ondas vivas",
+        "gouging-fire" to "ondas fuego",
+        "raging-bolt" to "electrofuria",
+        "iron-treads" to "ferrodada",
+        "iron-bundle" to "ferrosaco",
+        "iron-hands" to "ferropalmas",
+        "iron-jugulis" to "ferropulso",
+        "iron-moth" to "ferropolilla",
+        "iron-thorns" to "ferropuas",
+        "iron-valiant" to "ferropulidio",
+        "iron-leaves" to "ferrohojas",
+        "iron-boulder" to "ferrotesta",
+        "iron-crown" to "ferrocoraza"
+    )
+
     private fun PokemonResponse.toPokemonApi(translatedAbilities: List<String>? = null): PokemonApi {
+        val resolvedName = paradoxSpanishNames[name] ?: name.replace("-", " ")
         return PokemonApi(
-            name = name.replaceFirstChar { it.uppercase() },
+            name = resolvedName.replaceFirstChar { it.uppercase() },
             imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png",
             stats = stats.associate { it.stat.name to it.base_stat },
             abilities = translatedAbilities ?: abilities.map { it.ability.name },
@@ -63,19 +87,28 @@ class PokemonApiRepository @Inject constructor(
     }
 
     private fun ItemResponse.toItemApi(): ItemApi {
-        val spanishName = names.firstOrNull { it.language.name == "es" }?.name ?: "Objeto Desconocido"
+        val spanishName =
+            names.firstOrNull { it.language.name == "es" }?.name ?: "Objeto Desconocido"
         val description = flavor_text_entries.find { it.language.name == "es" }?.text ?: ""
-        
-        // Traducimos categorías comunes a mano para mejor experiencia
-        val translatedCategory = when(category.name) {
-            "pokeballs" -> "Poké Ball"
-            "medicine" -> "Medicina / Curación"
+
+        // Traducimos categorías comunes a español
+        val translatedCategory = when (category.name) {
+            "pokeballs", "standard-balls", "special-balls" -> "Poké Ball"
+            "medicine", "healing" -> "Medicina / Curación"
             "status-cures" -> "Cura de estado"
             "revival" -> "Revivir"
-            "held-items" -> "Objeto para llevar"
+            "held-items", "choice" -> "Objeto para llevar"
             "evolution-stones" -> "Piedra evolutiva"
-            "stat-boosters" -> "Mejora de estadísticas"
-            else -> category.name.replace("-", " ").uppercase()
+            "stat-boosters", "vitamins" -> "Mejora de estadísticas"
+            "loot", "collectibles" -> "Tesoro / Coleccionable"
+            "bad-items" -> "Objeto perjudicial"
+            "plot-advancement", "dex-completion" -> "Objeto clave / Aventura"
+            "plates", "memories", "gems", "jewels" -> "Objeto potenciador de tipos"
+            "effort-drop" -> "Reducción de esfuerzo (EVs)"
+            "training" -> "Entrenamiento"
+            "all-machines", "tm" -> "Máquina técnica"
+            "in-battle" -> "Objeto de combate"
+            else -> category.name.replace("-", " ").replaceFirstChar { it.uppercase() }
         }
 
         return ItemApi(
@@ -122,7 +155,8 @@ class PokemonApiRepository @Inject constructor(
 
         // Traducir habilidad principal
         val translatedAbility = api.getAbilityByUrl(ability.url)
-        val spanishName = translatedAbility.names?.firstOrNull { it.language.name == "es" }?.name ?: ability.name
+        val spanishName =
+            translatedAbility.names?.firstOrNull { it.language.name == "es" }?.name ?: ability.name
 
         // Preparar Impostor y Lista
         val impostorAbilities = translateAbilities(pokemonSinHabilidad)
@@ -147,7 +181,7 @@ class PokemonApiRepository @Inject constructor(
         return try {
             var itemResponse: ItemResponse
             do {
-                val randomId = (1..500).random() 
+                val randomId = (1..500).random()
                 itemResponse = api.getItem(randomId)
             } while (itemResponse.category.name == "all-machines") // Evitamos MTs y Máquinas
 
@@ -214,8 +248,12 @@ class PokemonApiRepository @Inject constructor(
     }
 
     suspend fun syncPokemon() {
+        dao.deleteAll()
         val response = api.getAllPokemon(limit = 1025, offset = 0)
-        val allPokemonEntities = response.results.map { PokemonEntity(nombre = it.name) }
+        val allPokemonEntities = response.results.map { result ->
+            val resolvedName = paradoxSpanishNames[result.name] ?: result.name.replace("-", " ")
+            PokemonEntity(nombre = resolvedName)
+        }
         dao.insertAll(allPokemonEntities)
     }
 

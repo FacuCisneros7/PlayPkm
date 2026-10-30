@@ -56,6 +56,9 @@ dependencies {
     // Lottie
     implementation("com.airbnb.android:lottie-compose:6.4.0")
 
+    // Android Core Splashscreen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     //icons
     implementation("androidx.compose.material:material-icons-extended")
 
@@ -85,6 +88,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-config")
 

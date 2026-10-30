@@ -33,7 +33,14 @@ class TheBestViewModel @Inject constructor(
                 val pokemons = repo.getRandomPokemons()
                 if (pokemons.isNotEmpty()) {
                     val englishStat =
-                        listOf("special-attack", "attack", "hp", "defense", "speed", "special-defense")
+                        listOf(
+                            "special-attack",
+                            "attack",
+                            "hp",
+                            "defense",
+                            "speed",
+                            "special-defense"
+                        )
                             .random()
                     var spanishStat = englishStat
 

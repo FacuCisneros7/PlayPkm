@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.Fusion
-import com.electrofire.playpkm.Data.Repository.GameCacheRepository
+import com.electrofire.playpkm.Data.Repository.LocalGameRepository
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FusionViewModel @Inject constructor(
-    private val repo: GameCacheRepository
+    private val repo: LocalGameRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<UIState<Fusion>>(UIState.Loading)
@@ -29,13 +29,8 @@ class FusionViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = UIState.Loading
             try {
-                val bundle = repo.getValidatedBundle()
-                val result = bundle?.fusion
-                if (result != null) {
-                    _state.value = UIState.Success(result)
-                } else {
-                    _state.value = UIState.Error("No se encontró la fusión del día.")
-                }
+                val fusion = repo.getFusionDelDia()
+                _state.value = UIState.Success(fusion)
             } catch (e: IOException) {
                 _state.value = UIState.Error("Sin conexión a internet.")
             } catch (e: Exception) {
@@ -44,7 +39,6 @@ class FusionViewModel @Inject constructor(
             }
         }
     }
-
 }
 
 fun verificarRespuestaFusion(

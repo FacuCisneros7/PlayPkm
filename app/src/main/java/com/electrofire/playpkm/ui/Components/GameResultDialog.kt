@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -68,7 +66,10 @@ fun GameResultDialog(
     Dialog(onDismissRequest = { /* No permitir cerrar al tocar fuera */ }) {
         AnimatedVisibility(
             visible = isVisible,
-            enter = fadeIn(animationSpec = tween(500)) + scaleIn(initialScale = 0.8f, animationSpec = tween(500))
+            enter = fadeIn(animationSpec = tween(500)) + scaleIn(
+                initialScale = 0.8f,
+                animationSpec = tween(500)
+            )
         ) {
             Card(
                 modifier = Modifier
@@ -177,7 +178,9 @@ fun GameResultDialog(
                                         .height(45.dp),
                                     border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                        containerColor = MaterialTheme.colorScheme.primary.copy(
+                                            alpha = 0.1f
+                                        ),
                                         contentColor = MaterialTheme.colorScheme.primary
                                     )
                                 ) {

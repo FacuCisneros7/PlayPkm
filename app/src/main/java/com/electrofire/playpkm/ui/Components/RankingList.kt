@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -47,7 +46,6 @@ import com.electrofire.playpkm.Data.UserData
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.ViewModels.common.RankingType
 import com.google.firebase.auth.FirebaseAuth
-import com.electrofire.playpkm.ui.Components.PokemonWithFlag
 
 @Composable
 fun RankingList(
@@ -84,7 +82,7 @@ fun RankingList(
                 onClick = { selectedUser = user }
             )
         }
-        
+
         item {
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -103,8 +101,7 @@ fun RankingPodium(users: List<UserData>, type: RankingType, onUserClick: (UserDa
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 16.dp)
-            ,
+                .padding(top = 16.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom
         ) {
@@ -114,7 +111,9 @@ fun RankingPodium(users: List<UserData>, type: RankingType, onUserClick: (UserDa
                     user = users[1],
                     position = 2,
                     type = type,
-                    modifier = Modifier.weight(1f).clickable { onUserClick(users[1]) }
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onUserClick(users[1]) }
                 )
             }
 
@@ -124,7 +123,9 @@ fun RankingPodium(users: List<UserData>, type: RankingType, onUserClick: (UserDa
                     user = users[0],
                     position = 1,
                     type = type,
-                    modifier = Modifier.weight(1.3f).clickable { onUserClick(users[0]) }
+                    modifier = Modifier
+                        .weight(1.3f)
+                        .clickable { onUserClick(users[0]) }
                 )
             }
 
@@ -134,7 +135,9 @@ fun RankingPodium(users: List<UserData>, type: RankingType, onUserClick: (UserDa
                     user = users[2],
                     position = 3,
                     type = type,
-                    modifier = Modifier.weight(1f).clickable { onUserClick(users[2]) }
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onUserClick(users[2]) }
                 )
             }
         }
@@ -157,23 +160,25 @@ fun PodiumItem(user: UserData, position: Int, type: RankingType, modifier: Modif
         Box(contentAlignment = Alignment.BottomCenter) {
             // Avatar
             PokemonWithFlag(
-                painter = user.imagen,
+                painter = "file:///android_asset/portraits/${user.avatarId}.png",
                 nationality = user.nationality,
                 imageSize = size,
                 borderColor = color,
                 borderWidth = 3.dp
             )
-            
+
             // Medalla / Posición
             Card(
-                modifier = Modifier.size(24.dp).padding(bottom = 2.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .padding(bottom = 2.dp),
                 shape = CircleShape,
                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
-                    when(position){
+                    when (position) {
                         1 -> Image(
                             painter = painterResource(id = R.drawable.masterball),
                             contentDescription = null,
@@ -181,6 +186,7 @@ fun PodiumItem(user: UserData, position: Int, type: RankingType, modifier: Modif
                                 .fillMaxSize()
                                 .alpha(0.8f)
                         )
+
                         2 -> Image(
                             painter = painterResource(id = R.drawable.ultraball),
                             contentDescription = null,
@@ -188,6 +194,7 @@ fun PodiumItem(user: UserData, position: Int, type: RankingType, modifier: Modif
                                 .size(20.dp)
                                 .alpha(0.8f)
                         )
+
                         3 -> Image(
                             painter = painterResource(id = R.drawable.superball),
                             contentDescription = null,
@@ -231,7 +238,7 @@ fun PodiumItem(user: UserData, position: Int, type: RankingType, modifier: Modif
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold
                 )
-                
+
                 Spacer(Modifier.width(8.dp))
 
                 // Derrotas Semanales
@@ -307,7 +314,9 @@ fun RankingUserItem(
         border = BorderStroke(if (isCurrentUser) 3.dp else 2.dp, borderColor)
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Posición
@@ -319,12 +328,12 @@ fun RankingUserItem(
             )
 
             // Avatar
-                PokemonWithFlag(
-                    painter = user.imagen,
-                    nationality = user.nationality,
-                    imageSize = 35.dp,
-                    borderWidth = 0.dp
-                )
+            PokemonWithFlag(
+                painter = "file:///android_asset/portraits/${user.avatarId}.png",
+                nationality = user.nationality,
+                imageSize = 35.dp,
+                borderWidth = 0.dp
+            )
 
             Spacer(modifier = Modifier.width(12.dp))
 
@@ -369,6 +378,7 @@ fun RankingUserItem(
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
+
                     RankingType.GC -> {
                         Icon(
                             imageVector = Icons.Default.Star,
@@ -377,8 +387,13 @@ fun RankingUserItem(
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = "${user.maxPoints}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp))
+                        Text(
+                            text = "${user.maxPoints}",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp)
+                        )
                     }
+
                     RankingType.TS -> {
                         Icon(
                             imageVector = Icons.Default.Star,
@@ -387,8 +402,13 @@ fun RankingUserItem(
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = "${user.maxPointsDos}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp))
+                        Text(
+                            text = "${user.maxPointsDos}",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp)
+                        )
                     }
+
                     RankingType.BA -> {
                         Icon(
                             imageVector = Icons.Default.Star,
@@ -397,7 +417,11 @@ fun RankingUserItem(
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = "${user.maxPointsTres}", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp))
+                        Text(
+                            text = "${user.maxPointsTres}",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp)
+                        )
                     }
                 }
             }

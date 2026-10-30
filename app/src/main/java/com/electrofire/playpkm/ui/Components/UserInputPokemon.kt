@@ -139,7 +139,7 @@ fun UserInputPokemon(
                         cursorColor = MaterialTheme.colorScheme.tertiary,
                         unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(0.5f),
                         focusedPlaceholderColor = MaterialTheme.colorScheme.primary
-                        ),
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
 

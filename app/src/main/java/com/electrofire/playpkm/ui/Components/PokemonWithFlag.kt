@@ -38,7 +38,9 @@ fun PokemonWithFlag(
     ) {
         // Pokemon Image
         Image(
-            painter = if (painter is Int) painterResource(id = painter) else rememberAsyncImagePainter(painter),
+            painter = if (painter is Int) painterResource(id = painter) else rememberAsyncImagePainter(
+                painter
+            ),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()

@@ -33,31 +33,36 @@ fun TypeDropdown(
     selectedType: String?,
     onTypeSelected: (String) -> Unit,
     showEmpty: Boolean = false,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
     val types = if (showEmpty) PokemonTypeUtils.typesWithEmpty else PokemonTypeUtils.types
 
     ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
+        expanded = if (enabled) expanded else false,
+        onExpandedChange = { if (enabled) expanded = !expanded },
         modifier = modifier.width(200.dp)
     ) {
         OutlinedTextField(
             value = selectedType ?: "",
             onValueChange = {},
             readOnly = true,
+            enabled = enabled,
             label = { Text(label, style = MaterialTheme.typography.bodyLarge) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            trailingIcon = { if (enabled) ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                disabledBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
                 unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                disabledLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                 focusedTextColor = MaterialTheme.colorScheme.primary,
                 unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                disabledTextColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                 cursorColor = MaterialTheme.colorScheme.tertiary,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.primary,
                 unfocusedTrailingIconColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)

@@ -1,6 +1,5 @@
 package com.electrofire.playpkm.ui.Components
 
-
 import android.media.MediaPlayer
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -38,22 +37,48 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.electrofire.playpkm.Data.AvatarData
 import com.electrofire.playpkm.R
+
+data class AvatarItem(val id: String, val name: String)
+
+object AvatarList {
+    val items = listOf(
+        AvatarItem("0025", "pikachu"),
+        AvatarItem("0006", "charizard"),
+        AvatarItem("0001", "bulbasaur"),
+        AvatarItem("0007", "squirtle"),
+        AvatarItem("0150", "mewtwo"),
+        AvatarItem("0445", "garchomp"),
+        AvatarItem("0448", "lucario"),
+        AvatarItem("0658", "greninja"),
+        AvatarItem("0143", "snorlax"),
+        AvatarItem("0384", "rayquaza"),
+        AvatarItem("0133", "eevee"),
+        AvatarItem("0151", "mew"),
+        AvatarItem("0249", "lugia"),
+        AvatarItem("0250", "ho-oh"),
+        AvatarItem("0094", "gengar"),
+        AvatarItem("0149", "dragonite"),
+        AvatarItem("0248", "tyranitar"),
+        AvatarItem("0376", "metagross"),
+        AvatarItem("0373", "salamence"),
+        AvatarItem("0383", "groudon"),
+        AvatarItem("0382", "kyogre"),
+        AvatarItem("0282", "gardevoir")
+    )
+}
 
 @Composable
 fun ChoiseImage(
-    selectedImage: String?,
-    onImageSelected: (String) -> Unit
+    selectedAvatarId: String,
+    onAvatarSelected: (String) -> Unit
 ) {
-
     val context = LocalContext.current
-
-    val imageList = remember { AvatarData.avatars }
+    val imageList = remember { AvatarList.items }
     var searchText by remember { mutableStateOf("") }
 
     val filteredList = imageList.filter {
-        it.nombre.contains(searchText, ignoreCase = true)
+        it.name.contains(searchText, ignoreCase = true)
     }
 
     Column(
@@ -83,7 +108,7 @@ fun ChoiseImage(
                 },
                 placeholder = {
                     Text(
-                        text = "Buscar Pokemon insignia...",
+                        text = "Buscar Pokémon insignia...",
                         style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
                     )
                 },
@@ -111,14 +136,16 @@ fun ChoiseImage(
         ) {
             items(filteredList) { avatar ->
                 Image(
-                    painter = rememberAsyncImagePainter(avatar.url),
-                    contentDescription = null,
+                    painter = rememberAsyncImagePainter("file:///android_asset/portraits/${avatar.id}.png"),
+                    contentDescription = avatar.name,
                     modifier = Modifier
                         .size(80.dp)
                         .clip(CircleShape)
                         .border(
-                            width = if (selectedImage == avatar.url) 4.dp else 2.dp,
-                            color = if (selectedImage == avatar.url) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            width = if (selectedAvatarId == avatar.id) 4.dp else 2.dp,
+                            color = if (selectedAvatarId == avatar.id) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(
+                                alpha = 0.4f
+                            ),
                             shape = CircleShape
                         )
                         .clickable {
@@ -126,12 +153,11 @@ fun ChoiseImage(
                             mediaPlayer.start()
                             mediaPlayer.setOnCompletionListener { it.release() }
 
-                            onImageSelected(avatar.url)
+                            onAvatarSelected(avatar.id)
                         },
                     contentScale = ContentScale.Crop
                 )
             }
         }
-
     }
 }

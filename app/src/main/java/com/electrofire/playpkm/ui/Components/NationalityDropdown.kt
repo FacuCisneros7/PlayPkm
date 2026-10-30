@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,8 +45,8 @@ fun NationalityDropdown(
             onValueChange = {},
             readOnly = true,
             label = { Text("Nacionalidad", style = MaterialTheme.typography.bodyLarge) },
-            trailingIcon = { 
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) 
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,

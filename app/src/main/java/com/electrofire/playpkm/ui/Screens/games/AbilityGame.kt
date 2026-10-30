@@ -36,14 +36,14 @@ import com.electrofire.playpkm.ui.Components.HabilityCard
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.UserInputPokemon
 import com.electrofire.playpkm.ui.Navegation.Screen
+import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
+import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.ViewModels.common.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
-import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
-import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
-import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
 import com.electrofire.playpkm.ui.ViewModels.games.AbilityViewModel
 import com.electrofire.playpkm.ui.ViewModels.games.verificarRespuestaAbility
+import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

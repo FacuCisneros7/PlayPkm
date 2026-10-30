@@ -45,12 +45,6 @@
         Can you remember one ability of today’s Pokémon?
     </string>
 
-    <!-- Minigame: POWER OF MOVE -->
-    <string name="power_move_title">POWER OF MOVE</string>
-    <string name="power_move_description">
-        Guess the move’s power! It’s not as easy as it seems…
-    </string>
-
     <!-- Minigame: MYSTERIOUS STATS -->
     <string name="mysterious_stats_title">MYSTERIOUS STATS</string>
     <string name="mysterious_stats_description">
@@ -127,6 +121,12 @@
     <string name="weight_game_title">HEAVY POKEMON</string>
     <string name="weight_game_description">
         Compare Pokémon weights across 5 rounds. You have 2 lives to beat all steps!
+    </string>
+
+    <!-- Minigame: POKE SPEED -->
+    <string name="speed_game_title">POKE SPEED</string>
+    <string name="speed_game_description">
+        Compare Pokémon speeds across 5 progressive speed matchups.
     </string>
 
     <!-- Categorías Info -->

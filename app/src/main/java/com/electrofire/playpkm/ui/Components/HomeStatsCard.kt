@@ -6,15 +6,16 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
@@ -24,6 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 
 @Composable
@@ -49,7 +50,7 @@ fun HomeStatsCard(
             .wrapContentSize()
             .clickable { onClick() },
         shape = MaterialTheme.shapes.large,
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.onPrimary),
         elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
@@ -60,6 +61,7 @@ fun HomeStatsCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
+            // Victorias
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
@@ -75,8 +77,14 @@ fun HomeStatsCard(
                 )
             }
 
-            Spacer(modifier = Modifier.width(24.dp))
+            Spacer(modifier = Modifier.width(12.dp))
+            VerticalDivider(
+                modifier = Modifier.height(24.dp),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
 
+            // Racha
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 val infiniteTransition = rememberInfiniteTransition(label = "streak")
                 val scale by infiniteTransition.animateFloat(
@@ -98,9 +106,9 @@ fun HomeStatsCard(
                         .scale(scale)
                 )
                 Text(
-                    text = if(stats.rachaActual == 1){
+                    text = if (stats.rachaActual == 1) {
                         "${stats.rachaActual} DÍA"
-                    }else{
+                    } else {
                         "${stats.rachaActual} DÍAS"
                     },
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
@@ -108,8 +116,14 @@ fun HomeStatsCard(
                 )
             }
 
-            Spacer(modifier = Modifier.width(24.dp))
+            Spacer(modifier = Modifier.width(12.dp))
+            VerticalDivider(
+                modifier = Modifier.height(24.dp),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
 
+            // Derrotas
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Close,

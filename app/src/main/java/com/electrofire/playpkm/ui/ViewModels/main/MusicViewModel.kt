@@ -36,9 +36,7 @@ class MusicViewModel @Inject constructor(
             R.raw.themetwocindery,
             R.raw.themeonecindery,
             R.raw.themethreecindery,
-            R.raw.themefourcindery,
-            R.raw.themefivecindery,
-            R.raw.themesixcindery
+            R.raw.themefourcindery
         )
 
         tracks.forEach { resId ->

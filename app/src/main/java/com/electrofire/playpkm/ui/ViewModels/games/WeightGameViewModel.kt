@@ -110,7 +110,8 @@ class WeightGameViewModel @Inject constructor(
                         else -> 0.0
                     }
                     val currentDistance = abs(diff - targetMid)
-                    val bestDistance = if (bestPair != null) abs(abs(bestPair.first.weight - bestPair.second.weight) - targetMid) else Double.MAX_VALUE
+                    val bestDistance =
+                        if (bestPair != null) abs(abs(bestPair.first.weight - bestPair.second.weight) - targetMid) else Double.MAX_VALUE
                     if (currentDistance < bestDistance) {
                         bestDiff = diff
                         bestPair = a to b

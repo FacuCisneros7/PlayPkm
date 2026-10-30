@@ -4,8 +4,10 @@
 PlayPkm te desafía con minijuegos diarios inspirados en nuestras criaturas favoritas.
 Domina los 9 modos distintos, gana puntos y pone a prueba tus conocimientos. 🎮
 
-Además, uno de los modos es ilimitado y jugable con amigos, ideal para ver quién es el verdadero maestro.
-Podrás elegir tu criatura insignia entre una selección disponible… ¡pero elige con cuidado, no podrás cambiarla luego! 🫣
+Además, uno de los modos es ilimitado y jugable con amigos, ideal para ver quién es el verdadero
+maestro.
+Podrás elegir tu criatura insignia entre una selección disponible… ¡pero elige con cuidado, no
+podrás cambiarla luego! 🫣
 
 -
 
@@ -93,13 +95,15 @@ WikiDex — Enciclopedia con sprites, estadísticas e información (uso permitid
 
 Infinite Fusion Calculator — Imágenes generadas del proyecto Pokémon Infinite Fusion.
 
-Las imágenes son utilizadas únicamente con fines ilustrativos, educativos y de juego casual dentro de la app.
+Las imágenes son utilizadas únicamente con fines ilustrativos, educativos y de juego casual dentro
+de la app.
 Cada recurso pertenece a sus respectivos autores.
 
 -
 
 ⚠️ Aviso legal
-PlayPkm no es una aplicación oficial de Pokémon y no está afiliada, aprobada ni respaldada por Nintendo, GAME FREAK o The Pokémon Company.
+PlayPkm no es una aplicación oficial de Pokémon y no está afiliada, aprobada ni respaldada por
+Nintendo, GAME FREAK o The Pokémon Company.
 Las imágenes e ilustraciones utilizadas son propiedad de sus respectivos autores.
 © 2025 Pokémon. © 1995–2025 Nintendo/Creatures Inc./GAME FREAK inc.
 Pokémon y los nombres de los personajes son marcas registradas de Nintendo.

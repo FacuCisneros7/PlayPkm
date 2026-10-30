@@ -1,7 +1,6 @@
 package com.electrofire.playpkm.ui.Components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,7 +44,7 @@ fun TutorialOverlay(
     onComplete: () -> Unit
 ) {
     var currentStep by remember { mutableIntStateOf(0) }
-    
+
     val steps = listOf(
         TutorialStep(
             text = "¡Bienvenido! Aquí puedes consultar las reglas e información de los juegos.",
@@ -79,13 +77,16 @@ fun TutorialOverlay(
             // Background with hole
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawRect(Color.Black.copy(alpha = 0.75f))
-                
+
                 val holeRect = if (step.isToolbar) {
                     // Botón de info (Top Left aprox) - Ajustado más arriba
                     Rect(Offset(10.dp.toPx(), 42.dp.toPx()), Size(45.dp.toPx(), 45.dp.toPx()))
                 } else {
                     // Lista de juegos (Centro)
-                    Rect(Offset(20.dp.toPx(), 280.dp.toPx()), Size(size.width - 40.dp.toPx(), 320.dp.toPx()))
+                    Rect(
+                        Offset(20.dp.toPx(), 280.dp.toPx()),
+                        Size(size.width - 40.dp.toPx(), 320.dp.toPx())
+                    )
                 }
 
                 drawRoundRect(
@@ -146,7 +147,7 @@ fun TutorialOverlay(
                             )
                         }
                     }
-                    
+
                     if (!step.isToolbar) {
                         Spacer(modifier = Modifier.height(16.dp))
                         ArrowDown()

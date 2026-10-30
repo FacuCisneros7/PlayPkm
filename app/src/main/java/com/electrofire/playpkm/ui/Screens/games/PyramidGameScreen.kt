@@ -1,14 +1,28 @@
 package com.electrofire.playpkm.ui.Screens.games
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -22,7 +36,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.electrofire.playpkm.Data.PokemonApi
-import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.CardItems.PokemonApiCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
 import com.electrofire.playpkm.ui.Components.GameResultDialog
@@ -56,6 +69,7 @@ fun PyramidGameScreen(
                     Loading()
                 }
             }
+
             is UIState.Error -> {
                 if (currentState.message.contains("conexión", ignoreCase = true)) {
                     NotInternetScreen(onRetry = { viewModel.loadGame() })
@@ -63,6 +77,7 @@ fun PyramidGameScreen(
                     ErrorScreen(onRetry = { viewModel.loadGame() })
                 }
             }
+
             is UIState.Success -> {
                 val pokemonList = currentState.data
 
@@ -88,18 +103,18 @@ fun PyramidGameScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(Modifier.height(12.dp))
-                                
+
                                 // Mini Pirámide de solución
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     // Top
                                     MiniPyramidCard(correctList[0])
-                                    
+
                                     // Middle
                                     Row {
                                         MiniPyramidCard(correctList[1])
                                         MiniPyramidCard(correctList[2])
                                     }
-                                    
+
                                     // Bottom
                                     Row {
                                         MiniPyramidCard(correctList[3])
@@ -110,7 +125,7 @@ fun PyramidGameScreen(
                             }
                         }
                     )
-                    
+
                     LaunchedEffect(Unit) {
                         if (esCorrecto) statsViewModel.registrarVictoria()
                         else statsViewModel.registrarDerrota()
@@ -164,13 +179,16 @@ fun PyramidGameScreen(
                             gameStateViewModel.responder()
                         }
                     })
-                    
+
                     Spacer(Modifier.height(32.dp))
-                    
+
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)),
+                        border = BorderStroke(
+                            1.dp,
+                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
+                        ),
                         modifier = Modifier.padding(horizontal = 16.dp)
                     ) {
                         Text(
@@ -203,7 +221,9 @@ fun MiniPyramidCard(pokemon: PokemonApi) {
         AsyncImage(
             model = pokemon.imageUrl,
             contentDescription = null,
-            modifier = Modifier.fillMaxSize().alpha(0.5f),
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.5f),
             contentScale = ContentScale.Fit
         )
         Text(

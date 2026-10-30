@@ -11,7 +11,7 @@ class AuthViewModel : ViewModel() {
     private val repository = AuthRepository()
 
     private val _userId = MutableLiveData<String?>()
-    
+
     var hasShownResetDialog = false
 
     fun register(
@@ -37,6 +37,18 @@ class AuthViewModel : ViewModel() {
         repository.iniciarSesion(
             email = email,
             password = password,
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun signInWithGoogle(
+        idToken: String,
+        onSuccess: (String) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        repository.iniciarSesionConGoogle(
+            idToken = idToken,
             onSuccess = onSuccess,
             onError = onError
         )

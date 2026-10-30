@@ -79,13 +79,19 @@ fun StatRow(statName: String, statValue: Int, maxStat: Int = 200) {
         Text(
             text = statNameRecorted,
             modifier = Modifier.width(40.dp),
-            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp, color = MaterialTheme.colorScheme.primary)
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
         )
 
         Text(
             text = statValue.toString(),
             modifier = Modifier.width(40.dp),
-            style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp, color = MaterialTheme.colorScheme.primary)
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
         )
 
         LinearProgressIndicator(

@@ -28,10 +28,13 @@ class UsersRepository @Inject constructor() {
             val doc = db.collection("rankings_cache").document("global")
                 .get()
                 .await()
-            
+
             if (doc.exists()) {
                 val cache = doc.toObject(RankingCache::class.java)
-                Log.d("RankingCache", "Caché recuperado con éxito. LastUpdated: ${cache?.lastUpdated}")
+                Log.d(
+                    "RankingCache",
+                    "Caché recuperado con éxito. LastUpdated: ${cache?.lastUpdated}"
+                )
                 cache
             } else {
                 Log.d("RankingCache", "El documento de caché no existe en Firestore")
@@ -51,7 +54,7 @@ class UsersRepository @Inject constructor() {
         val ba = getUsersOrderedByVictoriesInBA()
 
         val docRef = db.collection("rankings_cache").document("global")
-        
+
         val data = mapOf(
             "weekly" to weekly,
             "goodChoice" to gc,
@@ -71,12 +74,18 @@ class UsersRepository @Inject constructor() {
     }
 
     suspend fun getUsersOrderedByWeeklyWins(): List<UserData> {
-        Log.e("RANKING_CRITICO", "ALERTA: Se ha llamado a getUsersOrderedByWeeklyWins() - Esto gasta 30 lecturas!")
+        Log.e(
+            "RANKING_CRITICO",
+            "ALERTA: Se ha llamado a getUsersOrderedByWeeklyWins() - Esto gasta 30 lecturas!"
+        )
         return try {
             val currentWeekId = getCurrentWeekId()
-            
+
             val snapshot = db.collection("Users")
-                .whereEqualTo("lastWeekParticipated", currentWeekId) // FILTRO CLAVE: Solo gente de esta semana activa
+                .whereEqualTo(
+                    "lastWeekParticipated",
+                    currentWeekId
+                ) // FILTRO CLAVE: Solo gente de esta semana activa
                 .orderBy("weeklyWins", Query.Direction.DESCENDING)
                 .orderBy("weeklyLosses", Query.Direction.ASCENDING)
                 .limit(30)
@@ -93,7 +102,10 @@ class UsersRepository @Inject constructor() {
     }
 
     suspend fun getUsersOrderedByVictoriesInGC(): List<UserData> {
-        Log.e("RANKING_CRITICO", "ALERTA: Se ha llamado a getUsersOrderedByVictoriesInGC() - Esto gasta 30 lecturas!")
+        Log.e(
+            "RANKING_CRITICO",
+            "ALERTA: Se ha llamado a getUsersOrderedByVictoriesInGC() - Esto gasta 30 lecturas!"
+        )
         return try {
             val snapshot = db.collection("Users")
                 .orderBy("maxPoints", Query.Direction.DESCENDING)
@@ -110,7 +122,10 @@ class UsersRepository @Inject constructor() {
     }
 
     suspend fun getUsersOrderedByVictoriesInTS(): List<UserData> {
-        Log.e("RANKING_CRITICO", "ALERTA: Se ha llamado a getUsersOrderedByVictoriesInTS() - Esto gasta 30 lecturas!")
+        Log.e(
+            "RANKING_CRITICO",
+            "ALERTA: Se ha llamado a getUsersOrderedByVictoriesInTS() - Esto gasta 30 lecturas!"
+        )
         return try {
             val snapshot = db.collection("Users")
                 .orderBy("maxPointsDos", Query.Direction.DESCENDING)
@@ -127,7 +142,10 @@ class UsersRepository @Inject constructor() {
     }
 
     suspend fun getUsersOrderedByVictoriesInBA(): List<UserData> {
-        Log.e("RANKING_CRITICO", "ALERTA: Se ha llamado a getUsersOrderedByVictoriesInBA() - Esto gasta 30 lecturas!")
+        Log.e(
+            "RANKING_CRITICO",
+            "ALERTA: Se ha llamado a getUsersOrderedByVictoriesInBA() - Esto gasta 30 lecturas!"
+        )
         return try {
             val snapshot = db.collection("Users")
                 .orderBy("maxPointsTres", Query.Direction.DESCENDING)

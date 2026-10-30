@@ -60,8 +60,10 @@ class PyramidViewModel @Inject constructor(
         val currentState = _state.value
         if (currentState is UIState.Success) {
             val list = currentState.data.toMutableList()
-            val temp = list[fromIndex] //Creamos temp para que no se pierda el pokemon 1 antes de reemplazarlo por el 2.
-            list[fromIndex] = list[toIndex] //No se reemplaza la lista, se reemplaza solo el pokemon 1 por el 2.
+            val temp =
+                list[fromIndex] //Creamos temp para que no se pierda el pokemon 1 antes de reemplazarlo por el 2.
+            list[fromIndex] =
+                list[toIndex] //No se reemplaza la lista, se reemplaza solo el pokemon 1 por el 2.
             list[toIndex] = temp //Usamos el temp del pokemon 1 para reemplazar al pokemon 2.
             _state.value = UIState.Success(list)
         }
@@ -70,7 +72,7 @@ class PyramidViewModel @Inject constructor(
     fun verifyOrder(currentList: List<PokemonApi>): Boolean {
         // Calcular BST para cada pokemon
         val bstList = currentList.map { it.stats.values.sum() }
-        
+
         for (i in 0 until bstList.size - 1) {
             if (bstList[i] < bstList[i + 1]) return false
         }

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.electrofire.playpkm.Data.PokemonTypeUtils
 import com.electrofire.playpkm.ui.CardItems.GameResultPokemonCard
 import com.electrofire.playpkm.ui.CardItems.PokemonApiCard
 import com.electrofire.playpkm.ui.Components.ConfirmButton
@@ -44,7 +47,6 @@ import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
 import com.electrofire.playpkm.ui.ViewModels.common.ContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.GameStateViewModel
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
-import com.electrofire.playpkm.Data.PokemonTypeUtils
 import com.electrofire.playpkm.ui.ViewModels.games.TypeGameViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 
@@ -58,6 +60,7 @@ fun TypeGameScreen(
 ) {
     var selectedType1 by remember { mutableStateOf<String?>(null) }
     var selectedType2 by remember { mutableStateOf<String?>(null) }
+    var isMonotype by remember { mutableStateOf(false) }
     val state by viewModel.state.collectAsState()
 
     val contador = contadorViewModel.contador
@@ -129,10 +132,35 @@ fun TypeGameScreen(
                             pokemon = pokemonActual,
                             onSelected = false,
                             onClick = {},
-                            modifier = Modifier.height(200.dp).width(200.dp)
+                            modifier = Modifier
+                                .height(200.dp)
+                                .width(200.dp)
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        ) {
+                            Checkbox(
+                                checked = isMonotype,
+                                onCheckedChange = {
+                                    isMonotype = it
+                                    if (it) selectedType2 = null
+                                },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = MaterialTheme.colorScheme.tertiary,
+                                    uncheckedColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "Es monotipo",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
 
                         TypeDropdown(
                             label = "Tipo 1",
@@ -143,17 +171,17 @@ fun TypeGameScreen(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         TypeDropdown(
-                            label = "Tipo 2 (Opc.)",
+                            label = "Tipo 2",
                             selectedType = selectedType2,
                             onTypeSelected = { selectedType2 = it },
-                            showEmpty = true
+                            enabled = !isMonotype
                         )
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        ConfirmButton(onConfirm = { 
-                            if (selectedType1 != null && selectedType2 != null) {
-                                gameStateViewModel.responder() 
+                        ConfirmButton(onConfirm = {
+                            if (selectedType1 != null && (isMonotype || selectedType2 != null)) {
+                                gameStateViewModel.responder()
                             }
                         })
 
@@ -162,11 +190,11 @@ fun TypeGameScreen(
                         Contador(contadorViewModel = contadorViewModel)
                     } else {
                         val esCorrecto = viewModel.checkAnswer(
-                            pokemonActual, 
-                            selectedType1 ?: "", 
-                            selectedType2 ?: "No tiene"
+                            pokemonActual,
+                            selectedType1 ?: "",
+                            if (isMonotype) "No tiene" else (selectedType2 ?: "")
                         )
-                        
+
                         GameResultDialog(
                             isWin = esCorrecto,
                             onHomeClick = {
@@ -178,14 +206,14 @@ fun TypeGameScreen(
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     GameResultPokemonCard(pokemon = pokemonActual)
                                     Spacer(modifier = Modifier.height(16.dp))
-                                    
+
                                     val t1 = pokemonActual.types.entries.find { it.value == 1 }?.key
                                     val t2 = pokemonActual.types.entries.find { it.value == 2 }?.key
 
                                     val typeResOne = PokemonTypeUtils.getTypeRes(t1)
                                     val typeResTwo = PokemonTypeUtils.getTypeRes(t2)
 
-                                    Row(verticalAlignment = Alignment.CenterVertically){
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
                                         Image(
                                             painter = painterResource(id = typeResOne),
                                             contentDescription = null,

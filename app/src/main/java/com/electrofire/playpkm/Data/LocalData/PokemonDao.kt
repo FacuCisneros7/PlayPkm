@@ -11,6 +11,9 @@ interface PokemonDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pokemon: List<PokemonEntity>)
 
+    @Query("DELETE FROM pokemon")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM pokemon WHERE nombre LIKE :query || '%' ORDER BY nombre ASC")
     suspend fun searchPokemon(query: String): List<PokemonEntity>
 
