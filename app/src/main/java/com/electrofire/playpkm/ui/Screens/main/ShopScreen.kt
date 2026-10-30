@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +53,7 @@ import com.electrofire.playpkm.Data.ShopItem
 import com.electrofire.playpkm.R
 import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.LottieAnimationView
+import com.electrofire.playpkm.ui.ViewModels.main.ShopContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.HomeStatsViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.ShopViewModel
 import kotlinx.coroutines.delay
@@ -59,11 +61,18 @@ import kotlinx.coroutines.delay
 @Composable
 fun ShopScreen(
     statsViewModel: HomeStatsViewModel,
-    shopViewModel: ShopViewModel = hiltViewModel()
+    shopViewModel: ShopViewModel = hiltViewModel(),
+    shopContadorViewModel: ShopContadorViewModel = hiltViewModel()
 ) {
     val user = statsViewModel.userData
     val context = LocalContext.current
     var showSuccessAnimation by remember { mutableStateOf(false) }
+
+    val timeLeft by shopContadorViewModel.timeLeft.collectAsState()
+
+    LaunchedEffect(Unit) {
+        shopContadorViewModel.startCountdown()
+    }
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
@@ -98,13 +107,27 @@ fun ShopScreen(
                     modifier = Modifier.size(50.dp)
                 )
 
-                Text(
-                    text = "TIENDA",
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontSize = 32.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "TIENDA",
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontSize = 32.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     )
-                )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Renovación: ",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            text = timeLeft,
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+                }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     LottieAnimationView(

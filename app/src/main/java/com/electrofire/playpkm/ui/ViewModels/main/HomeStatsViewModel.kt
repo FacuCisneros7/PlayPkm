@@ -188,7 +188,7 @@ class HomeStatsViewModel : ViewModel() {
             val defaultDaily = listOf(
                 Mission("daily_14_games", "Juega los 14 juegos diarios", 0, 14, 5, false, "DAILY"),
                 Mission("daily_5_wins", "Gana 5 juegos diarios", 0, 5, 3, false, "DAILY"),
-                Mission("daily_3_free", "Juega 3 veces un juego libre", 0, 3, 3, false, "DAILY")
+                Mission("daily_3_free", "Juega 3 veces un juego libre", 0, 3, 2, false, "DAILY")
             )
             val defaultWeekly = listOf(
                 Mission(
@@ -240,7 +240,7 @@ class HomeStatsViewModel : ViewModel() {
             val defaultDaily = listOf(
                 Mission("daily_14_games", "Juega los 14 juegos diarios", 0, 14, 5, false, "DAILY"),
                 Mission("daily_5_wins", "Gana 5 juegos diarios", 0, 5, 3, false, "DAILY"),
-                Mission("daily_3_free", "Juega 3 veces un juego libre", 0, 3, 3, false, "DAILY")
+                Mission("daily_3_free", "Juega 3 veces un juego libre", 0, 3, 2, false, "DAILY")
             )
             val defaultWeekly = listOf(
                 Mission(

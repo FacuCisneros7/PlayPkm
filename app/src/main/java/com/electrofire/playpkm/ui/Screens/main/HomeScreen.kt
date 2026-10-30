@@ -108,7 +108,7 @@ fun HomeScreen(
         when {
             hours < 1 -> Color.Red
             hours < 3 -> Color(0xFFFF9800) // Naranja
-            hours < 10 -> Color(0xFF4CAF50) // Verde
+            hours < 10 -> Color(0xFF29f49a) // Verde
             else -> Color(0xFFBABECF)
         }
     }
@@ -183,7 +183,22 @@ fun HomeScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(id = R.string.actualizacion_en) + " ",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                )
+                Text(
+                    text = timeLeft,
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    color = color
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             Box {
                 LazyColumn(
@@ -634,21 +649,6 @@ fun HomeScreen(
                     )
                 }
 
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row {
-                Text(
-                    text = stringResource(id = R.string.actualizacion_en) + " ",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
-                    color = MaterialTheme.colorScheme.inversePrimary
-                )
-                Text(
-                    text = timeLeft,
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 15.sp),
-                    color = color
-                )
             }
 
         }

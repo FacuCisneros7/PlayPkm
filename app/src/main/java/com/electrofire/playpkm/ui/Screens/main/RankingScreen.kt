@@ -9,23 +9,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,17 +34,25 @@ import com.electrofire.playpkm.ui.Components.Loading
 import com.electrofire.playpkm.ui.Components.RankingList
 import com.electrofire.playpkm.ui.ViewModels.common.RankingType
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
+import com.electrofire.playpkm.ui.ViewModels.main.ShopContadorViewModel
 import com.electrofire.playpkm.ui.ViewModels.main.RankingViewModel
 import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.TimeZone
 
 @Composable
-fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
+fun RankingScreen(
+    viewModel: RankingViewModel = hiltViewModel(),
+    shopContadorViewModel: ShopContadorViewModel = hiltViewModel()
+) {
     val states by viewModel.states.collectAsState()
     val tabs = RankingType.entries
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
+
+    val timeLeft by shopContadorViewModel.timeLeft.collectAsState()
+
+    LaunchedEffect(Unit) {
+        shopContadorViewModel.startCountdown()
+    }
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -68,45 +71,23 @@ fun RankingScreen(viewModel: RankingViewModel = hiltViewModel()) {
                 )
             }
 
-            // Temporizador de Semana más estético (arriba)
+            // Temporizador de Semana estético (igual al de shop y home)
             val currentType = tabs[pagerState.currentPage]
             if (currentType == RankingType.WEEKLY) {
-                val daysUntilMonday = remember {
-                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                    val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-                    val days = (9 - dayOfWeek) % 7
-                    if (days == 0) 7 else days
-                }
-
-                Surface(
+                Row(
                     modifier = Modifier.padding(top = 8.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
-                    border = BorderStroke(
-                        1.dp,
-                        MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
-                    )
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Timer,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.tertiary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "RECOMPENSAS EN: $daysUntilMonday ${if (daysUntilMonday == 1) "DÍA" else "DÍAS"}",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                letterSpacing = 0.5.sp
-                            ),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                    Text(
+                        text = "Renovación: ",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                    )
+                    Text(
+                        text = timeLeft,
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.outline
+                    )
                 }
             }
 
