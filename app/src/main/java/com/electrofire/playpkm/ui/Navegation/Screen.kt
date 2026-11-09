@@ -19,6 +19,7 @@ sealed class Screen(val route: String) {
     data object LanguageGame : Screen("sixteen_game")
     data object WeightGame : Screen("seventeen_game")
     data object SpeedGame : Screen("eighteen_game")
+    data object PokewordleGame : Screen("pokewordle_game")
     data object RankingScreen : Screen("ranking")
     data object Shop : Screen("shop")
     data object NewUserScreen : Screen("new_user")

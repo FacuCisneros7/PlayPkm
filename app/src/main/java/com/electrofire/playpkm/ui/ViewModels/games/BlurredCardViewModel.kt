@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.Carta
 import com.electrofire.playpkm.Data.Repository.LocalGameRepository
+import com.electrofire.playpkm.Domain.isAnswerCorrect
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,6 +43,5 @@ class BlurredCardViewModel @Inject constructor(
 }
 
 fun verificarRespuestaBlurredCard(cartaActual: Carta?, respuesta: String): Boolean {
-    return cartaActual != null && respuesta.trim()
-        .equals(cartaActual.Nombre.trim(), ignoreCase = true)
+    return cartaActual != null && isAnswerCorrect(cartaActual.Nombre, respuesta)
 }

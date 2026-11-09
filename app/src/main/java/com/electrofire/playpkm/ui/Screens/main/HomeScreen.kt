@@ -82,7 +82,7 @@ fun HomeScreen(
         "first_game", "second_game", "third_game",
         "sixth_game", "seventh_game", "fift_game", "eight_game",
         "ten_game", "thirteen_game", "forteen_game", "fifteen_game",
-        "sixteen_game", "seventeen_game", "eighteen_game"
+        "sixteen_game", "seventeen_game", "eighteen_game", "nineteen_game"
     )
     val totalDaily = dailyGameIds.size
     val completedCount = dailyGameIds.count { gameId ->
@@ -259,6 +259,34 @@ fun HomeScreen(
                         }
                     } else {
                         // Juegos Diarios
+
+                        item {
+                            MyCardButton(
+                                title = "POKEWORDLE",
+                                imageRes = R.drawable.pokewordle,
+                                showBadge = statsViewModel.canPlayGame("nineteen_game"),
+                                onClick = {
+                                    val mediaPlayer =
+                                        MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                    mediaPlayer.start()
+                                    mediaPlayer.setOnCompletionListener { it.release() }
+
+                                    statsViewModel.verificarAccesoJuego("nineteen_game") { canPlay ->
+                                        if (canPlay) {
+                                            statsViewModel.registrarIntentoJuego("nineteen_game")
+                                            navController.navigate(Screen.PokewordleGame.route)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Ya jugaste hoy! Espera a mañana",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                }
+                            )
+                        }
+
                         item {
                             MyCardButton(
                                 title = "TYPES",
@@ -288,19 +316,19 @@ fun HomeScreen(
 
                         item {
                             MyCardButton(
-                                title = "ITEM MYSTERY",
-                                imageRes = R.drawable.itemgame,
-                                showBadge = statsViewModel.canPlayGame("forteen_game"),
+                                title = "PYRAMID POKEMON",
+                                imageRes = R.drawable.pyramid,
+                                showBadge = statsViewModel.canPlayGame("fifteen_game"),
                                 onClick = {
                                     val mediaPlayer =
                                         MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                     mediaPlayer.start()
                                     mediaPlayer.setOnCompletionListener { it.release() }
 
-                                    statsViewModel.verificarAccesoJuego("forteen_game") { canPlay ->
+                                    statsViewModel.verificarAccesoJuego("fifteen_game") { canPlay ->
                                         if (canPlay) {
-                                            statsViewModel.registrarIntentoJuego("forteen_game")
-                                            navController.navigate(Screen.ItemMysteryGame.route)
+                                            statsViewModel.registrarIntentoJuego("fifteen_game")
+                                            navController.navigate(Screen.PyramidGame.route)
                                         } else {
                                             Toast.makeText(
                                                 context,
@@ -315,19 +343,19 @@ fun HomeScreen(
 
                         item {
                             MyCardButton(
-                                title = "PYRAMID POKEMON",
-                                imageRes = R.drawable.pyramid,
-                                showBadge = statsViewModel.canPlayGame("fifteen_game"),
+                                title = "ITEM MYSTERY",
+                                imageRes = R.drawable.itemgame,
+                                showBadge = statsViewModel.canPlayGame("forteen_game"),
                                 onClick = {
                                     val mediaPlayer =
                                         MediaPlayer.create(context, R.raw.buttonuisoundeffect)
                                     mediaPlayer.start()
                                     mediaPlayer.setOnCompletionListener { it.release() }
 
-                                    statsViewModel.verificarAccesoJuego("fifteen_game") { canPlay ->
+                                    statsViewModel.verificarAccesoJuego("forteen_game") { canPlay ->
                                         if (canPlay) {
-                                            statsViewModel.registrarIntentoJuego("fifteen_game")
-                                            navController.navigate(Screen.PyramidGame.route)
+                                            statsViewModel.registrarIntentoJuego("forteen_game")
+                                            navController.navigate(Screen.ItemMysteryGame.route)
                                         } else {
                                             Toast.makeText(
                                                 context,

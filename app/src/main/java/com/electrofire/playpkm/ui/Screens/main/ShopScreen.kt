@@ -348,7 +348,8 @@ fun ShopItemCard(
                     model = coil.request.ImageRequest.Builder(LocalContext.current)
                         .data(
                             if (isShiny) {
-                                "file:///android_asset/portraits_shiny/${item.id}.png"
+                                val cleanId = item.id.removePrefix("shiny_")
+                                "file:///android_asset/portraits_shiny/${cleanId}.png"
                             } else "file:///android_asset/portraits/${item.id}.png"
                         )
                         .crossfade(true)

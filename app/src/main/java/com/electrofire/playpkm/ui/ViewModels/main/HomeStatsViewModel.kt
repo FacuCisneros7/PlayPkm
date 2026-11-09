@@ -30,6 +30,9 @@ class HomeStatsViewModel : ViewModel() {
     var gameAttempts by mutableStateOf<GameAttempts?>(null)
         private set
 
+    var isAttemptsLoaded by mutableStateOf(false)
+        private set
+
     var rachaIncrementadaHoy by mutableStateOf(false)
         private set
 
@@ -186,13 +189,13 @@ class HomeStatsViewModel : ViewModel() {
 
         if (currentMissions.isEmpty()) {
             val defaultDaily = listOf(
-                Mission("daily_14_games", "Juega los 14 juegos diarios", 0, 14, 5, false, "DAILY"),
+                Mission("daily_15_games", "Juega los 15 juegos diarios", 0, 15, 5, false, "DAILY"),
                 Mission("daily_5_wins", "Gana 5 juegos diarios", 0, 5, 3, false, "DAILY"),
                 Mission("daily_3_free", "Juega 3 veces un juego libre", 0, 3, 2, false, "DAILY")
             )
             val defaultWeekly = listOf(
                 Mission(
-                    "weekly_40_games",
+                    "weekly_50_games",
                     "Juega 50 veces juegos diarios",
                     0,
                     50,
@@ -200,7 +203,7 @@ class HomeStatsViewModel : ViewModel() {
                     false,
                     "WEEKLY"
                 ),
-                Mission("weekly_25_wins", "Consigue 30 victorias", 0, 30, 30, false, "WEEKLY")
+                Mission("weekly_30_wins", "Consigue 30 victorias", 0, 30, 30, false, "WEEKLY")
             )
             currentMissions = (defaultDaily + defaultWeekly).toMutableList()
             userData = userData.copy(
@@ -238,13 +241,13 @@ class HomeStatsViewModel : ViewModel() {
 
         if (needsDailyReset || needsWeeklyReset) {
             val defaultDaily = listOf(
-                Mission("daily_14_games", "Juega los 14 juegos diarios", 0, 14, 5, false, "DAILY"),
+                Mission("daily_15_games", "Juega los 15 juegos diarios", 0, 15, 5, false, "DAILY"),
                 Mission("daily_5_wins", "Gana 5 juegos diarios", 0, 5, 3, false, "DAILY"),
                 Mission("daily_3_free", "Juega 3 veces un juego libre", 0, 3, 2, false, "DAILY")
             )
             val defaultWeekly = listOf(
                 Mission(
-                    "weekly_40_games",
+                    "weekly_50_games",
                     "Juega 50 veces juegos diarios",
                     0,
                     50,
@@ -252,7 +255,7 @@ class HomeStatsViewModel : ViewModel() {
                     false,
                     "WEEKLY"
                 ),
-                Mission("weekly_25_wins", "Consigue 30 victorias", 0, 30, 30, false, "WEEKLY")
+                Mission("weekly_30_wins", "Consigue 30 victorias", 0, 30, 30, false, "WEEKLY")
             )
 
             if (needsDailyReset) {
@@ -452,18 +455,26 @@ class HomeStatsViewModel : ViewModel() {
             firestore.collection("attempts").document(uid).get()
                 .addOnSuccessListener { document ->
                     gameAttempts = document.toObject(GameAttempts::class.java) ?: GameAttempts()
+                    isAttemptsLoaded = true
                 }
                 .addOnFailureListener {
                     gameAttempts = GameAttempts()
+                    isAttemptsLoaded = true
                 }
         } ?: run {
             userData = UserData()
+            isAttemptsLoaded = true
             isUserLoaded = true
             isCheckingRewards = false
         }
     }
 
     fun verificarAccesoJuego(gameId: String, onResult: (Boolean) -> Unit) {
+        if (!isAttemptsLoaded) {
+            onResult(false)
+            return
+        }
+
         val lastTimestamp = when (gameId) {
             "first_game" -> gameAttempts?.first_game
             "second_game" -> gameAttempts?.second_game
@@ -479,6 +490,7 @@ class HomeStatsViewModel : ViewModel() {
             "sixteen_game" -> gameAttempts?.sixteen_game
             "seventeen_game" -> gameAttempts?.seventeen_game
             "eighteen_game" -> gameAttempts?.eighteen_game
+            "nineteen_game" -> gameAttempts?.nineteen_game
             else -> null
         }
 
@@ -496,6 +508,8 @@ class HomeStatsViewModel : ViewModel() {
     }
 
     fun canPlayGame(gameId: String): Boolean {
+        if (!isAttemptsLoaded) return false
+
         val lastTimestamp = when (gameId) {
             "first_game" -> gameAttempts?.first_game
             "second_game" -> gameAttempts?.second_game
@@ -511,6 +525,7 @@ class HomeStatsViewModel : ViewModel() {
             "sixteen_game" -> gameAttempts?.sixteen_game
             "seventeen_game" -> gameAttempts?.seventeen_game
             "eighteen_game" -> gameAttempts?.eighteen_game
+            "nineteen_game" -> gameAttempts?.nineteen_game
             else -> null
         } ?: return true
 
@@ -526,7 +541,7 @@ class HomeStatsViewModel : ViewModel() {
             // 1. Actualizar localmente de inmediato para que la UI responda sin esperar al servidor
             actualizarIntentoLocal(gameId, timestamp)
             incrementarProgresoMision("daily_15_games")
-            incrementarProgresoMision("weekly_40_games")
+            incrementarProgresoMision("weekly_50_games")
 
             // 2. Guardar en Firestore SIN llamar a cargarStats() al éxito
             firestore.collection("attempts").document(uid)
@@ -551,6 +566,7 @@ class HomeStatsViewModel : ViewModel() {
             "sixteen_game" -> gameAttempts?.copy(sixteen_game = timestamp)
             "seventeen_game" -> gameAttempts?.copy(seventeen_game = timestamp)
             "eighteen_game" -> gameAttempts?.copy(eighteen_game = timestamp)
+            "nineteen_game" -> gameAttempts?.copy(nineteen_game = timestamp)
             else -> gameAttempts
         }
     }

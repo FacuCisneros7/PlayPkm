@@ -34,7 +34,7 @@ import com.electrofire.playpkm.ui.Components.Contador
 import com.electrofire.playpkm.ui.Components.GameResultDialog
 import com.electrofire.playpkm.ui.Components.HabilityCard
 import com.electrofire.playpkm.ui.Components.Loading
-import com.electrofire.playpkm.ui.Components.UserInputPokemon
+import com.electrofire.playpkm.ui.Components.UserInputAbility
 import com.electrofire.playpkm.ui.Navegation.Screen
 import com.electrofire.playpkm.ui.Screens.error.ErrorScreen
 import com.electrofire.playpkm.ui.Screens.error.NotInternetScreen
@@ -129,7 +129,7 @@ fun AbilityGame(
 
                         Spacer(modifier = Modifier.height(32.dp))
 
-                        UserInputPokemon(
+                        UserInputAbility(
                             title = "Habilidad",
                             text = respuesta,
                             onTextChange = { respuesta = it })

@@ -14,7 +14,7 @@ interface PokemonDao {
     @Query("DELETE FROM pokemon")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM pokemon WHERE nombre LIKE :query || '%' ORDER BY nombre ASC")
+    @Query("SELECT * FROM pokemon WHERE LOWER(nombre) LIKE LOWER(:query) || '%' ORDER BY nombre ASC")
     suspend fun searchPokemon(query: String): List<PokemonEntity>
 
     @Query("SELECT COUNT(*) FROM pokemon")

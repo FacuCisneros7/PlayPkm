@@ -58,6 +58,7 @@ import com.electrofire.playpkm.ui.Screens.games.LanguageGameScreen
 import com.electrofire.playpkm.ui.Screens.games.PyramidGameScreen
 import com.electrofire.playpkm.ui.Screens.games.SilhouetteGame
 import com.electrofire.playpkm.ui.Screens.games.SpeedGameScreen
+import com.electrofire.playpkm.ui.Screens.games.PokewordleGame
 import com.electrofire.playpkm.ui.Screens.games.StatsMysteryGame
 import com.electrofire.playpkm.ui.Screens.games.TheBestGame
 import com.electrofire.playpkm.ui.Screens.games.ThousandShadowsGame
@@ -311,6 +312,12 @@ fun AppNavigation(
             }
             composable(Screen.BeforeAfterGame.route) {
                 BeforeAfterGame(
+                    navController = navController,
+                    statsViewModel = statsViewModel
+                )
+            }
+            composable(Screen.PokewordleGame.route) {
+                PokewordleGame(
                     navController = navController,
                     statsViewModel = statsViewModel
                 )

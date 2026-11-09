@@ -115,8 +115,7 @@ fun UserScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             PokemonWithFlag(
-                painter = selectedAvatarId?.let { "file:///android_asset/portraits/$it.png" }
-                    ?: "file:///android_asset/portraits/${user.avatarId}.png",
+                painter = selectedAvatarId ?: user.avatarId,
                 nationality = user.nationality,
                 imageSize = 100.dp,
                 borderColor = MaterialTheme.colorScheme.outline
@@ -296,7 +295,7 @@ fun UserScreen(
                         val isSelected =
                             (selectedAvatarId == avatarId || (selectedAvatarId == null && user.avatarId == avatarId))
                         Image(
-                            painter = rememberAsyncImagePainter("file:///android_asset/portraits/$avatarId.png"),
+                            painter = rememberAsyncImagePainter(com.electrofire.playpkm.Domain.getAvatarAssetPath(avatarId)),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(60.dp)
@@ -582,7 +581,7 @@ fun RecordItem(label: String, value: Int) {
         Text(
             text = "$value",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

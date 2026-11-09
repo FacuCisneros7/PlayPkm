@@ -24,7 +24,7 @@ fun BlurredCard(
         modifier = modifier
             .width(181.dp)
             .height(254.dp)
-            .blur(radius = 18.dp)
+            .blur(radius = 12.dp)
             .clip(shape = MaterialTheme.shapes.medium),
         contentScale = ContentScale.Fit
     )

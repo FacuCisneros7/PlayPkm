@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.PokemonApi
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
+import com.electrofire.playpkm.Domain.isAnswerCorrect
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +48,5 @@ class SilhouetteViewModel @Inject constructor(
 }
 
 fun verificarRespuestaSilhouette(pokemonActual: PokemonApi?, respuesta: String): Boolean {
-    return pokemonActual != null && respuesta.trim()
-        .equals(pokemonActual.name.trim(), ignoreCase = true)
+    return pokemonActual != null && isAnswerCorrect(pokemonActual.name, respuesta)
 }

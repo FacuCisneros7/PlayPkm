@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.electrofire.playpkm.Domain.getAvatarAssetPath
 
 @Composable
 fun PokemonWithFlag(
@@ -32,15 +33,19 @@ fun PokemonWithFlag(
     borderWidth: Dp = 2.dp,
     borderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
+    val resolvedPainter = when (painter) {
+        is Int -> painterResource(id = painter)
+        is String -> rememberAsyncImagePainter(getAvatarAssetPath(painter))
+        else -> rememberAsyncImagePainter(painter)
+    }
+
     Box(
         modifier = modifier.size(imageSize),
         contentAlignment = Alignment.Center
     ) {
         // Pokemon Image
         Image(
-            painter = if (painter is Int) painterResource(id = painter) else rememberAsyncImagePainter(
-                painter
-            ),
+            painter = resolvedPainter,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()

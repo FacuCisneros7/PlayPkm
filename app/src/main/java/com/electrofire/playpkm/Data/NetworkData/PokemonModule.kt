@@ -1,10 +1,13 @@
 package com.electrofire.playpkm.Data.NetworkData
 
+import android.content.Context
+import com.electrofire.playpkm.Data.LocalData.AbilityDao
 import com.electrofire.playpkm.Data.LocalData.PokemonDao
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -28,7 +31,11 @@ object PokemonModule {
 
     @Provides
     @Singleton
-    fun providePokemonRepository(api: ApiPokemon, dao: PokemonDao):
-            PokemonApiRepository = PokemonApiRepository(api, dao)
+    fun providePokemonRepository(
+        api: ApiPokemon,
+        dao: PokemonDao,
+        abilityDao: AbilityDao,
+        @ApplicationContext context: Context
+    ): PokemonApiRepository = PokemonApiRepository(api, dao, abilityDao, context)
 
 }

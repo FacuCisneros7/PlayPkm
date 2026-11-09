@@ -63,7 +63,7 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
             ) {
                 // Avatar
                 PokemonWithFlag(
-                    painter = "file:///android_asset/portraits/${user.avatarId}.png",
+                    painter = user.avatarId,
                     nationality = user.nationality,
                     imageSize = 100.dp,
                     borderColor = MaterialTheme.colorScheme.tertiary.copy(0.4f),
@@ -148,12 +148,12 @@ fun UserDetailDialog(user: UserData, onDismiss: () -> Unit) {
                 ) {
                     StatItem(
                         label = "WINS",
-                        value = user.victorias.toString(),
+                        value = user.weeklyWins.toString(),
                         color = MaterialTheme.colorScheme.outline
                     )
                     StatItem(
                         label = "LOSS",
-                        value = user.derrotas.toString(),
+                        value = user.weeklyLosses.toString(),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }

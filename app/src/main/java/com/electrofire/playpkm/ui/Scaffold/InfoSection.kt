@@ -57,6 +57,11 @@ fun GamesInfoSection() {
                 R.drawable.easygamedos
             ),
             GameInfo(
+                R.string.poke_wordle_title,
+                R.string.poke_wordle_description,
+                R.drawable.pokewordledos
+            ),
+            GameInfo(
                 R.string.blurred_card_title,
                 R.string.blurred_card_description,
                 R.drawable.carddos

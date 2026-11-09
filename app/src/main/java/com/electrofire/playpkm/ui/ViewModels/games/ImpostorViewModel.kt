@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.ImpostorGameData
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
+import com.electrofire.playpkm.Domain.isAnswerCorrect
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,5 +49,5 @@ class ImpostorViewModel @Inject constructor(
 
 
 fun verificarRespuestaImpostor(choisePokemon: String, correctPokemon: String): Boolean {
-    return choisePokemon == correctPokemon
+    return isAnswerCorrect(correctPokemon, choisePokemon)
 }

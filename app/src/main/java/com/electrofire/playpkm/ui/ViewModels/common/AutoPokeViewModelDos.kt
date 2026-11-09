@@ -28,11 +28,8 @@ class AutoPokeViewModelDos @Inject constructor(
     val sugerencias: StateFlow<List<PokemonEntity>> = _suggestions.asStateFlow()
 
     init {
-        // Al iniciar, sincroniza si la base local está vacía
         viewModelScope.launch {
-            if (repository.isEmptyQuestion()) {
-                repository.syncPokemon()
-            }
+            repository.checkAndSync()
         }
 
         viewModelScope.launch {

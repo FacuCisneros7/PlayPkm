@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.Fusion
 import com.electrofire.playpkm.Data.Repository.LocalGameRepository
+import com.electrofire.playpkm.Domain.isAnswerCorrect
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,9 +47,12 @@ fun verificarRespuestaFusion(
     respuesta: String,
     respuestaDos: String
 ): Boolean {
-    if (fusionActual != null) {
-        return fusionActual.Pokemones.any { it.equals(respuesta.trim(), ignoreCase = true) } &&
-                fusionActual.Pokemones.any { it.equals(respuestaDos.trim(), ignoreCase = true) }
+    if (fusionActual != null && fusionActual.Pokemones.size >= 2) {
+        val pkm1 = fusionActual.Pokemones[0]
+        val pkm2 = fusionActual.Pokemones[1]
+        val match1 = (isAnswerCorrect(pkm1, respuesta) && isAnswerCorrect(pkm2, respuestaDos))
+        val match2 = (isAnswerCorrect(pkm1, respuestaDos) && isAnswerCorrect(pkm2, respuesta))
+        return match1 || match2
     }
     return false
 }

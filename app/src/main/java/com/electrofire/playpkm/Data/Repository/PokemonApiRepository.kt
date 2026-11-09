@@ -1,9 +1,12 @@
 package com.electrofire.playpkm.Data.Repository
 
+import android.content.Context
 import android.util.Log
 import com.electrofire.playpkm.Data.ImpostorGameData
 import com.electrofire.playpkm.Data.ItemApi
 import com.electrofire.playpkm.Data.LanguageGameData
+import com.electrofire.playpkm.Data.LocalData.AbilityDao
+import com.electrofire.playpkm.Data.LocalData.AbilityEntity
 import com.electrofire.playpkm.Data.LocalData.PokemonDao
 import com.electrofire.playpkm.Data.LocalData.PokemonEntity
 import com.electrofire.playpkm.Data.NetworkData.Ability
@@ -12,6 +15,7 @@ import com.electrofire.playpkm.Data.NetworkData.ItemResponse
 import com.electrofire.playpkm.Data.NetworkData.ListPokemonAbilityResponse
 import com.electrofire.playpkm.Data.NetworkData.PokemonResponse
 import com.electrofire.playpkm.Data.PokemonApi
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -24,12 +28,12 @@ import kotlin.random.Random
 
 class PokemonApiRepository @Inject constructor(
     private val api: ApiPokemon,
-    private val dao: PokemonDao
+    private val dao: PokemonDao,
+    private val abilityDao: AbilityDao,
+    @ApplicationContext private val context: Context
 ) {
 
     private val timeRepository = TimeRepository()
-
-    // --- Funciones de Utilidad Interna ---
 
     private val paradoxSpanishNames = mapOf(
         "great-tusk" to "colmilargo",
@@ -39,23 +43,23 @@ class PokemonApiRepository @Inject constructor(
         "slither-wing" to "reptalada",
         "sandy-shocks" to "pelarena",
         "roaring-moon" to "bramaluna",
-        "walking-wake" to "ondas vivas",
-        "gouging-fire" to "ondas fuego",
+        "walking-wake" to "ondulagua",
+        "gouging-fire" to "flamariete",
         "raging-bolt" to "electrofuria",
         "iron-treads" to "ferrodada",
         "iron-bundle" to "ferrosaco",
         "iron-hands" to "ferropalmas",
-        "iron-jugulis" to "ferropulso",
+        "iron-jugulis" to "ferrocuello",
         "iron-moth" to "ferropolilla",
         "iron-thorns" to "ferropuas",
-        "iron-valiant" to "ferropulidio",
-        "iron-leaves" to "ferrohojas",
-        "iron-boulder" to "ferrotesta",
-        "iron-crown" to "ferrocoraza"
+        "iron-valiant" to "ferropaladin",
+        "iron-leaves" to "ferroverdor",
+        "iron-boulder" to "ferromole",
+        "iron-crown" to "ferrotesta"
     )
 
     private fun PokemonResponse.toPokemonApi(translatedAbilities: List<String>? = null): PokemonApi {
-        val resolvedName = paradoxSpanishNames[name] ?: name.replace("-", " ")
+        val resolvedName = paradoxSpanishNames[name] ?: name
         return PokemonApi(
             name = resolvedName.replaceFirstChar { it.uppercase() },
             imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png",
@@ -247,12 +251,26 @@ class PokemonApiRepository @Inject constructor(
         }.awaitAll()
     }
 
+    suspend fun checkAndSync() {
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val lastSyncedVersion = prefs.getInt("last_sync_version", 0)
+        val currentAppVersion = 2
+
+        Log.d("SyncDebug", "lastSyncedVersion: $lastSyncedVersion, currentAppVersion: $currentAppVersion")
+
+        if (lastSyncedVersion < currentAppVersion || dao.count() == 0) {
+            syncPokemon()
+            prefs.edit().putInt("last_sync_version", currentAppVersion).apply()
+            Log.d("SyncDebug", "Sincronización completada y versión actualizada a $currentAppVersion")
+        }
+    }
+
     suspend fun syncPokemon() {
         dao.deleteAll()
         val response = api.getAllPokemon(limit = 1025, offset = 0)
         val allPokemonEntities = response.results.map { result ->
-            val resolvedName = paradoxSpanishNames[result.name] ?: result.name.replace("-", " ")
-            PokemonEntity(nombre = resolvedName)
+            val resolvedName = paradoxSpanishNames[result.name] ?: result.name
+            PokemonEntity(nombre = resolvedName.replaceFirstChar { it.uppercase() })
         }
         dao.insertAll(allPokemonEntities)
     }
@@ -263,5 +281,44 @@ class PokemonApiRepository @Inject constructor(
 
     suspend fun isEmptyQuestion(): Boolean {
         return dao.count() == 0
+    }
+
+    suspend fun checkAndSyncAbilities() {
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val lastSyncedVersion = prefs.getInt("last_ability_sync_version", 0)
+        val currentAppVersion = 1
+
+        if (lastSyncedVersion < currentAppVersion || abilityDao.count() == 0) {
+            syncAbilities()
+            prefs.edit().putInt("last_ability_sync_version", currentAppVersion).apply()
+        }
+    }
+
+    suspend fun syncAbilities() = withContext(Dispatchers.IO) {
+        try {
+            abilityDao.deleteAll()
+            val response = api.getAllAbilities(limit = 1000)
+            val deferred = response.results.map { ability ->
+                async {
+                    try {
+                        val details = api.getAbilityByUrl(ability.url)
+                        val spanishName = details.names.firstOrNull { it.language.name == "es" }?.name ?: ability.name
+                        val formatted = spanishName.lowercase().replaceFirstChar { it.uppercase() }
+                        AbilityEntity(nombre = formatted)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+            }
+            val entities = deferred.awaitAll().filterNotNull()
+            abilityDao.insertAll(entities)
+            Log.d("ABILITY_SYNC", "Sincronizadas ${entities.size} habilidades correctamente")
+        } catch (e: Exception) {
+            Log.e("ABILITY_SYNC", "Error syncing abilities: ${e.message}")
+        }
+    }
+
+    suspend fun searchAbility(query: String): List<AbilityEntity> {
+        return abilityDao.searchAbility(query)
     }
 }

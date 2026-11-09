@@ -33,6 +33,12 @@
         To complete the easiest game, you must guess the Pokémon silhouette against the clock.
     </string>
 
+    <!-- Minigame: POKEWORDLE -->
+    <string name="poke_wordle_title">POKEWORDLE</string>
+    <string name="poke_wordle_description">
+        The clasic game of words with Pokémon.
+    </string>
+
     <!-- Minigame: BLURRED CARD -->
     <string name="blurred_card_title">BLURRED CARD</string>
     <string name="blurred_card_description">

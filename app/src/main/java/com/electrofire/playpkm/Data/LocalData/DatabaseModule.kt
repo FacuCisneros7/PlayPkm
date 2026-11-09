@@ -20,9 +20,14 @@ object DatabaseModule {
             context,
             PokemonDatabase::class.java,
             "pokemon_db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
     fun providePokemonDao(database: PokemonDatabase): PokemonDao = database.pokemonDao()
+
+    @Provides
+    fun provideAbilityDao(database: PokemonDatabase): AbilityDao = database.abilityDao()
 }

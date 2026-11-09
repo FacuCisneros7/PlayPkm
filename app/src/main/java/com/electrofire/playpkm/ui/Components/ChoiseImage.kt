@@ -1,70 +1,39 @@
 package com.electrofire.playpkm.ui.Components
 
 import android.media.MediaPlayer
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.electrofire.playpkm.Data.AvatarItem
 import com.electrofire.playpkm.R
-
-data class AvatarItem(val id: String, val name: String)
 
 object AvatarList {
     val items = listOf(
-        AvatarItem("0025", "pikachu"),
-        AvatarItem("0006", "charizard"),
         AvatarItem("0001", "bulbasaur"),
+        AvatarItem("0004", "charmander"),
         AvatarItem("0007", "squirtle"),
-        AvatarItem("0150", "mewtwo"),
-        AvatarItem("0445", "garchomp"),
-        AvatarItem("0448", "lucario"),
-        AvatarItem("0658", "greninja"),
-        AvatarItem("0143", "snorlax"),
-        AvatarItem("0384", "rayquaza"),
+        AvatarItem("0025", "pikachu"),
+        AvatarItem("0039", "jigglypuff"),
+        AvatarItem("0052", "meowth"),
         AvatarItem("0133", "eevee"),
-        AvatarItem("0151", "mew"),
-        AvatarItem("0249", "lugia"),
-        AvatarItem("0250", "ho-oh"),
-        AvatarItem("0094", "gengar"),
-        AvatarItem("0149", "dragonite"),
-        AvatarItem("0248", "tyranitar"),
-        AvatarItem("0376", "metagross"),
-        AvatarItem("0373", "salamence"),
-        AvatarItem("0383", "groudon"),
-        AvatarItem("0382", "kyogre"),
-        AvatarItem("0282", "gardevoir")
+        AvatarItem("0447", "riolu")
     )
 }
 
@@ -75,88 +44,45 @@ fun ChoiseImage(
 ) {
     val context = LocalContext.current
     val imageList = remember { AvatarList.items }
-    var searchText by remember { mutableStateOf("") }
 
-    val filteredList = imageList.filter {
-        it.name.contains(searchText, ignoreCase = true)
-    }
+    // 2 filas de 4 elementos cada una
+    val rows = imageList.chunked(4)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(start = 14.dp, end = 14.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.padding(horizontal = 14.dp)
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(55.dp),
-            elevation = CardDefaults.cardElevation(0.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            ),
-            border = BorderStroke(3.dp, MaterialTheme.colorScheme.tertiary)
-        ) {
-            TextField(
-                value = searchText,
-                textStyle = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                onValueChange = { searchText = it },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = "Buscar Pokémon insignia...",
-                        style = MaterialTheme.typography.headlineLarge.copy(fontSize = 16.sp),
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                    focusedTextColor = MaterialTheme.colorScheme.primary,
-                    unfocusedTextColor = MaterialTheme.colorScheme.primary,
-                    focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-                    cursorColor = MaterialTheme.colorScheme.tertiary,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            items(filteredList) { avatar ->
-                Image(
-                    painter = rememberAsyncImagePainter("file:///android_asset/portraits/${avatar.id}.png"),
-                    contentDescription = avatar.name,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = if (selectedAvatarId == avatar.id) 4.dp else 2.dp,
-                            color = if (selectedAvatarId == avatar.id) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(
-                                alpha = 0.4f
-                            ),
-                            shape = CircleShape
-                        )
-                        .clickable {
-                            val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
-                            mediaPlayer.start()
-                            mediaPlayer.setOnCompletionListener { it.release() }
+        rows.forEach { rowItems ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                rowItems.forEach { avatar ->
+                    Image(
+                        painter = rememberAsyncImagePainter("file:///android_asset/portraits/${avatar.id}.png"),
+                        contentDescription = avatar.name,
+                        modifier = Modifier
+                            .size(64.dp)
+                            .clip(CircleShape)
+                            .border(
+                                width = if (selectedAvatarId == avatar.id) 4.dp else 2.dp,
+                                color = if (selectedAvatarId == avatar.id) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary.copy(
+                                    alpha = 0.4f
+                                ),
+                                shape = CircleShape
+                            )
+                            .clickable {
+                                val mediaPlayer = MediaPlayer.create(context, R.raw.buttonuisoundeffect)
+                                mediaPlayer.start()
+                                mediaPlayer.setOnCompletionListener { it.release() }
 
-                            onAvatarSelected(avatar.id)
-                        },
-                    contentScale = ContentScale.Crop
-                )
+                                onAvatarSelected(avatar.id)
+                            },
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
         }
     }

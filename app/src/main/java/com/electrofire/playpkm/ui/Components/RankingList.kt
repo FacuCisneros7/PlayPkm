@@ -160,7 +160,7 @@ fun PodiumItem(user: UserData, position: Int, type: RankingType, modifier: Modif
         Box(contentAlignment = Alignment.BottomCenter) {
             // Avatar
             PokemonWithFlag(
-                painter = "file:///android_asset/portraits/${user.avatarId}.png",
+                painter = user.avatarId,
                 nationality = user.nationality,
                 imageSize = size,
                 borderColor = color,
@@ -329,7 +329,7 @@ fun RankingUserItem(
 
             // Avatar
             PokemonWithFlag(
-                painter = "file:///android_asset/portraits/${user.avatarId}.png",
+                painter = user.avatarId,
                 nationality = user.nationality,
                 imageSize = 35.dp,
                 borderWidth = 0.dp

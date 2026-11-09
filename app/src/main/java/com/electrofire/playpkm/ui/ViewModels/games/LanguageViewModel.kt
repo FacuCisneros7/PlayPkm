@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.electrofire.playpkm.Data.LanguageGameData
 import com.electrofire.playpkm.Data.Repository.PokemonApiRepository
+import com.electrofire.playpkm.Domain.isAnswerCorrect
 import com.electrofire.playpkm.ui.ViewModels.common.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.text.Normalizer
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,14 +47,5 @@ class LanguageViewModel @Inject constructor(
 }
 
 fun verificarRespuestaLanguage(gameData: LanguageGameData?, respuesta: String): Boolean {
-    fun String.normalizar(): String =
-        Normalizer.normalize(this, Normalizer.Form.NFD)
-            .replace("\\p{Mn}+".toRegex(), "")
-            .trim()
-            .lowercase()
-
-    if (gameData != null) {
-        return respuesta.normalizar() == gameData.pokemon.name.normalizar()
-    }
-    return false
+    return gameData != null && isAnswerCorrect(gameData.pokemon.name, respuesta)
 }

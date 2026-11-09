@@ -166,11 +166,11 @@ fun LanguageGameScreen(
                             )
                             LanguageCard(
                                 flagRes = R.drawable.germanyflag,
-                                pokemonName = gameData.germanName
+                                pokemonName = if(intentosRestantes <= 2)gameData.germanName else ""
                             )
                             LanguageCard(
                                 flagRes = R.drawable.franceflag,
-                                pokemonName = gameData.frenchName
+                                pokemonName = if(intentosRestantes <= 1)gameData.frenchName else ""
                             )
                         }
 
@@ -247,7 +247,7 @@ fun LanguageCard(
                     fontWeight = FontWeight.Black,
                     fontSize = 22.sp
                 ),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.outline
             )
         }
     }

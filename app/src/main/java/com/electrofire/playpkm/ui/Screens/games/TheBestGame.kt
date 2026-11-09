@@ -1,8 +1,10 @@
 package com.electrofire.playpkm.ui.Screens.games
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -168,7 +170,21 @@ fun TheBestGame(
                         },
                         content = {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                GameResultPokemonCard(pokemon = gameData.correctPokemons.first())
+                                if (gameData.correctPokemons.size > 1) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        gameData.correctPokemons.forEach { pkm ->
+                                            GameResultPokemonCard(
+                                                pokemon = pkm,
+                                                modifier = Modifier.size(130.dp)
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    GameResultPokemonCard(pokemon = gameData.correctPokemons.first())
+                                }
                                 Spacer(Modifier.height(16.dp))
                                 StatBestCard(
                                     statNombre = "${gameData.selectedStat}",

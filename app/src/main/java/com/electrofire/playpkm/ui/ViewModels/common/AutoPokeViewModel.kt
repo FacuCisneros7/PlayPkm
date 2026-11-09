@@ -28,16 +28,13 @@ class AutoPokeViewModel @Inject constructor(
     val sugerencias: StateFlow<List<PokemonEntity>> = _suggestions.asStateFlow()
 
     init {
-        // Al iniciar, sincroniza si la base local está vacía
         viewModelScope.launch {
-            if (repository.isEmptyQuestion()) {
-                repository.syncPokemon()
-            }
+            repository.checkAndSync()
         }
 
         viewModelScope.launch {
             _queryFlow
-                .debounce(700L)
+                .debounce(300L)
                 .distinctUntilChanged()
                 .collectLatest { query ->
                     _suggestions.value = if (query.isEmpty()) {

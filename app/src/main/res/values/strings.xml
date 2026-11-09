@@ -17,7 +17,7 @@
 
     <!-- Descripción minijuegos (general) -->
     <string name="minigames_general_description">
-        Desafía los 14 minijuegos todos los días para llegar al top del ranking.
+        Desafía los 15 minijuegos todos los días para llegar al top del ranking.
         Los minijuegos se reinician a diario a las 00:00 UTC (guiarse con el contador en pantalla).
     </string>
 
@@ -37,6 +37,12 @@
     <string name="easy_game_title">EASY GAME</string>
     <string name="easy_game_description">
         Para completar el juego más fácil, deberás adivinar la silueta del Pokémon a contrarreloj.
+    </string>
+
+    <!-- Minijuego: POKEWORDLE -->
+    <string name="poke_wordle_title">POKEWORDLE</string>
+    <string name="poke_wordle_description">
+        El clásico juego de letras version pokemon.
     </string>
 
     <!-- Minijuego: BLURRED CARD -->
@@ -96,7 +102,7 @@
     <!-- Minijuego: TYPES -->
     <string name="type_game_title">TYPES</string>
     <string name="type_game_description">
-        ¡Demuestra cuánto sabes sobre las debilidades y fortalezas adivinando el tipo o tipos del Pokémon!
+        ¡Demuestra cuánto sabes sobre el tipo o tipos de un Pokémon! (El orden es CLAVE)
     </string>
 
     <!-- Minijuego: ITEM MYSTERY -->

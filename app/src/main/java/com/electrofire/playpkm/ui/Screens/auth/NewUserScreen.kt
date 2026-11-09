@@ -164,8 +164,7 @@ fun NewUserScreen(navController: NavController, statsViewModel: HomeStatsViewMod
 
                         // Previsualización del Avatar seleccionado
                         PokemonWithFlag(
-                            painter = selectedAvatarId?.let { "file:///android_asset/portraits/$it.png" }
-                                ?: R.drawable.pokeball,
+                            painter = selectedAvatarId ?: R.drawable.pokeball,
                             nationality = selectedNationality,
                             imageSize = 110.dp,
                             borderColor = MaterialTheme.colorScheme.tertiary
