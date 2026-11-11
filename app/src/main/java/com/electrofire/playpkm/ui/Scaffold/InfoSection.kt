@@ -126,7 +126,7 @@ fun GamesInfoSection() {
             GameInfo(
                 R.string.before_or_after_title,
                 R.string.before_or_after_description,
-                R.drawable.beforeorafter
+                R.drawable.beforeorafterdos
             )
         )
 

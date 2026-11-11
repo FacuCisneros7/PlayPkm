@@ -70,7 +70,8 @@ class PokewordleViewModel @Inject constructor(
             try {
                 var pokemon: PokemonApi? = null
                 var cleanName = ""
-                while (pokemon == null || cleanName.length !in 3..7) {
+                val targetLength = (5..7).random()
+                while (pokemon == null || cleanName.length != targetLength) {
                     pokemon = repo.obtenerPokemonRandom()
                     if (pokemon != null) {
                         cleanName = pokemon.name
@@ -84,8 +85,8 @@ class PokewordleViewModel @Inject constructor(
                 targetWord = cleanName
                 wordLength = cleanName.length
 
-                guesses.value = List(5) { MutableList(wordLength) { ' ' } }
-                guessColors.value = List(5) { MutableList(wordLength) { LetterColor.UNUSED } }
+                guesses.value = List(6) { MutableList(wordLength) { ' ' } }
+                guessColors.value = List(6) { MutableList(wordLength) { LetterColor.UNUSED } }
                 currentRow = 0
                 currentCol = 0
                 gameStatus = PokewordleGameState.Playing
@@ -177,7 +178,7 @@ class PokewordleViewModel @Inject constructor(
 
         if (currentGuessStr == targetWord) {
             gameStatus = PokewordleGameState.Won
-        } else if (currentRow < 4) {
+        } else if (currentRow < 5) {
             currentRow++
             currentCol = 0
         } else {

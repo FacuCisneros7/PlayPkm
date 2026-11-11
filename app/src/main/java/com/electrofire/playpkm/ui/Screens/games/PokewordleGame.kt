@@ -97,13 +97,13 @@ fun PokewordleGame(
                         }
                     }
 
-                    // Cuadrícula (Grid 5xN)
+                    // Cuadrícula (Grid 6xN)
                     Column(
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(vertical = 8.dp)
                     ) {
-                        for (r in 0 until 5) {
+                        for (r in 0 until 6) {
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 for (c in 0 until wordLength) {
                                     val char = if (r < guesses.size && c < guesses[r].size) guesses[r][c] else ' '

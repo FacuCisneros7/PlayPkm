@@ -59,7 +59,7 @@ class HomeStatsViewModel : ViewModel() {
             weeklyWins = userData.weeklyWins + 1
         )
         incrementarProgresoMision("daily_5_wins")
-        incrementarProgresoMision("weekly_25_wins")
+        incrementarProgresoMision("weekly_30_wins")
 
         actualizarCamposFiresore(
             mapOf(

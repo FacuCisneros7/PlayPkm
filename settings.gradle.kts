@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "PLAYPKM"
 include(":app")
- 

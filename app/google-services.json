@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "759299284944-912fg1useft0ops6ot8jf4bo3meklt7h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.electrofire.playpkm",
+            "certificate_hash": "4894a37e70bef27162883cbb1450cc37f49d3b2b"
+          }
+        },
+        {
+          "client_id": "759299284944-f73pjgntba1udhc0f9a7pnh0i7n148kv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.electrofire.playpkm",
+            "certificate_hash": "614afe748f571c50dea6c3d9434de3a1ef6103cc"
+          }
+        },
+        {
           "client_id": "759299284944-1bce4vh7vp2dtp63ae4sg30lje3kg38a.apps.googleusercontent.com",
           "client_type": 3
         }
